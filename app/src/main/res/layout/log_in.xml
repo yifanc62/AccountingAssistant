@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cirnoteam.accountingassistant.LogIn">
+
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/table0"
+        android:layout_width="400dp"
+        android:layout_height="541dp"
+        android:stretchColumns="1"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txt1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="用户名:"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请填写登录账号"
+                android:selectAllOnFocus="true" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txt2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="密码:"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请填写登录密码"
+                android:inputType="numberPassword" />
+        </TableRow>
+
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txt3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" "
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/logIn_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="toMainActivity"
+                android:text="登录" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/txt4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="toForgetPassword"
+                android:text="忘记密码"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/register_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="toRegister"
+                android:text="注册" />
+        </TableRow>
+    </TableLayout>
+</android.support.constraint.ConstraintLayout>

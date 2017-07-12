@@ -18,6 +18,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LogIn"
+            android:label="登录">
+            <intent-filter>
+                <action android:name="android.intent.action.LOGIN" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Register"
+            android:label="注册">
+            <intent-filter>
+                <action android:name="android.intent.action.REGISTER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ForgetPassword"
+            android:label="忘记密码">
+            <intent-filter>
+                <action android:name="android.intent.action.FORGETPASSWORD" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
