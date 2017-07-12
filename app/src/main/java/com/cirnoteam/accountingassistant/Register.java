@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 /**
  * Register Class
+ *
  * @author UZ
  * @version 1.1
  */
@@ -80,11 +81,11 @@ public class Register extends AppCompatActivity {
         emailError.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
                 listener_1);
 
-        if(account.equals("")||password_1.equals("")||password_2.equals("")||email.equals(""))
+        if (account.equals("") || password_1.equals("") || password_2.equals("") || email.equals(""))
             empty.show();
-        else if(!password_1.equals(password_2))
+        else if (!password_1.equals(password_2))
             passwordMatchError.show();
-         else if(!Pattern.matches(email,pattern_1)||!Pattern.matches(email,pattern_2))
+        else if (!Pattern.matches(email, pattern_1) || !Pattern.matches(email, pattern_2))
             emailError.show();
         //TODO：添加新用户至数据库
     }

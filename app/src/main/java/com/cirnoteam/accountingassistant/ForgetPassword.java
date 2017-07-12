@@ -6,9 +6,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+
 import java.util.regex.*;
+
 /**
  * ForgetPassword Class
+ *
  * @author UZ
  * @version 1.1
  */
@@ -18,11 +21,12 @@ public class ForgetPassword extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forget_password);
     }
-    public void sendEmail(View view){
+
+    public void sendEmail(View view) {
         String email = "";
         String pattern_1 = ".*@.*";
         String pattern_2 = ".*..*";
-        EditText editText1 = (EditText)findViewById(R.id.email);
+        EditText editText1 = (EditText) findViewById(R.id.email);
         email = editText1.getText().toString();
         //检查格式
         AlertDialog error = new AlertDialog.Builder(this).create();
@@ -52,11 +56,10 @@ public class ForgetPassword extends AppCompatActivity {
         empty.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
                 listener);
 
-        if(email.equals(""))
+        if (email.equals(""))
             empty.show();
-        else if(!Pattern.matches(email,pattern_1)||!Pattern.matches(email,pattern_2))
+        else if (!Pattern.matches(email, pattern_1) || !Pattern.matches(email, pattern_2))
             error.show();
-
 
 
         //TODO: 检验邮箱是否绑定并发送邮件

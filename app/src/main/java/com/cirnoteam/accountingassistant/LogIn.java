@@ -11,6 +11,7 @@ import android.widget.EditText;
 
 /**
  * Login Class
+ *
  * @author UZ
  * @version 1.1
  */
@@ -55,13 +56,13 @@ public class LogIn extends AppCompatActivity {
         empty.setMessage("输入框不能为空");
         empty.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
                 listener);
-        if(password.equals("")||account.equals(""))
+        if (password.equals("") || account.equals(""))
             empty.show();
-        //TODO:检验账号密码正确性
+            //TODO:检验账号密码正确性
 
-        else{
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        else {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
     }
 }
