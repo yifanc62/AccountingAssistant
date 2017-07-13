@@ -39,7 +39,22 @@
                 <action android:name="android.intent.action.FORGETPASSWORD" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".RecordDetail"
+            android:label="流水详情"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.RECORDDETAIL" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".NewRecord"
+            android:label="记一笔新流水"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.NEWRECORD" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
