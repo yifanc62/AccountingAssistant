@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">记账助手</string>
-    <string name="title_home">Cirno Team</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="test">test</string>
+    <string name="title_home">主页</string>
+    <string name="title_record">流水</string>
+    <string name="title_user">账户</string>
+    <string name="title_activity_login">登录</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>
