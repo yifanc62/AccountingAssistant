@@ -1,30 +1,35 @@
 package com.cirnoteam.accountingassistant;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.cirnoteam.com.cirnoteam.database.SaveDB;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.cirnoteam.accountingassistant.R.id.amount_edit;
+import static com.cirnoteam.accountingassistant.R.id.remark_edit;
+import static com.cirnoteam.accountingassistant.R.id.time_edit;
 
 /**
  * Created by Saika on 2017/7/13.
  */
 
 public class NewRecord extends AppCompatActivity{
-    //临时变量
-    String inout,type,account;
-    float amount=0;
+    //将要直接插入数据库的临时变量
+    String expense,remark,amount,time;
+    String type, account;
 
     private List<String> list_inout = new ArrayList<String>();
     private List<String> list_type = new ArrayList<String>();
@@ -67,13 +72,19 @@ public class NewRecord extends AppCompatActivity{
         spinner_inout.setAdapter(adapter_inout);
         spinner_type.setAdapter(adapter_type);
         spinner_account.setAdapter(adapter_account);
-        EditText editText = (EditText) findViewById(amount_edit);
+
+        //设置默认值：时间
+        SimpleDateFormat    formatter    =   new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
+        Date    curDate    =   new Date(System.currentTimeMillis());//获取当前时间
+        String    str    =    formatter.format(curDate);
+        EditText editText_time = (EditText) findViewById(time_edit);
+        editText_time.setText(str);
 
         /*******************监听事件***********************/
         spinner_inout.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-                inout = adapter_inout.getItem(arg2).toString();
+                expense = String.valueOf(arg2);
                 //Toast.makeText(getApplicationContext(), adapter_inout.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -86,7 +97,7 @@ public class NewRecord extends AppCompatActivity{
         spinner_type.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-                type = adapter_type.getItem(arg2).toString();
+                type = String.valueOf(arg2);
                 //Toast.makeText(getApplicationContext(), adapter_type.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -112,16 +123,22 @@ public class NewRecord extends AppCompatActivity{
         });
     }
     public void toCreate(View view) {
-        EditText editText = (EditText) findViewById(amount_edit);
-        if(!TextUtils.isEmpty(editText.getText()))
-            amount = Float.parseFloat(editText.getText().toString());
+        EditText editText_amount = (EditText) findViewById(amount_edit);
+        if(!TextUtils.isEmpty(editText_amount.getText()))
+            amount = editText_amount.getText().toString();
         else
-            amount = 0;
-        Toast.makeText(getApplicationContext(), amount+inout+account+type, Toast.LENGTH_SHORT).show();
-        //TODO 存储新流水 inout收支(String) account账户(String) type类型(String) amount金额(float)
-        //返回代码还没写
+            amount = "0";
+        time = ((EditText) findViewById(time_edit)).getText().toString();
+        remark = ((EditText) findViewById(remark_edit)).getText().toString();
+        //Toast.makeText(getApplicationContext(), amount+inout+account+type+time_edit+remark_edit, Toast.LENGTH_SHORT).show();
+        if(SaveDB.saveRecord(this.getFilesDir().toString(),expense,amount,remark,type,time))
+            Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
+
+        finish();
     }
     public void back(View view){
-        //返回代码还没写
+        //Intent intent = new Intent(this, MainActivity.class);
+        //startActivity(intent);
+        finish();
     }
 }
