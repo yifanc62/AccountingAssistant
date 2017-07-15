@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:label="记账助手">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,28 +23,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LogIn"
+            android:name=".activity.LogIn"
             android:label="登录">
             <intent-filter>
                 <action android:name="android.intent.action.LOGIN" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Register"
+            android:name=".activity.Register"
             android:label="注册">
             <intent-filter>
                 <action android:name="android.intent.action.REGISTER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".ForgetPassword"
+            android:name=".activity.ForgetPassword"
             android:label="忘记密码">
             <intent-filter>
                 <action android:name="android.intent.action.FORGETPASSWORD" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Record"
+            android:name=".activity.Record"
             android:label="流水记录">
             <intent-filter>
                 <action android:name="android.intent.action.RECORD" />
@@ -52,7 +52,7 @@
         </activity>
 
         <activity
-            android:name=".RecordDetail"
+            android:name=".activity.RecordDetail"
             android:label="流水详情"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -60,7 +60,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NewRecord"
+            android:name=".activity.NewRecord"
             android:label="记一笔新流水"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -68,7 +68,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Inquire"
+            android:name=".activity.Inquire"
             android:label="查询"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -76,7 +76,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".BankCard"
+            android:name=".activity.BankCard"
             android:label="账户列表">
             <intent-filter>
                 <action android:name="android.intent.action.BANKCARD" />
@@ -84,7 +84,7 @@
             >
         </activity>
         <activity
-            android:name=".NewBankcard"
+            android:name=".activity.NewBankcard"
             android:label="新增账户">
             <intent-filter>
                 <action android:name="android.intent.action.NEWBANKCARD" />

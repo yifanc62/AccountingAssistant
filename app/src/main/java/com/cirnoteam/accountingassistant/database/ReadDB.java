@@ -1,4 +1,4 @@
-package com.cirnoteam.com.cirnoteam.database;
+package com.cirnoteam.accountingassistant.database;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
  */
 
 public class ReadDB extends AppCompatActivity {
-    public static String[] readRecord(String path){
+    public static String[] readRecord(String path) {
         SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path + "temp.db3", null);
         Cursor cursor = db.rawQuery("select * from RecordDetail", null);
 

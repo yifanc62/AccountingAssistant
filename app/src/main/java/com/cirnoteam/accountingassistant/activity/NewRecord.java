@@ -1,8 +1,5 @@
-package com.cirnoteam.accountingassistant;
+package com.cirnoteam.accountingassistant.activity;
 
-import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -13,25 +10,26 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.cirnoteam.com.cirnoteam.database.ReadDB;
-import com.cirnoteam.com.cirnoteam.database.UpdateDB;
+import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.SaveDB;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.cirnoteam.accountingassistant.R.id.amount_edit;
 import static com.cirnoteam.accountingassistant.R.id.remark_edit;
-import static com.cirnoteam.accountingassistant.R.id.time;
 import static com.cirnoteam.accountingassistant.R.id.time_edit;
 
 /**
- * Created by Saika on 2017/7/12.
+ * Created by Saika on 2017/7/13.
  */
 
-public class RecordDetail extends AppCompatActivity {
-
-    //用于修改的临时变量
-    String type,account,remark,time,expense,recid,amount;
+public class NewRecord extends AppCompatActivity {
+    //将要直接插入数据库的临时变量
+    String expense, remark, amount, time;
+    String type, account;
 
     private List<String> list_inout = new ArrayList<String>();
     private List<String> list_type = new ArrayList<String>();
@@ -45,7 +43,7 @@ public class RecordDetail extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.record_detail);
+        setContentView(R.layout.new_record);
 
         list_inout.add("支出");
         list_inout.add("收入");
@@ -74,31 +72,14 @@ public class RecordDetail extends AppCompatActivity {
         spinner_inout.setAdapter(adapter_inout);
         spinner_type.setAdapter(adapter_type);
         spinner_account.setAdapter(adapter_account);
-        EditText editText_amount = (EditText) findViewById(amount_edit);
-        EditText editText_remark = (EditText) findViewById(remark_edit);
+
+        //设置默认值：时间
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        SimpleDateFormat dateFormater = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
+        String str = dateFormater.format(curDate);
         EditText editText_time = (EditText) findViewById(time_edit);
-        //查询当前流水信息，填入各框(即设置默认值)
-        /***
-         * 示例
-         editText.setText("10000");
-         spinner_type.setSelection(3, true);
-         spinner_inout.setSelection(1, true);
-         spinner_account.setSelection(0, true);
-         *setSelection即把该spinner的默认值设置为第一个参数所指的值
-         ***/
-        try {
-            String[] str = ReadDB.readRecord(this.getFilesDir().toString());
-            spinner_inout.setSelection(Integer.parseInt(str[1]));
-            editText_amount.setText(str[2]);
-            editText_remark.setText(str[3]);
-            spinner_type.setSelection(Integer.parseInt(str[4]));
-            editText_time.setText(str[6]);
-            recid = str[0];
-            Toast.makeText(getApplicationContext(), recid, Toast.LENGTH_SHORT).show();
-        }catch (Exception e){
-            Toast.makeText(getApplicationContext(), "表中无数据", Toast.LENGTH_SHORT).show();
-        }
-        //默认值设置完成
+        editText_time.setText(str);
 
         /*******************监听事件***********************/
         spinner_inout.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
@@ -110,7 +91,7 @@ public class RecordDetail extends AppCompatActivity {
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
-                Toast.makeText(getApplicationContext(), "none", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "none", Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
         });
@@ -142,26 +123,25 @@ public class RecordDetail extends AppCompatActivity {
             }
         });
     }
-    public void toModify(View view) {
-        remark = ((EditText) findViewById(remark_edit)).getText().toString();
-        time = ((EditText) findViewById(time_edit)).getText().toString();
+
+    public void toCreate(View view) {
         EditText editText_amount = (EditText) findViewById(amount_edit);
-        if(!TextUtils.isEmpty(editText_amount.getText()))
+        if (!TextUtils.isEmpty(editText_amount.getText()))
             amount = editText_amount.getText().toString();
         else
             amount = "0";
-
-        if(UpdateDB.updateRecord(this.getFilesDir().toString(),expense,amount,remark,type,time,recid,"username"))
-            Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
+        time = ((EditText) findViewById(time_edit)).getText().toString();
+        remark = ((EditText) findViewById(remark_edit)).getText().toString();
+        //Toast.makeText(getApplicationContext(), amount+inout+account+type+time_edit+remark_edit, Toast.LENGTH_SHORT).show();
+        if (SaveDB.saveRecord(this.getFilesDir().toString(), expense, amount, remark, type, time))
+            Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
 
         finish();
     }
-    public void back(View view){
+
+    public void back(View view) {
         //Intent intent = new Intent(this, MainActivity.class);
         //startActivity(intent);
         finish();
     }
 }
-
-
-
