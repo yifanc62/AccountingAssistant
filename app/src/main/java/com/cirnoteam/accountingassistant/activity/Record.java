@@ -1,10 +1,7 @@
-package com.cirnoteam.accountingassistant;
+package com.cirnoteam.accountingassistant.activity;
 
-import android.app.ExpandableListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -25,9 +22,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cirnoteam.accountingassistant.R;
+
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static android.app.PendingIntent.getActivity;
@@ -65,8 +63,8 @@ public class Record extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record);
         initActionBar();
-        Spinner dateSpinner = (Spinner)findViewById(R.id.spinner_date);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, getSpinnerItems(Calendar.getInstance()));
+        Spinner dateSpinner = (Spinner) findViewById(R.id.spinner_date);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getSpinnerItems(Calendar.getInstance()));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dateSpinner.setAdapter(adapter);
         dateSpinner.setSelection(Status.month);
@@ -74,28 +72,30 @@ public class Record extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         final ExpandableListAdapter adapter_2 = new ExpandableListAdapter() {
-            int [] logos = new int[]{
+            int[] logos = new int[]{
                     R.drawable.ic_dashboard_black_24dp,
                     R.drawable.ic_dashboard_black_24dp,
                     R.drawable.ic_dashboard_black_24dp
             };
             private String[] armType = new String[]{
-                    "7月13日","7月12日","7月11日","7月10日"
+                    "7月13日", "7月12日", "7月11日", "7月10日"
             };
             private String[][] arms = new String[][]{
-                    {"流水1","流水2","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3"},
-                    {"流水1","流水2","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3"},
-                    {"流水1","流水2","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3"}
+                    {"流水1", "流水2", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3"},
+                    {"流水1", "流水2", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3"},
+                    {"流水1", "流水2", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3", "流水3"}
             };
-            private TextView getTextView(){
-                AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,64);
+
+            private TextView getTextView() {
+                AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 64);
                 TextView textView = new TextView(Record.this);
                 textView.setLayoutParams(lp);
-                textView.setGravity(Gravity.CENTER_VERTICAL|Gravity.LEFT);
-                textView.setPadding(36,0,0,0);
+                textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+                textView.setPadding(36, 0, 0, 0);
                 textView.setTextSize(20);
                 return textView;
             }
+
             @Override
             public void registerDataSetObserver(DataSetObserver dataSetObserver) {
 
@@ -144,7 +144,7 @@ public class Record extends AppCompatActivity {
             @Override
             public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
                 LinearLayout ll = new LinearLayout(Record.this);
-                ll.setOrientation(0);
+                ll.setOrientation(LinearLayout.VERTICAL);
                 ImageView logo = new ImageView(Record.this);
                 logo.setImageResource(logos[groupPosition]);
                 ll.addView(logo);
@@ -156,7 +156,7 @@ public class Record extends AppCompatActivity {
             @Override
             public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
                 TextView textView = getTextView();
-                textView.setText(getChild(groupPosition,childPosition).toString());
+                textView.setText(getChild(groupPosition, childPosition).toString());
                 return textView;
             }
 
@@ -197,17 +197,15 @@ public class Record extends AppCompatActivity {
         };
 
 
-
-        ExpandableListView expandableListView = (ExpandableListView)findViewById(R.id.expandableListView);
+        ExpandableListView expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
 
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
 
 
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                Intent intent = new Intent(getApplicationContext(),RecordDetail.class);
+                Intent intent = new Intent(getApplicationContext(), RecordDetail.class);
                 startActivity(intent);
                 return true;
             }
@@ -219,13 +217,14 @@ public class Record extends AppCompatActivity {
         dateSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 arg0.setVisibility(View.VISIBLE);
-                if(Status.month != arg2){
+                if (Status.month != arg2) {
                     Status.month = arg2;
-                    Intent intent = new Intent(getApplicationContext(),Record.class);
+                    Intent intent = new Intent(getApplicationContext(), Record.class);
                     startActivity(intent);
                     finish();
                 }
             }
+
             public void onNothingSelected(AdapterView<?> arg0) {
                 Toast.makeText(getApplicationContext(), "none", Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
@@ -249,20 +248,20 @@ public class Record extends AppCompatActivity {
         });
     }
 
-    private List<String> getSpinnerItems(Calendar now){
+    private List<String> getSpinnerItems(Calendar now) {
         int y = now.get(Calendar.YEAR);
         int m = now.get(Calendar.MONTH);
         List<String> result = new ArrayList<>();
-        if(y>=2015) {
+        if (y >= 2015) {
             //result.add(String.format("%04d",y));
             for (int i = m; i >= 0; i--) {
-                result.add(String.format("%04d-%02d", y, i+1));
+                result.add(String.format("%04d-%02d", y, i + 1));
             }
         }
         y--;
-        for (int i = y; i >2014 ; i--) {
+        for (int i = y; i > 2014; i--) {
             //result.add(String.format("%04d",i));
-            for (int j = 12; j >0 ; j--) {
+            for (int j = 12; j > 0; j--) {
                 result.add(String.format("%04d-%02d", i, j));
             }
         }
@@ -270,8 +269,8 @@ public class Record extends AppCompatActivity {
     }
 
 
-    public void toInquire(View view){
-        Intent intent = new Intent(this,Inquire.class);
+    public void toInquire(View view) {
+        Intent intent = new Intent(this, Inquire.class);
         startActivity(intent);
     }
 

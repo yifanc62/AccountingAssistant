@@ -1,4 +1,4 @@
-package com.cirnoteam.accountingassistant;
+package com.cirnoteam.accountingassistant.activity;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+
+import com.cirnoteam.accountingassistant.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

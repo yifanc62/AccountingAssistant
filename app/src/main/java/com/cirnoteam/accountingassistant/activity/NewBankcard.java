@@ -1,8 +1,10 @@
-package com.cirnoteam.accountingassistant;
+package com.cirnoteam.accountingassistant.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import com.cirnoteam.accountingassistant.R;
 
 public class NewBankcard extends AppCompatActivity {
 

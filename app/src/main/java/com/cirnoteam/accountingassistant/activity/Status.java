@@ -1,4 +1,4 @@
-package com.cirnoteam.accountingassistant;
+package com.cirnoteam.accountingassistant.activity;
 
 import android.support.v7.app.AppCompatActivity;
 

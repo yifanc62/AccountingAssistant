@@ -1,8 +1,5 @@
-package com.cirnoteam.accountingassistant;
+package com.cirnoteam.accountingassistant.activity;
 
-import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -13,15 +10,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.cirnoteam.com.cirnoteam.database.ReadDB;
-import com.cirnoteam.com.cirnoteam.database.UpdateDB;
+import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.ReadDB;
+import com.cirnoteam.accountingassistant.database.UpdateDB;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.cirnoteam.accountingassistant.R.id.amount_edit;
 import static com.cirnoteam.accountingassistant.R.id.remark_edit;
-import static com.cirnoteam.accountingassistant.R.id.time;
 import static com.cirnoteam.accountingassistant.R.id.time_edit;
 
 /**
@@ -31,7 +28,7 @@ import static com.cirnoteam.accountingassistant.R.id.time_edit;
 public class RecordDetail extends AppCompatActivity {
 
     //用于修改的临时变量
-    String type,account,remark,time,expense,recid,amount;
+    String type, account, remark, time, expense, recid, amount;
 
     private List<String> list_inout = new ArrayList<String>();
     private List<String> list_type = new ArrayList<String>();
@@ -95,7 +92,7 @@ public class RecordDetail extends AppCompatActivity {
             editText_time.setText(str[6]);
             recid = str[0];
             Toast.makeText(getApplicationContext(), recid, Toast.LENGTH_SHORT).show();
-        }catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "表中无数据", Toast.LENGTH_SHORT).show();
         }
         //默认值设置完成
@@ -142,21 +139,23 @@ public class RecordDetail extends AppCompatActivity {
             }
         });
     }
+
     public void toModify(View view) {
         remark = ((EditText) findViewById(remark_edit)).getText().toString();
         time = ((EditText) findViewById(time_edit)).getText().toString();
         EditText editText_amount = (EditText) findViewById(amount_edit);
-        if(!TextUtils.isEmpty(editText_amount.getText()))
+        if (!TextUtils.isEmpty(editText_amount.getText()))
             amount = editText_amount.getText().toString();
         else
             amount = "0";
 
-        if(UpdateDB.updateRecord(this.getFilesDir().toString(),expense,amount,remark,type,time,recid,"username"))
+        if (UpdateDB.updateRecord(this.getFilesDir().toString(), expense, amount, remark, type, time, recid, "username"))
             Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
 
         finish();
     }
-    public void back(View view){
+
+    public void back(View view) {
         //Intent intent = new Intent(this, MainActivity.class);
         //startActivity(intent);
         finish();

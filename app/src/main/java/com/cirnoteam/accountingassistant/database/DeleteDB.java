@@ -1,4 +1,4 @@
-package com.cirnoteam.com.cirnoteam.database;
+package com.cirnoteam.accountingassistant.database;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -8,15 +8,15 @@ import android.support.v7.app.AppCompatActivity;
  */
 
 public class DeleteDB extends AppCompatActivity {
-    public static boolean deleteRecord(String path, String id, String username){
+    public static boolean deleteRecord(String path, String id, String username) {
         SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path + "temp.db3", null);
         db.beginTransaction();//开始事务
         try {
             db.execSQL("delete from RecordDetail " +
                             "where recordid = ?",
-                             new String[]{id});
+                    new String[]{id});
             db.execSQL("insert into dirty values(?, ?, 1, null, 1)", new String[]{username, id});
-        } catch (Exception e){
+        } catch (Exception e) {
             db.endTransaction();
             db.close();
             return false;
@@ -26,7 +26,8 @@ public class DeleteDB extends AppCompatActivity {
         db.close();
         return true;
     }
-    public static boolean deleteAccount(String path, String id, String username){
+
+    public static boolean deleteAccount(String path, String id, String username) {
         SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path + "temp.db3", null);
         db.beginTransaction();//开始事务
         try {
@@ -34,7 +35,7 @@ public class DeleteDB extends AppCompatActivity {
                             "where id = ?",
                     new String[]{id});
             db.execSQL("insert into dirty values(?, ?, 2, null, 1)", new String[]{username, id});
-        } catch (Exception e){
+        } catch (Exception e) {
             db.endTransaction();
             db.close();
             return false;

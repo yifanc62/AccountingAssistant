@@ -1,4 +1,4 @@
-package com.cirnoteam.accountingassistant;
+package com.cirnoteam.accountingassistant.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
+
+import com.cirnoteam.accountingassistant.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,8 @@ import java.util.List;
  */
 
 public class Inquire extends AppCompatActivity {
-    String date,type,account,inquire;
-    float amount=0;
+    String date, type, account, inquire;
+    float amount = 0;
     private List<String> list_date = new ArrayList<String>();
     private List<String> list_type = new ArrayList<String>();
     private List<String> list_account = new ArrayList<String>();
@@ -31,18 +32,19 @@ public class Inquire extends AppCompatActivity {
     private ArrayAdapter<String> adapter_date;
     private ArrayAdapter<String> adapter_type;
     private ArrayAdapter<String> adapter_account;
-    private String[] data = {"1","2","3","4","5"};
+    private String[] data = {"1", "2", "3", "4", "5"};
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inquire);
         initActionBar();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(Inquire.this,android.R.layout.simple_list_item_1,data);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(Inquire.this, android.R.layout.simple_list_item_1, data);
         ListView listView = (ListView) findViewById(R.id.listview_result);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getApplicationContext(),RecordDetail.class);
+                Intent intent = new Intent(getApplicationContext(), RecordDetail.class);
                 startActivity(intent);
             }
         });
@@ -137,9 +139,9 @@ public class Inquire extends AppCompatActivity {
             }
         });
     }
-    public void inquire(View view)
-    {
-        EditText editText = (EditText)findViewById(R.id.text_inquire);
+
+    public void inquire(View view) {
+        EditText editText = (EditText) findViewById(R.id.text_inquire);
         inquire = editText.toString();
     }
 }

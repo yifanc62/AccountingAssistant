@@ -1,6 +1,5 @@
-package com.cirnoteam.accountingassistant;
+package com.cirnoteam.accountingassistant.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -11,7 +10,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.cirnoteam.com.cirnoteam.database.SaveDB;
+import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.SaveDB;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,9 +26,9 @@ import static com.cirnoteam.accountingassistant.R.id.time_edit;
  * Created by Saika on 2017/7/13.
  */
 
-public class NewRecord extends AppCompatActivity{
+public class NewRecord extends AppCompatActivity {
     //将要直接插入数据库的临时变量
-    String expense,remark,amount,time;
+    String expense, remark, amount, time;
     String type, account;
 
     private List<String> list_inout = new ArrayList<String>();
@@ -74,10 +74,10 @@ public class NewRecord extends AppCompatActivity{
         spinner_account.setAdapter(adapter_account);
 
         //设置默认值：时间
-        SimpleDateFormat    formatter    =   new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
-        Date curDate    =   new Date(System.currentTimeMillis());//获取当前时间
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
         SimpleDateFormat dateFormater = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
-        String    str    =    dateFormater.format(curDate);
+        String str = dateFormater.format(curDate);
         EditText editText_time = (EditText) findViewById(time_edit);
         editText_time.setText(str);
 
@@ -123,21 +123,23 @@ public class NewRecord extends AppCompatActivity{
             }
         });
     }
+
     public void toCreate(View view) {
         EditText editText_amount = (EditText) findViewById(amount_edit);
-        if(!TextUtils.isEmpty(editText_amount.getText()))
+        if (!TextUtils.isEmpty(editText_amount.getText()))
             amount = editText_amount.getText().toString();
         else
             amount = "0";
         time = ((EditText) findViewById(time_edit)).getText().toString();
         remark = ((EditText) findViewById(remark_edit)).getText().toString();
         //Toast.makeText(getApplicationContext(), amount+inout+account+type+time_edit+remark_edit, Toast.LENGTH_SHORT).show();
-        if(SaveDB.saveRecord(this.getFilesDir().toString(),expense,amount,remark,type,time))
+        if (SaveDB.saveRecord(this.getFilesDir().toString(), expense, amount, remark, type, time))
             Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
 
         finish();
     }
-    public void back(View view){
+
+    public void back(View view) {
         //Intent intent = new Intent(this, MainActivity.class);
         //startActivity(intent);
         finish();
