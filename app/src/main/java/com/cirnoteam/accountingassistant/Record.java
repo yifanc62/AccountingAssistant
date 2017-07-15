@@ -199,9 +199,6 @@ public class Record extends AppCompatActivity {
         ExpandableListView expandableListView = (ExpandableListView)findViewById(R.id.expandableListView);
 
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
-
-
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {

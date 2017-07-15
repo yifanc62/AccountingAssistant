@@ -25,4 +25,23 @@ public class SaveDB extends AppCompatActivity {
         db.close();
         return true;
     }
+    public static boolean saveAccount(String path, String accountID,String type){
+        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path + "temp.db3", null);
+        db.beginTransaction();//开始事务
+        try {
+            //select max(recordid) from RecordDetail)+1
+            db.execSQL("insert into account values(null, 1, ?, ?, null)"
+                    , new String[]{accountID, type});
+        } catch (Exception e){
+            db.endTransaction();
+            db.close();
+            return false;
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+        return true;
+    }
 }
+
+
