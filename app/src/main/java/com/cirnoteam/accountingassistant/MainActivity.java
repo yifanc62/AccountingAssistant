@@ -1,5 +1,7 @@
 package com.cirnoteam.accountingassistant;
 
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +24,13 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.cirnoteam.com.cirnoteam.database.OpCtDatabase;
+import com.cirnoteam.com.cirnoteam.database.SaveDB;
+
+import static com.cirnoteam.accountingassistant.R.id.remark_edit;
+import static com.cirnoteam.accountingassistant.R.id.time_edit;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -91,6 +100,10 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
+        /****建库、打开库*****/
+
+        OpCtDatabase.CreateTable(this.getFilesDir().toString());
+            //Toast.makeText(getApplicationContext(), "建库/打开库成功", Toast.LENGTH_SHORT).show();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 

@@ -151,7 +151,7 @@ public class RecordDetail extends AppCompatActivity {
         else
             amount = "0";
 
-        if(UpdateDB.updateRecord(this.getFilesDir().toString(),expense,amount,remark,type,time,recid))
+        if(UpdateDB.updateRecord(this.getFilesDir().toString(),expense,amount,remark,type,time,recid,"username"))
             Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
 
         finish();
