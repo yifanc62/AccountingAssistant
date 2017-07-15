@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.cirnoteam.com.cirnoteam.database.SaveDB;
+import com.cirnoteam.accountingassistant.database.SaveDB;
 
 import java.util.ArrayList;
 import java.util.List;
