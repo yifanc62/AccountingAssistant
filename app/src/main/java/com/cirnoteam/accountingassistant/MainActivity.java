@@ -3,6 +3,8 @@ package com.cirnoteam.accountingassistant;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -49,6 +52,9 @@ public class MainActivity extends AppCompatActivity
     private ListView myListView;
     private ArrayAdapter<String> recordAdapter;
 
+    public void onPause() {
+        super.onPause();
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -73,26 +79,26 @@ public class MainActivity extends AppCompatActivity
 
     };
 
-    private void showDialog(){
-        final AlertDialog.Builder normalDialog =
-                new AlertDialog.Builder(MainActivity.this);
-        normalDialog.setTitle("请选择您需要的操作");
-        normalDialog.setPositiveButton("删除",
+    private void showInputDialog() {
+        final EditText editText = new EditText(MainActivity.this);
+        final AlertDialog.Builder inputDialog = new AlertDialog.Builder(MainActivity.this);
+        ;
+        inputDialog.setTitle("请输入账本名称").setView(editText);
+        inputDialog.setPositiveButton("确定",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //...To-do
+                        book.add(editText.getText().toString());
                     }
                 });
-        normalDialog.setNegativeButton("编辑",
+        inputDialog.setNegativeButton("取消",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //...To-do
+                        dialog.dismiss();
                     }
                 });
-        // 显示
-        normalDialog.show();
+        AlertDialog dialog = inputDialog.show();
     }
 
     @Override
@@ -108,13 +114,11 @@ public class MainActivity extends AppCompatActivity
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         Calendar cal = Calendar.getInstance();
-        TextView mDate;
         String currentDate = cal.get(Calendar.YEAR)+"/"+cal.get(Calendar.MONTH);
         mDate = (TextView)findViewById(R.id.Date);
         mDate.setText(currentDate);
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ImageButton leftmenu;
         leftmenu = (ImageButton) findViewById(R.id.user);
         leftmenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,8 +127,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        Spinner mySpinner;
-        ArrayAdapter<String> bookAdapter;
         mySpinner = (Spinner)findViewById(R.id.spinner_book);
         //第二步：为下拉列表定义一个适配器，这里就用到里前面定义的list。
         bookAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, book);
@@ -138,8 +140,10 @@ public class MainActivity extends AppCompatActivity
         mySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                // TODO Auto-generated method stub
-                /* 将mySpinner 显示*/
+                if (arg2 == (book.size() - 1)) {
+                    showInputDialog();
+                    arg0.setVisibility(View.VISIBLE);
+                } else
                 arg0.setVisibility(View.VISIBLE);
             }
             public void onNothingSelected(AdapterView<?> arg0) {
