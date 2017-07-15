@@ -1,12 +1,8 @@
 package com.cirnoteam.accountingassistant.activity;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.sax.StartElementListener;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -15,19 +11,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
-import com.cirnoteam.accountingassistant.database.OpCtDatabase;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +32,6 @@ public class MainActivity extends AppCompatActivity
 
     private List<String> book = new ArrayList<>();
     private List<String> record = new ArrayList<>();
-    private Activity currentActivity;
     private ImageButton leftmenu;
     private TextView mDate;
     private Spinner mySpinner;
@@ -81,18 +74,15 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         book.add(editText.getText().toString());
-
-
                     }
                 });
         inputDialog.setNegativeButton("取消",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
                     }
                 });
-        AlertDialog dialog = inputDialog.show();
+        inputDialog.show();
     }
 
     @Override
@@ -100,10 +90,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
 
-        /****建库、打开库*****/
-
-        OpCtDatabase.CreateTable(this.getFilesDir().toString());
-        //Toast.makeText(getApplicationContext(), "建库/打开库成功", Toast.LENGTH_SHORT).show();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -113,7 +99,6 @@ public class MainActivity extends AppCompatActivity
         mDate.setText(currentDate);
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ImageButton leftmenu;
         leftmenu = (ImageButton) findViewById(R.id.user);
         leftmenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,17 +114,13 @@ public class MainActivity extends AppCompatActivity
         bookAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //第四步：将适配器添加到下拉列表上
         mySpinner.setAdapter(bookAdapter);
-        book.add("默认账本");
-        List<Book> mBookList = ReadDB.readBook(this.getFilesDir().toString());
-        for (int i = 0; i < mBookList.size(); i++) {
-            book.add(mBookList.get(i).name);
-        }
-        book.add("＋");
+        bookAdapter.add("默认账本");
+        bookAdapter.add("＋");
         //第五步：为下拉列表设置各种事件的响应，这个事响应菜单被选中
         mySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                if (arg2 == (book.size() - 1)) {
+                if (arg2 == (bookAdapter.getPosition("＋"))) {
                     showInputDialog();
                     arg0.setVisibility(View.VISIBLE);
                 } else

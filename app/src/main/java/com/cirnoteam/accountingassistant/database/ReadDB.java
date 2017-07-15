@@ -1,8 +1,13 @@
-package com.cirnoteam.com.cirnoteam.database;
+package com.cirnoteam.accountingassistant.database;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
+
+import com.cirnoteam.accountingassistant.entity.Book;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Saika on 2017/7/14.
@@ -49,8 +54,8 @@ public class ReadDB extends AppCompatActivity {
         while (!cursor2.moveToNext()) {
             int idcolumn = cursor2.getColumnIndex("id");
             int namecolumn = cursor2.getColumnIndex("name");
-            book.name = cursor2.getString(namecolumn);
-            book.id = cursor2.getInt(idcolumn);
+            book.setName(cursor2.getString(namecolumn));
+            book.setBook((long) (cursor2.getInt(idcolumn)));
             bookList.add(book);
         }
         return bookList;

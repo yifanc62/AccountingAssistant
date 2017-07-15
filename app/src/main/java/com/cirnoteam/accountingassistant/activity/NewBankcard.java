@@ -10,8 +10,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.cirnoteam.accountingassistant.database.SaveDB;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,8 +71,8 @@ public class NewBankcard extends AppCompatActivity {
             account = "0";
 
         //Toast.makeText(getApplicationContext(), amount+inout+account+type+time_edit+remark_edit, Toast.LENGTH_SHORT).show();
-        if(SaveDB.saveAccount(this.getFilesDir().toString(),account,type))
-            Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
+//        if(SaveDB.saveAccount(this.getFilesDir().toString(),account,type))
+//            Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
 
 
         finish();
