@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cirnoteam.com.cirnoteam.database.OpCtDatabase;
+import com.cirnoteam.com.cirnoteam.database.ReadDB;
 import com.cirnoteam.com.cirnoteam.database.SaveDB;
 
 import static com.cirnoteam.accountingassistant.R.id.remark_edit;
@@ -89,6 +90,8 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         book.add(editText.getText().toString());
+
+
                     }
                 });
         inputDialog.setNegativeButton("取消",
@@ -134,8 +137,12 @@ public class MainActivity extends AppCompatActivity
         bookAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //第四步：将适配器添加到下拉列表上
         mySpinner.setAdapter(bookAdapter);
-        bookAdapter.add("默认账本");
-        bookAdapter.add("＋");
+        book.add("默认账本");
+        List<Book> mBookList = ReadDB.readBook(this.getFilesDir().toString());
+        for (int i = 0; i < mBookList.size(); i++) {
+            book.add(mBookList.get(i).name);
+        }
+        book.add("＋");
         //第五步：为下拉列表设置各种事件的响应，这个事响应菜单被选中
         mySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){
             @Override
