@@ -1,4 +1,4 @@
-package com.cirnoteam.accountingassistant;
+package com.cirnoteam.accountingassistant.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+
+import com.cirnoteam.accountingassistant.R;
 
 
 /**

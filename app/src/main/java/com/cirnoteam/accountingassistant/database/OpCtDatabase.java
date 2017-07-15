@@ -1,4 +1,4 @@
-package com.cirnoteam.com.cirnoteam.database;
+package com.cirnoteam.accountingassistant.database;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -12,9 +12,9 @@ import static com.cirnoteam.accountingassistant.R.id.time_edit;
  */
 
 public class OpCtDatabase extends AppCompatActivity {
-    public static boolean CreateTable(String path){
+    public static boolean CreateTable(String path) {
         SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(path + "temp.db3", null);
-        if(db != null) {
+        if (db != null) {
             //流水记录
             String sql = "create table if not exists RecordDetail(" +
                     "recordid integer primary key AUTOINCREMENT," +
@@ -23,7 +23,7 @@ public class OpCtDatabase extends AppCompatActivity {
                     "remark text," +
                     "type integer not null," +
                     "remoteid integer," +
-                    "time text not null," +
+                    "time datetime not null," +
                     "accountid integer not null," +
                     "foreign key(accountid) references account(id))";
             db.execSQL(sql);
@@ -66,7 +66,7 @@ public class OpCtDatabase extends AppCompatActivity {
                     "type integer default 0," +
                     "remoteid integer," +
                     "deleted integer(1))";
-                    //"time timestamp default current_timestamp on update current_timestamp)";
+            //"time timestamp default current_timestamp on update current_timestamp)";
             db.execSQL(sql);
             db.close();
             return true;
