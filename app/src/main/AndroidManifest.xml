@@ -59,6 +59,22 @@
                 <action android:name="android.intent.action.NEWRECORD" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".BankCard"
+            android:label="账户列表">
+            <intent-filter>
+                <action android:name="android.intent.action.BANKCARD" />
+            </intent-filter>
+            >
+        </activity>
+        <activity
+            android:name=".NewBankcard"
+            android:label="新增账户">
+            <intent-filter>
+                <action android:name="android.intent.action.NEWBANKCARD" />
+            </intent-filter>
+            >
+        </activity>
     </application>
 
 </manifest>
