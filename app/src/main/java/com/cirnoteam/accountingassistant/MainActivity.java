@@ -1,11 +1,10 @@
 package com.cirnoteam.accountingassistant;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.sax.StartElementListener;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -14,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,9 +40,6 @@ public class MainActivity extends AppCompatActivity
     private ListView myListView;
     private ArrayAdapter<String> recordAdapter;
 
-    public void onPause() {
-        super.onPause();
-    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -53,11 +50,11 @@ public class MainActivity extends AppCompatActivity
                 case R.id.navigation_home:
                     return true;
                 case R.id.navigation_record:
-                    Intent intentToRecord = new Intent(MainActivity.this, RecordDetail.class);
+                    Intent intentToRecord = new Intent(MainActivity.this, Record.class);
                     startActivity(intentToRecord);
                     return true;
                 case R.id.navigation_user:
-                    Intent intentToUser = new Intent(MainActivity.this, Register.class);
+                    Intent intentToUser = new Intent(MainActivity.this, BankCard.class);
                     startActivity(intentToUser);
                     return true;
             }
@@ -98,11 +95,13 @@ public class MainActivity extends AppCompatActivity
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         Calendar cal = Calendar.getInstance();
+        TextView mDate;
         String currentDate = cal.get(Calendar.YEAR)+"/"+cal.get(Calendar.MONTH);
         mDate = (TextView)findViewById(R.id.Date);
         mDate.setText(currentDate);
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ImageButton leftmenu;
         leftmenu = (ImageButton) findViewById(R.id.user);
         leftmenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +110,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        Spinner mySpinner;
+        ArrayAdapter<String> bookAdapter;
         mySpinner = (Spinner)findViewById(R.id.spinner_book);
         //第二步：为下拉列表定义一个适配器，这里就用到里前面定义的list。
         bookAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, book);
@@ -135,14 +136,21 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
-        record.add("+¥3000");
-        record.add("-¥2000");
+        record.add("+$3000");
+        record.add("-$2000");
         myListView = (ListView)findViewById(R.id.listview);
         myListView.setDividerHeight(5);
         recordAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1,record);
         myListView.setAdapter(recordAdapter);
 
+
+        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(),Record.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -181,4 +189,17 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void toLogIn(View view) {
+        Intent intent = new Intent(this, Record.class);
+        startActivity(intent);
+    }
+
+    public void toNewRecord(View view){
+        Intent intent = new Intent(this,NewRecord.class);
+        startActivity(intent);
+    }
+    public void toInquire(View view){
+        Intent intent = new Intent(this,Inquire.class);
+        startActivity(intent);
+    }
 }

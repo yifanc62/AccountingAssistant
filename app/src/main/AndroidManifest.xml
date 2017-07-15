@@ -44,6 +44,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".Record"
+            android:label="流水记录">
+            <intent-filter>
+                <action android:name="android.intent.action.RECORD" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".RecordDetail"
             android:label="流水详情"
             android:windowSoftInputMode="adjustResize">
@@ -57,6 +65,14 @@
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.NEWRECORD" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Inquire"
+            android:label="查询"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.INQUIRE" />
             </intent-filter>
         </activity>
         <activity
