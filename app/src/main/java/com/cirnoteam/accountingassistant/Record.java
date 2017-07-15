@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,7 +37,6 @@ import static android.app.PendingIntent.getActivity;
  */
 
 public class Record extends AppCompatActivity {
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -69,9 +69,11 @@ public class Record extends AppCompatActivity {
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, getSpinnerItems(Calendar.getInstance()));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dateSpinner.setAdapter(adapter);
+        dateSpinner.setSelection(Status.month);
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        ExpandableListAdapter adapter_2 = new ExpandableListAdapter() {
+        final ExpandableListAdapter adapter_2 = new ExpandableListAdapter() {
             int [] logos = new int[]{
                     R.drawable.ic_dashboard_black_24dp,
                     R.drawable.ic_dashboard_black_24dp,
@@ -213,8 +215,24 @@ public class Record extends AppCompatActivity {
 
         expandableListView.setAdapter(adapter_2);
 
-
+        /*******dateSpinner监听*******/
+        dateSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                arg0.setVisibility(View.VISIBLE);
+                if(Status.month != arg2){
+                    Status.month = arg2;
+                    Intent intent = new Intent(getApplicationContext(),Record.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+            public void onNothingSelected(AdapterView<?> arg0) {
+                Toast.makeText(getApplicationContext(), "none", Toast.LENGTH_SHORT).show();
+                arg0.setVisibility(View.VISIBLE);
+            }
+        });
     }
+
     public void initActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
         //setTitle("流水页面");
@@ -236,19 +254,18 @@ public class Record extends AppCompatActivity {
         int m = now.get(Calendar.MONTH);
         List<String> result = new ArrayList<>();
         if(y>=2015) {
-            result.add(String.format("%04d",y));
+            //result.add(String.format("%04d",y));
             for (int i = m; i >= 0; i--) {
-                result.add(String.format("%04d/%02d", y, i+1));
+                result.add(String.format("%04d-%02d", y, i+1));
             }
         }
         y--;
         for (int i = y; i >2014 ; i--) {
-            result.add(String.format("%04d",i));
+            //result.add(String.format("%04d",i));
             for (int j = 12; j >0 ; j--) {
-                result.add(String.format("%04d/%02d", i, j));
+                result.add(String.format("%04d-%02d", i, j));
             }
         }
-
         return result;
     }
 

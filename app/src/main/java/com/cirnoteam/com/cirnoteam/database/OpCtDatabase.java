@@ -23,7 +23,7 @@ public class OpCtDatabase extends AppCompatActivity {
                     "remark text," +
                     "type integer not null," +
                     "remoteid integer," +
-                    "time text not null," +
+                    "time datetime not null," +
                     "accountid integer not null," +
                     "foreign key(accountid) references account(id))";
             db.execSQL(sql);

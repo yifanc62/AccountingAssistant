@@ -75,8 +75,9 @@ public class NewRecord extends AppCompatActivity{
 
         //设置默认值：时间
         SimpleDateFormat    formatter    =   new SimpleDateFormat("yyyy年MM月dd日    HH:mm:ss     ");
-        Date    curDate    =   new Date(System.currentTimeMillis());//获取当前时间
-        String    str    =    formatter.format(curDate);
+        Date curDate    =   new Date(System.currentTimeMillis());//获取当前时间
+        SimpleDateFormat dateFormater = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
+        String    str    =    dateFormater.format(curDate);
         EditText editText_time = (EditText) findViewById(time_edit);
         editText_time.setText(str);
 
