@@ -80,7 +80,7 @@ public class Record extends AppCompatActivity {
                     R.drawable.ic_dashboard_black_24dp
             };
             private String[] armType = new String[]{
-                    "7月13日","7月12日","7月11日"
+                    "7月13日","7月12日","7月11日","7月10日"
             };
             private String[][] arms = new String[][]{
                     {"流水1","流水2","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3"},
