@@ -56,10 +56,12 @@ public class MainActivity extends AppCompatActivity
                     return true;
                 case R.id.navigation_record:
                     Intent intentToRecord = new Intent(MainActivity.this, Record.class);
+                    intentToRecord.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intentToRecord);
                     return true;
                 case R.id.navigation_user:
                     Intent intentToUser = new Intent(MainActivity.this, BankCard.class);
+                    intentToUser.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intentToUser);
                     return true;
             }
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        bookAdapter.add(editText.getText().toString());
+                        bookAdapter.insert(editText.getText().toString(),0);
                     }
                 });
         inputDialog.setNegativeButton("取消",
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation.setSelectedItemId(R.id.navigation_home);
 
         Calendar cal = Calendar.getInstance();
         String currentDate = cal.get(Calendar.YEAR) + "/" + cal.get(Calendar.MONTH);
