@@ -1,5 +1,6 @@
 package com.cirnoteam.accountingassistant.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -11,9 +12,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
-import com.cirnoteam.accountingassistant.database.ReadDB;
+//import com.cirnoteam.accountingassistant.database.ReadDB;
+import com.cirnoteam.accountingassistant.database.RecordUtils;
 import com.cirnoteam.accountingassistant.database.UpdateDB;
+import com.cirnoteam.accountingassistant.entity.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +47,9 @@ public class RecordDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record_detail);
+        //获取上一个Activity传过来的值(流水id)
+        Intent intent = getIntent();
+        String recordid = intent.getStringExtra("extra_data");
 
         list_inout.add("支出");
         list_inout.add("收入");
@@ -84,13 +91,14 @@ public class RecordDetail extends AppCompatActivity {
          *setSelection即把该spinner的默认值设置为第一个参数所指的值
          ***/
         try {
-            String[] str = ReadDB.readRecord(this.getFilesDir().toString());
-            spinner_inout.setSelection(Integer.parseInt(str[1]));
-            editText_amount.setText(str[2]);
-            editText_remark.setText(str[3]);
-            spinner_type.setSelection(Integer.parseInt(str[4]));
-            editText_time.setText(str[6]);
-            recid = str[0];
+            RecordUtils u = new RecordUtils(this);
+            com.cirnoteam.accountingassistant.entity.Record rec = u.ReadRecordById(Integer.parseInt(recordid));
+            spinner_inout.setSelection(rec.getExpense() ? 1:0);
+            editText_amount.setText(String.valueOf(rec.getAmount()));
+            editText_remark.setText(rec.getRemark());
+            spinner_type.setSelection(rec.getType());
+            editText_time.setText(new SimpleDateFormat("yyyy-MM-dd").format(rec.getTime()));
+            recid = String.valueOf(rec.getId());
             Toast.makeText(getApplicationContext(), recid, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "表中无数据", Toast.LENGTH_SHORT).show();

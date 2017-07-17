@@ -26,7 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.RecordUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,7 +41,6 @@ import static android.app.PendingIntent.getActivity;
  */
 
 public class Record extends AppCompatActivity {
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -67,6 +68,34 @@ public class Record extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record);
+
+        //获取当月所有日期数组
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat fm = new SimpleDateFormat("YYYY-MM-DD");
+        cal.add(Calendar.MONTH, -Status.month);
+        cal.set(Calendar.DAY_OF_MONTH, 1);//获取第一天
+        Date currentDate = cal.getTime();//日期指针
+        int numOfDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);//当月天数
+        final String[] day = new String[numOfDay];//天
+        final String[][] record = new String[numOfDay][];//每一天的记录内容
+        final String[][] recordid = new String[numOfDay][];//每一天的记录id
+        String recordStatement = " ";
+        List<com.cirnoteam.accountingassistant.entity.Record> list;
+        RecordUtils u = new RecordUtils(this);
+        for(int i=1 ; i<=numOfDay ; i++){
+            day[i-1] = fm.format(currentDate);
+            list = u.ReadRecordOfDday(currentDate);
+            for(int j=0;j<list.size();j++){
+                recordStatement += list.get(j).getExpense() ? "支出" : "收入";
+                recordStatement += " " + String.valueOf(list.get(j).getAmount());
+                recordStatement += " " + list.get(j).getType();
+                record[i-1][j] = recordStatement;
+                recordid[i-1][j] = String.valueOf(list.get(j).getId());
+            }
+            cal.set(Calendar.DAY_OF_MONTH,cal.get(Calendar.DAY_OF_MONTH)+1);//让日期加1
+            currentDate = cal.getTime();
+        }
+
         initActionBar();
         Spinner dateSpinner = (Spinner)findViewById(R.id.spinner_date);
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, getSpinnerItems(Calendar.getInstance()));
@@ -76,20 +105,15 @@ public class Record extends AppCompatActivity {
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        ExpandableListAdapter adapter_2 = new ExpandableListAdapter() {
+        final ExpandableListAdapter adapter_2 = new ExpandableListAdapter() {
             int [] logos = new int[]{
                     R.drawable.ic_dashboard_black_24dp,
                     R.drawable.ic_dashboard_black_24dp,
                     R.drawable.ic_dashboard_black_24dp
             };
-            private String[] armType = new String[]{
-                    "7月13日","7月12日","7月11日"
-            };
-            private String[][] arms = new String[][]{
-                    {"流水1","流水2","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3"},
-                    {"流水1","流水2","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3"},
-                    {"流水1","流水2","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3","流水3"}
-            };
+
+            private String[] armType = day;
+            private String[][] arms = record;
             private TextView getTextView(){
                 AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,64);
                 TextView textView = new TextView(Record.this);
@@ -149,7 +173,7 @@ public class Record extends AppCompatActivity {
                 LinearLayout ll = new LinearLayout(Record.this);
                 ll.setOrientation(LinearLayout.VERTICAL);
                 ImageView logo = new ImageView(Record.this);
-                logo.setImageResource(logos[groupPosition]);
+                //logo.setImageResource(logos[groupPosition]);
                 ll.addView(logo);
                 TextView textView = getTextView();
                 textView.setText(getGroup(groupPosition).toString());
@@ -210,6 +234,7 @@ public class Record extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 Intent intent = new Intent(getApplicationContext(),RecordDetail.class);
+                intent.putExtra("extra_data", recordid[groupPosition][childPosition]);
                 startActivity(intent);
                 return true;
             }
@@ -221,6 +246,7 @@ public class Record extends AppCompatActivity {
         dateSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 arg0.setVisibility(View.VISIBLE);
+                SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM");
                 if (Status.month != arg2) {
                     Status.month = arg2;
                     Intent intent = new Intent(getApplicationContext(), Record.class);

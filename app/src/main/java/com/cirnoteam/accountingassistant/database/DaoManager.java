@@ -28,16 +28,14 @@ public class DaoManager {
 
     //单例模式
     public static DaoManager getInstance() {
-        DaoManager instance = null;
         if (manager == null) {
             synchronized (DaoManager.class) {
-                if (instance == null) {
-                    instance = new DaoManager();
-                    manager = instance;
+                if (manager == null) {
+                    manager = new DaoManager();
                 }
             }
         }
-        return instance;
+        return manager;
     }
 
     //传递上下文
