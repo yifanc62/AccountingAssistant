@@ -6,6 +6,7 @@ import com.cirnoteam.accountingassistant.entity.Account;
 import com.cirnoteam.accountingassistant.gen.BookDao;
 
 import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.List;
 
 
@@ -15,12 +16,13 @@ import java.util.List;
 
 public class AccountUtils {
     private DaoManager daoManager;
+
     public AccountUtils(Context context) {
         daoManager = DaoManager.getInstance();
         daoManager.initManager(context);
     }
+
     public List<Account> queryBuilder() {
-        //查询构建器
         QueryBuilder<Account> queryBuilder = daoManager.getDaoSession().queryBuilder(Account.class);
         List<Account> list = queryBuilder.list();
         return list;

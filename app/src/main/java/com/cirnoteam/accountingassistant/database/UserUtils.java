@@ -29,7 +29,7 @@ public class UserUtils {
         daoManager.initManager(context);
     }
 
-    public boolean insertUser(User user) {
+    private boolean insertUser(User user) {
         return daoManager.getDaoSession().insert(user) != -1;
     }
 
@@ -44,15 +44,13 @@ public class UserUtils {
         return flag;
     }
 
-    public boolean deleteUser(User user) {
-        boolean flag = false;
-        try {
-            daoManager.getDaoSession().delete(user);
-            flag = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return flag;
+    private String getDefaultDeviceName() {
+        return Build.MODEL;
+    }
+
+    private String generateUuid() {
+        String uuid = UUID.randomUUID().toString();
+        return uuid.substring(0, 8) + uuid.substring(9, 13) + uuid.substring(14, 18) + uuid.substring(19, 23) + uuid.substring(24);
     }
 
     public User getUser(String username) {
@@ -108,13 +106,13 @@ public class UserUtils {
         return updateUser(user);
     }
 
-    public boolean updateDeviceName(String newName) {
+    public boolean updateCurrentDeviceName(String newName) {
         User user = getCurrentUser();
         user.setDevicename(newName);
         return updateUser(user);
     }
 
-    public boolean setAvatar(String avatarPath) {
+    public boolean setCurrentAvatar(String avatarPath) {
         User user = getCurrentUser();
         user.setAvatarPath(avatarPath);
         return updateUser(user);
@@ -133,15 +131,6 @@ public class UserUtils {
         QueryBuilder<User> builder = daoManager.getDaoSession().queryBuilder(User.class);
         User user = builder.where(UserDao.Properties.Username.eq(username)).unique();
         return user != null;
-    }
-
-    private String getDefaultDeviceName() {
-        return Build.MODEL;
-    }
-
-    private String generateUuid() {
-        String uuid = UUID.randomUUID().toString();
-        return uuid.substring(0, 8) + uuid.substring(9, 13) + uuid.substring(14, 18) + uuid.substring(19, 23) + uuid.substring(24);
     }
 
     public boolean login(String username) {
