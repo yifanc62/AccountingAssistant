@@ -82,7 +82,7 @@ public class NewRecord extends AppCompatActivity {
 
         //设置默认值：时间
         Date curDate = new Date(System.currentTimeMillis());//获取当前时间
-        SimpleDateFormat dateFormater = new SimpleDateFormat("YYYY-MM-dd HH:mm:SS");
+        SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
         String str = dateFormater.format(curDate);
         EditText editText_time = (EditText) findViewById(time_edit);
         editText_time.setText(str);
@@ -154,7 +154,7 @@ public class NewRecord extends AppCompatActivity {
             record.setRemark(remark);
             record.setType(type);
             record.setTime(time);
-            record.setAccount(new Account());
+            record.setAccountid(1L);
             RecordUtils u = new RecordUtils(this);
             if(u.insertRecord(record))//这句崩
                 Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();

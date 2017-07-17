@@ -10,6 +10,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.cirnoteam.accountingassistant.database.AccountUtils;
+import com.cirnoteam.accountingassistant.database.SaveDB;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,8 @@ import static com.cirnoteam.accountingassistant.R.id.remark_edit;
 import static com.cirnoteam.accountingassistant.R.id.time_edit;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.entity.Account;
+import com.cirnoteam.accountingassistant.entity.Book;
 
 public class NewBankcard extends AppCompatActivity {
 
@@ -65,12 +70,20 @@ public class NewBankcard extends AppCompatActivity {
     public void createAccount(View view){
         EditText editText_account = (EditText)findViewById(R.id.account_id);
 
-        if(!TextUtils.isEmpty(editText_account.getText()))
-            account = editText_account.getText().toString();
-        else
-            account = "0";
-
-        //Toast.makeText(getApplicationContext(), amount+inout+account+type+time_edit+remark_edit, Toast.LENGTH_SHORT).show();
+        Account account = new Account();
+        account.setBook(new Book());
+        account.setBookid((long)1);
+        account.setName(editText_account.getText().toString());
+        account.setType(Integer.valueOf(type));
+        AccountUtils accountUtils = new AccountUtils(this);
+        if(accountUtils.insertAccount(account))
+            Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
+//        if(!TextUtils.isEmpty(editText_account.getText()))
+//            account = editText_account.getText().toString();
+//        else
+//            account = "0";
+//
+//        Toast.makeText(getApplicationContext(), amount+inout+account+type+time_edit+remark_edit, Toast.LENGTH_SHORT).show();
 //        if(SaveDB.saveAccount(this.getFilesDir().toString(),account,type))
 //            Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
 

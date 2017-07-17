@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
@@ -43,6 +44,7 @@ public class RecordDetail extends AppCompatActivity {
     private ArrayAdapter<String> adapter_inout;
     private ArrayAdapter<String> adapter_type;
     private ArrayAdapter<String> adapter_account;
+    private TextView op;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +74,7 @@ public class RecordDetail extends AppCompatActivity {
         spinner_inout = (Spinner) findViewById(R.id.spinner_inout);
         spinner_type = (Spinner) findViewById(R.id.spinner_type);
         spinner_account = (Spinner) findViewById(R.id.spinner_account);
+        op = (TextView) findViewById(R.id.textView_op);
         adapter_inout = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_inout);
         adapter_type = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_type);
         adapter_account = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_account);
@@ -108,6 +111,12 @@ public class RecordDetail extends AppCompatActivity {
         /*******************监听事件***********************/
         spinner_inout.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+
+                if(arg2 == 0)
+                    op.setText(" -");
+                else if(arg2 == 1)
+                    op.setText(" +");
+
 
                 expense = String.valueOf(arg2);
                 //Toast.makeText(getApplicationContext(), adapter_inout.getItem(arg2), Toast.LENGTH_SHORT).show();

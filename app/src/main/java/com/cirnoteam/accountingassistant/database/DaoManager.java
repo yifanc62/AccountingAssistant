@@ -27,6 +27,18 @@ public class DaoManager {
     private DaoSession daoSession;
 
     //单例模式
+//    public static DaoManager getInstance() {
+//        DaoManager instance = null;
+//        if (manager == null) {
+//            synchronized (DaoManager.class) {
+//                if (instance == null) {
+//                    instance = new DaoManager();
+//                    manager = instance;
+//                }
+//            }
+//        }
+//        return instance;
+//    }
     public static DaoManager getInstance() {
         if (manager == null) {
             synchronized (DaoManager.class) {
@@ -50,6 +62,7 @@ public class DaoManager {
      */
     public DaoMaster getDaoMaster() {
         if (daoMaster == null) {
+            //Fixme:DevOpenHelper->OpenHelper
             helper = new DaoMaster.DevOpenHelper(mContext, DB_NAME, null);
             daoMaster = new DaoMaster(helper.getWritableDatabase());
         }
