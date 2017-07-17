@@ -24,7 +24,7 @@ import com.cirnoteam.accountingassistant.gen.BookDao;
 @Entity(nameInDb = "book")
 public class Book {
     @Id(autoincrement = true)
-    private Long book;
+    private Long id;
     @NotNull
     private String username;
     @ToOne(joinProperty = "username")
@@ -45,11 +45,12 @@ public class Book {
      */
     @Generated(hash = 1097957864)
     private transient BookDao myDao;
+    @Generated(hash = 1867105156)
+    private transient String user__resolvedKey;
 
-    @Generated(hash = 1586663125)
-    public Book(Long book, @NotNull String username, @NotNull String name,
-                Long remoteid) {
-        this.book = book;
+    @Generated(hash = 43746408)
+    public Book(Long id, @NotNull String username, @NotNull String name, Long remoteid) {
+        this.id = id;
         this.username = username;
         this.name = name;
         this.remoteid = remoteid;
@@ -59,12 +60,12 @@ public class Book {
     public Book() {
     }
 
-    public Long getBook() {
-        return this.book;
+    public Long getId() {
+        return this.id;
     }
 
-    public void setBook(Long book) {
-        this.book = book;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -90,9 +91,6 @@ public class Book {
     public void setRemoteid(Long remoteid) {
         this.remoteid = remoteid;
     }
-
-    @Generated(hash = 1867105156)
-    private transient String user__resolvedKey;
 
     /**
      * To-one relationship, resolved on first access.
@@ -135,7 +133,7 @@ public class Book {
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 994086165)
+    @Generated(hash = 757656315)
     public List<Account> getAccounts() {
         if (accounts == null) {
             final DaoSession daoSession = this.daoSession;
@@ -143,7 +141,7 @@ public class Book {
                 throw new DaoException("Entity is detached from DAO context");
             }
             AccountDao targetDao = daoSession.getAccountDao();
-            List<Account> accountsNew = targetDao._queryBook_Accounts(book);
+            List<Account> accountsNew = targetDao._queryBook_Accounts(id);
             synchronized (this) {
                 if (accounts == null) {
                     accounts = accountsNew;
@@ -205,4 +203,5 @@ public class Book {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getBookDao() : null;
     }
+    
 }

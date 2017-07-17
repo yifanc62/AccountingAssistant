@@ -1,6 +1,7 @@
 package com.cirnoteam.accountingassistant.database;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import com.cirnoteam.accountingassistant.entity.User;
@@ -8,72 +9,31 @@ import com.cirnoteam.accountingassistant.gen.UserDao;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.Date;
 import java.util.List;
-
-import static com.cirnoteam.accountingassistant.database.DaoManager.TAG;
+import java.util.UUID;
 
 /**
  * UserUtils
  * 用户操作类
  *
  * @author Yifan
- * @version 0.8
+ * @version 1.0
  */
 
 public class UserUtils {
     private DaoManager daoManager;
 
-    /**
-     * 构造方法
-     *
-     * @param context 当前App上下文
-     */
     public UserUtils(Context context) {
         daoManager = DaoManager.getInstance();
         daoManager.initManager(context);
     }
 
-    /**
-     * 插入user
-     *
-     * @param user 要插入的用户对象，对象必须初始化
-     * @return 成功/失败flag
-     */
     public boolean insertUser(User user) {
         return daoManager.getDaoSession().insert(user) != -1;
     }
 
-    /**
-     * 批量插入user
-     *
-     * @param users 要插入的用户对象列表，所有对象必须初始化
-     * @return 成功/失败flag
-     */
-    public boolean insertUsers(final List<User> users) {
-        boolean flag = false;
-        try {
-            daoManager.getDaoSession().runInTx(new Runnable() {
-                @Override
-                public void run() {
-                    for (User user : users) {
-                        daoManager.getDaoSession().insertOrReplace(user);
-                    }
-                }
-            });
-            flag = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return flag;
-    }
-
-    /**
-     * 修改user
-     *
-     * @param user 要修改的用户对象，必须具有username
-     * @return 成功/失败flag
-     */
-    public boolean updateUser(User user) {
+    private boolean updateUser(User user) {
         boolean flag = false;
         try {
             daoManager.getDaoSession().update(user);
@@ -84,63 +44,117 @@ public class UserUtils {
         return flag;
     }
 
-    /**
-     * 删除user
-     *
-     * @param user 要删除的用户对象，必须具有username
-     * @return 成功/失败flag
-     */
     public boolean deleteUser(User user) {
         boolean flag = false;
         try {
-            //删除指定ID
             daoManager.getDaoSession().delete(user);
             flag = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //daoManager.getDaoSession().deleteAll(); //删除所有记录
         return flag;
     }
 
-    /**
-     * 查询单条
-     *
-     * @param key 主键值
-     * @return 用户对象
-     */
-    public User listOneStudent(long key) {
-        return daoManager.getDaoSession().load(User.class, key);
+    public User getUser(String username) {
+        return daoManager.getDaoSession().load(User.class, username);
     }
 
-    /**
-     * 全部查询
-     *
-     * @return 所有用户对象
-     */
-    public List<User> listAll() {
+    public List<User> getAllUsers() {
         return daoManager.getDaoSession().loadAll(User.class);
     }
 
-    /**
-     * 原生查询
-     */
-    public void queryNative() {
-        //查询条件
-        String where = "where name like ? and _id > ?";
-        //使用sql进行查询
-        List<User> list = daoManager.getDaoSession().queryRaw(User.class, where, "%l%", "6");
-        Log.i(TAG, list + "");
+    public User getCurrentUser() {
+        QueryBuilder<User> builder = daoManager.getDaoSession().queryBuilder(User.class);
+        return builder.where(UserDao.Properties.Current.eq(true)).unique();
     }
 
-    /**
-     * QueryBuilder查询
-     */
-    public void queryBuilder() {
-        //查询构建器
-        QueryBuilder<User> queryBuilder = daoManager.getDaoSession().queryBuilder(User.class);
-        //查询年龄大于19的北京
-        List<User> list = queryBuilder.where(UserDao.Properties.Current.eq(true)).list();
-        Log.i(TAG, list + "");
+    public String getCurrentUsername() {
+        return getCurrentUser().getUsername();
+    }
+
+    public String getCurrentPassword() {
+        return getCurrentUser().getPassword();
+    }
+
+    public String getCurrentToken() {
+        return getCurrentUser().getToken();
+    }
+
+    public String getCurrentDeviceName() {
+        return getCurrentUser().getDevicename();
+    }
+
+    public String getCurrentDeviceUuid() {
+        return getCurrentUser().getUuid();
+    }
+
+    public boolean hasCurrentAvatar() {
+        return getCurrentUser().getAvatarPath() != null;
+    }
+
+    public Date getCurrentLastSyncTime() {
+        return getCurrentUser().getLastsynctime();
+    }
+
+    public boolean updateCurrentPassword(String newPassword) {
+        User user = getCurrentUser();
+        user.setPassword(newPassword);
+        return updateUser(user);
+    }
+
+    public boolean refreshCurrentToken(String newToken) {
+        User user = getCurrentUser();
+        user.setToken(newToken);
+        return updateUser(user);
+    }
+
+    public boolean updateDeviceName(String newName) {
+        User user = getCurrentUser();
+        user.setDevicename(newName);
+        return updateUser(user);
+    }
+
+    public boolean setAvatar(String avatarPath) {
+        User user = getCurrentUser();
+        user.setAvatarPath(avatarPath);
+        return updateUser(user);
+    }
+
+    public boolean register(String username, String password, String token) {
+        if (isUserNameLocalDuplicated(username)) {
+            Log.e("register", "username duplicated");
+            return false;
+        }
+        User user = new User(username, password, token, getDefaultDeviceName(), generateUuid(), null, true, new Date());
+        return insertUser(user);
+    }
+
+    public boolean isUserNameLocalDuplicated(String username) {
+        QueryBuilder<User> builder = daoManager.getDaoSession().queryBuilder(User.class);
+        User user = builder.where(UserDao.Properties.Username.eq(username)).unique();
+        return user != null;
+    }
+
+    private String getDefaultDeviceName() {
+        return Build.MODEL;
+    }
+
+    private String generateUuid() {
+        String uuid = UUID.randomUUID().toString();
+        return uuid.substring(0, 8) + uuid.substring(9, 13) + uuid.substring(14, 18) + uuid.substring(19, 23) + uuid.substring(24);
+    }
+
+    public boolean login(String username) {
+        QueryBuilder<User> builder = daoManager.getDaoSession().queryBuilder(User.class);
+        User user = builder.where(UserDao.Properties.Username.eq(username)).unique();
+        user.setCurrent(true);
+        return updateUser(user);
+    }
+
+    public boolean logout(String username) {
+        QueryBuilder<User> builder = daoManager.getDaoSession().queryBuilder(User.class);
+        User user = builder.where(UserDao.Properties.Username.eq(username)).unique();
+        user.setCurrent(false);
+        return updateUser(user);
     }
 }

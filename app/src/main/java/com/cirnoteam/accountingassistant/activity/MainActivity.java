@@ -22,6 +22,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.OpCtDatabase;
+import com.cirnoteam.accountingassistant.database.UserUtils;
+import com.cirnoteam.accountingassistant.entity.User;
+import com.cirnoteam.accountingassistant.gen.DaoMaster;
+import com.cirnoteam.accountingassistant.gen.UserDao;
 
 import java.util.ArrayList;
 import java.util.Calendar;

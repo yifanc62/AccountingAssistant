@@ -128,7 +128,7 @@ public class Account {
     /**
      * called by internal mechanisms, do not call yourself.
      */
-    @Generated(hash = 1014915584)
+    @Generated(hash = 1775356068)
     public void setBook(@NotNull Book book) {
         if (book == null) {
             throw new DaoException(
@@ -136,7 +136,7 @@ public class Account {
         }
         synchronized (this) {
             this.book = book;
-            bookid = book.getBook();
+            bookid = book.getId();
             book__resolvedKey = bookid;
         }
     }

@@ -41,27 +41,26 @@ public class RecordUtils {
     /**
      * 查询某天的流水
      */
-    public List<Record> ReadRecordOfDday(Date date){
-        GregorianCalendar gc=new GregorianCalendar();
+    public List<Record> ReadRecordOfDay(Date date) {
+        GregorianCalendar gc = new GregorianCalendar();
         gc.setTime(date);
         gc.add(Calendar.DAY_OF_MONTH, 1);
         Date date1 = gc.getTime();
         QueryBuilder<Record> queryBuilder = daoManager.getDaoSession().queryBuilder(Record.class);
-        List<Record> list = queryBuilder.where(RecordDao.Properties.Time.between(date,date1)).list();
-        return list;
+        return queryBuilder.where(RecordDao.Properties.Time.between(date, date1)).list();
     }
 
-    /*
-    用id查询唯一流水
+    /**
+     * 用id查询唯一流水
      */
-    public Record ReadRecordById(int id){
+    public Record ReadRecordById(int id) {
         QueryBuilder<Record> queryBuilder = daoManager.getDaoSession().queryBuilder(Record.class);
         List<Record> list = queryBuilder.where(RecordDao.Properties.Id.eq(id)).list();
         return list.get(0);
     }
 
-    /*
-    插入流水
+    /**
+     * 插入流水
      */
     public boolean insertRecord(Record record) {
         return daoManager.getDaoSession().insert(record) != -1;

@@ -1,10 +1,7 @@
 package com.cirnoteam.accountingassistant.activity;
 
-import android.app.ExpandableListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -84,7 +81,7 @@ public class Record extends AppCompatActivity {
         RecordUtils u = new RecordUtils(this);
         for(int i=1 ; i<=numOfDay ; i++){
             day[i-1] = fm.format(currentDate);
-            list = u.ReadRecordOfDday(currentDate);
+            list = u.ReadRecordOfDay(currentDate);
             for(int j=0;j<list.size();j++){
                 recordStatement += list.get(j).getExpense() ? "支出" : "收入";
                 recordStatement += " " + String.valueOf(list.get(j).getAmount());
@@ -114,6 +111,7 @@ public class Record extends AppCompatActivity {
 
             private String[] armType = day;
             private String[][] arms = record;
+
             private TextView getTextView(){
                 AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,64);
                 TextView textView = new TextView(Record.this);
