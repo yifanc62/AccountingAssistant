@@ -59,7 +59,7 @@ public class BankCard extends AppCompatActivity {
         for(Account account:accounts){
             Map<String, Object> listItem = new HashMap<String, Object>();
             listItem.put("bankcardname", account.getName());
-            listItem.put("bankcardnumber", account.getType());
+            listItem.put("bankcardnumber", getTypeName(account));
             listItems.add(listItem);
         }
 
@@ -76,7 +76,7 @@ public class BankCard extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case AlertDialog.BUTTON_POSITIVE:
-                        deleteAccount();
+                        deleteAccountRecord(1L);
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
                         break;
@@ -121,7 +121,21 @@ public class BankCard extends AppCompatActivity {
         }
 
     };
-    public void deleteAccount(){
+    public void deleteAccountRecord(long id){
+        AccountUtils accountUtils = new AccountUtils(this);
+        accountUtils.deleteAccount(accountUtils.getAccount(id+1L));
 
+        //Todo:dirty table
+    }
+
+    public String getTypeName(Account account){
+        String string = new String();
+        if(account.getType().equals(0))
+            string = "支付宝";
+        if(account.getType().equals(1))
+            string = "银行卡";
+        if(account.getType().equals(2))
+            string = "现金";
+        return string;
     }
 }

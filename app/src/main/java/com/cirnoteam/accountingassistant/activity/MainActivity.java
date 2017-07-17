@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        book.add(editText.getText().toString());
+                        bookAdapter.add(editText.getText().toString());
                     }
                 });
         inputDialog.setNegativeButton("取消",
