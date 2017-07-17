@@ -11,8 +11,13 @@ import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
 
+
 /**
- * Created by Yifan on 2017/7/15.
+ * BookUtils
+ * 账本操作类
+ *
+ * @author Yifan
+ * @version 1.0
  */
 
 public class BookUtils {

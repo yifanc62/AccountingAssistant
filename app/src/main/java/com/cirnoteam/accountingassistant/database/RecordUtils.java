@@ -53,7 +53,7 @@ public class RecordUtils {
     /**
      * 用id查询唯一流水
      */
-    public Record ReadRecordById(int id) {
+    public Record ReadRecordById(Long id) {
         QueryBuilder<Record> queryBuilder = daoManager.getDaoSession().queryBuilder(Record.class);
         List<Record> list = queryBuilder.where(RecordDao.Properties.Id.eq(id)).list();
         return list.get(0);
