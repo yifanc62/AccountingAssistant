@@ -50,6 +50,7 @@ public class Record extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     Intent intentToMain = new Intent(Record.this, MainActivity.class);
+                    intentToMain.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intentToMain);
                     return true;
                 case R.id.navigation_record:
@@ -57,6 +58,7 @@ public class Record extends AppCompatActivity {
                     return true;
                 case R.id.navigation_user:
                     Intent intentToUser = new Intent(Record.this, BankCard.class);
+                    intentToUser.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intentToUser);
                     return true;
             }
@@ -135,6 +137,7 @@ public class Record extends AppCompatActivity {
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation.setSelectedItemId(R.id.navigation_record);
 
         ExpandableListAdapter adapter_2 = new ExpandableListAdapter() {
             int [] logos = new int[]{

@@ -23,11 +23,13 @@ import android.widget.TextView;
 
 import com.cirnoteam.accountingassistant.R;
 import com.cirnoteam.accountingassistant.database.OpCtDatabase;
+import com.cirnoteam.accountingassistant.database.RecordUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
 import com.cirnoteam.accountingassistant.entity.User;
 import com.cirnoteam.accountingassistant.gen.DaoMaster;
 import com.cirnoteam.accountingassistant.gen.UserDao;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -141,9 +143,46 @@ public class MainActivity extends AppCompatActivity
                 arg0.setVisibility(View.VISIBLE);
             }
         });
+        //String newRecord = " ";
+//        com.cirnoteam.accountingassistant.entity.Record newRecord = new com.cirnoteam.accountingassistant.entity.Record();
+        RecordUtils recordUtils = new RecordUtils(this);
+        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
+        for(int i = 4;i >0;i--) {
+            if(recordUtils.getRecordById((long)i).equals(null))
+                break;
+            String newRecord = " ";
+            newRecord += fm.format(recordUtils.getRecordById((long)i).getTime());
+            newRecord += " ";
+            newRecord += recordUtils.getRecordById((long)i).getExpense()?"收入 ":"支出 ";
+            newRecord += recordUtils.getRecordById((long)i).getAmount();
+            newRecord += " ";
+            switch (recordUtils.getRecordById((long)i).getType()){
+                case 0:newRecord += " 一日三餐";
+                    break;
+                case 1:newRecord += " 购物消费";
+                    break;
+                case 2:newRecord += " 水电煤气";
+                    break;
+                case 3:newRecord += " 交通花费";
+                    break;
+                case 4:newRecord += " 医疗消费";
+                    break;
+                case 5:newRecord += " 其他支出";
+                    break;
+                case 6:newRecord += " 经营获利";
+                    break;
+                case 7:newRecord += " 工资收入";
+                    break;
+                case 8:newRecord += " 路上捡钱";
+                    break;
+                case 9:newRecord += " 其他收入";
+                    break;
+            }
 
-        record.add("+$3000");
-        record.add("-$2000");
+
+            record.add(newRecord);
+        }
+//        record.add("撒打算打算");
         myListView = (ListView) findViewById(R.id.listview);
         myListView.setDividerHeight(5);
         recordAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, record);
