@@ -73,7 +73,7 @@ public class RecordUtils {
     }
 
     /*
-    用id更新流水
+    更新流水
      */
     public boolean updateRecord(Record record){
         boolean flag = false;
@@ -81,6 +81,22 @@ public class RecordUtils {
             daoManager.getDaoSession().update(record);
             flag = true;
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    /*
+    指定id删除
+     */
+    public boolean deleteRecordById(Long id){
+        boolean flag = false;
+        try {
+            QueryBuilder<Record> queryBuilder = daoManager.getDaoSession().queryBuilder(Record.class);
+            Record record = queryBuilder.where(RecordDao.Properties.Id.eq(id)).unique();
+            daoManager.getDaoSession().delete(record);
+            flag = true;
+        }catch (Exception e){
             e.printStackTrace();
         }
         return flag;

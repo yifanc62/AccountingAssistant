@@ -197,6 +197,15 @@ public class RecordDetail extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public void delete(View view){
+        RecordUtils u = new RecordUtils(this);
+        if(u.deleteRecordById(recordid))
+            Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, com.cirnoteam.accountingassistant.activity.Record.class);
+        startActivity(intent);
+        finish();
+    }
 }
 
 
