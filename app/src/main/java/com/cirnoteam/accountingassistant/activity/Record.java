@@ -1,7 +1,10 @@
 package com.cirnoteam.accountingassistant.activity;
 
+import android.app.ExpandableListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -25,6 +28,7 @@ import android.widget.Toast;
 import com.cirnoteam.accountingassistant.R;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,7 +50,6 @@ public class Record extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     Intent intentToMain = new Intent(Record.this, MainActivity.class);
-                    intentToMain.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intentToMain);
                     return true;
                 case R.id.navigation_record:
@@ -54,7 +57,6 @@ public class Record extends AppCompatActivity {
                     return true;
                 case R.id.navigation_user:
                     Intent intentToUser = new Intent(Record.this, BankCard.class);
-                    intentToUser.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intentToUser);
                     return true;
             }
@@ -75,25 +77,54 @@ public class Record extends AppCompatActivity {
         cal.set(Calendar.DAY_OF_MONTH, 1);//获取第一天
         Date currentDate = cal.getTime();//日期指针
         int numOfDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);//当月天数
-        final String[] day = new String[numOfDay];//天
-        final String[][] record = new String[numOfDay][];//每一天的记录内容
-        final String[][] recordid = new String[numOfDay][];//每一天的记录id
+        String[] day = new String[numOfDay];//天
+        //ArrayList<>[] record = new ArrayList<String>[numOfDay];
+        final List<List<String>> record = new ArrayList<>();//每一天的记录内容
+        List<List<Long>> recordid = new ArrayList<>();//每一天的记录id
         String recordStatement = " ";
         List<com.cirnoteam.accountingassistant.entity.Record> list;
         RecordUtils u = new RecordUtils(this);
         for(int i=1 ; i<=numOfDay ; i++){
+            record.add(new ArrayList<String>());
+            recordid.add(new ArrayList<Long>());
             day[i-1] = fm.format(currentDate);
-            list = u.ReadRecordOfDay(currentDate);
+            list = u.readRecordOfDday(currentDate);
             for(int j=0;j<list.size();j++){
+                recordStatement = " ";
                 recordStatement += list.get(j).getExpense() ? "支出" : "收入";
                 recordStatement += " " + String.valueOf(list.get(j).getAmount());
                 recordStatement += " " + list.get(j).getType();
-                record[i-1][j] = recordStatement;
-                recordid[i-1][j] = String.valueOf(list.get(j).getId());
+                switch (list.get(j).getType()){
+                    case 0:recordStatement += " 一日三餐";
+                        break;
+                    case 1:recordStatement += " 购物消费";
+                        break;
+                    case 2:recordStatement += " 水电煤气";
+                        break;
+                    case 3:recordStatement += " 交通花费";
+                        break;
+                    case 4:recordStatement += " 医疗消费";
+                        break;
+                    case 5:recordStatement += " 其他支出";
+                        break;
+                    case 6:recordStatement += " 经营获利";
+                        break;
+                    case 7:recordStatement += " 工资收入";
+                        break;
+                    case 8:recordStatement += " 路上捡钱";
+                        break;
+                    case 9:recordStatement += " 其他收入";
+                        break;
+                }
+                record.get(i-1).add(recordStatement);
+                recordid.get(i-1).add(list.get(j).getId());
             }
             cal.set(Calendar.DAY_OF_MONTH,cal.get(Calendar.DAY_OF_MONTH)+1);//让日期加1
             currentDate = cal.getTime();
         }
+        final String[] dayF = day;
+        final List<List<String>> recordF = record;//转换为final
+        final List<List<Long>> recordidF = recordid;
 
         initActionBar();
         Spinner dateSpinner = (Spinner)findViewById(R.id.spinner_date);
@@ -104,18 +135,16 @@ public class Record extends AppCompatActivity {
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_record);
 
-        final ExpandableListAdapter adapter_2 = new ExpandableListAdapter() {
+        ExpandableListAdapter adapter_2 = new ExpandableListAdapter() {
             int [] logos = new int[]{
                     R.drawable.ic_dashboard_black_24dp,
                     R.drawable.ic_dashboard_black_24dp,
                     R.drawable.ic_dashboard_black_24dp
             };
-
-            private String[] armType = day;
-            private String[][] arms = record;
-
+            private String[] armType = dayF;
+            private List<List<String>> arms = recordF;
+            //private String[][] arms = {{"o","p","q"},{"r","s","t"},{"1","3","5","10"}};
             private TextView getTextView(){
                 AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,64);
                 TextView textView = new TextView(Record.this);
@@ -142,7 +171,7 @@ public class Record extends AppCompatActivity {
 
             @Override
             public int getChildrenCount(int groupPosition) {
-                return arms[groupPosition].length;
+                return arms.get(groupPosition).size();
             }
 
             @Override
@@ -152,7 +181,7 @@ public class Record extends AppCompatActivity {
 
             @Override
             public Object getChild(int groupPosition, int childPosition) {
-                return arms[groupPosition][childPosition];
+                return arms.get(groupPosition).get(childPosition);
             }
 
             @Override
@@ -176,9 +205,10 @@ public class Record extends AppCompatActivity {
                 ll.setOrientation(LinearLayout.VERTICAL);
                 ImageView logo = new ImageView(Record.this);
                 //logo.setImageResource(logos[groupPosition]);
-                ll.addView(logo);
+                //ll.addView(logo);
                 TextView textView = getTextView();
                 textView.setText(getGroup(groupPosition).toString());
+                ll.addView(textView);
                 return ll;
             }
 
@@ -230,14 +260,13 @@ public class Record extends AppCompatActivity {
 
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
-
-
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 Intent intent = new Intent(getApplicationContext(),RecordDetail.class);
-                intent.putExtra("extra_data", recordid[groupPosition][childPosition]);
+                intent.putExtra("extra_data", recordidF.get(groupPosition).get(childPosition));
                 startActivity(intent);
+                finish();
                 return true;
             }
         });

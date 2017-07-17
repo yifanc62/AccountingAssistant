@@ -17,9 +17,11 @@ import com.cirnoteam.accountingassistant.R;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
 import com.cirnoteam.accountingassistant.database.UpdateDB;
 import com.cirnoteam.accountingassistant.entity.*;
+import com.cirnoteam.accountingassistant.entity.Record;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.cirnoteam.accountingassistant.R.id.amount_edit;
@@ -33,7 +35,12 @@ import static com.cirnoteam.accountingassistant.R.id.time_edit;
 public class RecordDetail extends AppCompatActivity {
 
     //用于修改的临时变量
-    String type, account, remark, time, expense, recid, amount;
+    String remark, recid, account;
+    Date time;
+    int type;
+    float amount;
+    boolean expense;
+    Long recordid;
 
     private List<String> list_inout = new ArrayList<String>();
     private List<String> list_type = new ArrayList<String>();
@@ -51,7 +58,7 @@ public class RecordDetail extends AppCompatActivity {
         setContentView(R.layout.record_detail);
         //获取上一个Activity传过来的值(流水id)
         Intent intent = getIntent();
-        String recordid = intent.getStringExtra("extra_data");
+        recordid = intent.getLongExtra("extra_data", -1L);
 
         list_inout.add("支出");
         list_inout.add("收入");
@@ -95,16 +102,16 @@ public class RecordDetail extends AppCompatActivity {
          ***/
         try {
             RecordUtils u = new RecordUtils(this);
-            com.cirnoteam.accountingassistant.entity.Record rec = u.ReadRecordById(Integer.parseInt(recordid));
+            com.cirnoteam.accountingassistant.entity.Record rec = u.ReadRecordById(recordid);
             spinner_inout.setSelection(rec.getExpense() ? 1:0);
             editText_amount.setText(String.valueOf(rec.getAmount()));
             editText_remark.setText(rec.getRemark());
             spinner_type.setSelection(rec.getType());
-            editText_time.setText(new SimpleDateFormat("yyyy-MM-dd").format(rec.getTime()));
+            editText_time.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(rec.getTime()));
             recid = String.valueOf(rec.getId());
-            Toast.makeText(getApplicationContext(), recid, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), recid, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "表中无数据", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "查询出错", Toast.LENGTH_SHORT).show();
         }
         //默认值设置完成
 
@@ -116,9 +123,7 @@ public class RecordDetail extends AppCompatActivity {
                     op.setText(" -");
                 else if(arg2 == 1)
                     op.setText(" +");
-
-
-                expense = String.valueOf(arg2);
+                expense = arg2==0;
                 //Toast.makeText(getApplicationContext(), adapter_inout.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -131,7 +136,7 @@ public class RecordDetail extends AppCompatActivity {
         spinner_type.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-                type = String.valueOf(arg2);
+                type = arg2;
                 //Toast.makeText(getApplicationContext(), adapter_type.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -159,22 +164,37 @@ public class RecordDetail extends AppCompatActivity {
 
     public void toModify(View view) {
         remark = ((EditText) findViewById(remark_edit)).getText().toString();
-        time = ((EditText) findViewById(time_edit)).getText().toString();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            time = df.parse(((EditText) findViewById(time_edit)).getText().toString());
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(), "时间格式不对", Toast.LENGTH_SHORT).show();
+        }
         EditText editText_amount = (EditText) findViewById(amount_edit);
         if (!TextUtils.isEmpty(editText_amount.getText()))
-            amount = editText_amount.getText().toString();
+            amount = Float.parseFloat(editText_amount.getText().toString());
         else
-            amount = "0";
+            amount = 0;
 
-        if (UpdateDB.updateRecord(this.getFilesDir().toString(), expense, amount, remark, type, time, recid, "username"))
+        //if (UpdateDB.updateRecord(this.getFilesDir().toString(), expense, amount, remark, type, time, recid, "username"))
+          //  Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
+        RecordUtils u = new RecordUtils(this);
+        Record newRec = u.getRecordById(recordid);
+        newRec.setExpense(expense);
+        newRec.setAmount(amount);
+        newRec.setType(type);
+        newRec.setTime(time);
+        newRec.setRemark(remark);
+        if(u.updateRecord(newRec))
             Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
-
+        Intent intent = new Intent(this, com.cirnoteam.accountingassistant.activity.Record.class);
+        startActivity(intent);
         finish();
     }
 
     public void back(View view) {
-        //Intent intent = new Intent(this, MainActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(this, com.cirnoteam.accountingassistant.activity.Record.class);
+        startActivity(intent);
         finish();
     }
 }

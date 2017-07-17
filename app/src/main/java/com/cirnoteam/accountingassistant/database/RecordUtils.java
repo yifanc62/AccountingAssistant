@@ -38,31 +38,51 @@ public class RecordUtils {
         daoManager.initManager(context);
     }
 
-    /**
-     * 查询某天的流水
-     */
-    public List<Record> ReadRecordOfDay(Date date) {
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.setTime(date);
-        gc.add(Calendar.DAY_OF_MONTH, 1);
-        Date date1 = gc.getTime();
+    public Record getRecordById(Long id){
         QueryBuilder<Record> queryBuilder = daoManager.getDaoSession().queryBuilder(Record.class);
-        return queryBuilder.where(RecordDao.Properties.Time.between(date, date1)).list();
+        return queryBuilder.where(RecordDao.Properties.Id.eq(id)).unique();
     }
 
     /**
-     * 用id查询唯一流水
+     * 查询某天的流水
      */
-    public Record ReadRecordById(Long id) {
+    public List<Record> readRecordOfDday(Date date){
+        GregorianCalendar gc=new GregorianCalendar();
+        gc.setTime(date);
+        gc.add(Calendar.DAY_OF_MONTH, -1);
+        Date date1 = gc.getTime();
+        QueryBuilder<Record> queryBuilder = daoManager.getDaoSession().queryBuilder(Record.class);
+        List<Record> list = queryBuilder.where(RecordDao.Properties.Time.between(date1,date)).list();
+        return list;
+    }
+
+    /*
+    用id查询唯一流水
+     */
+    public Record ReadRecordById(Long id){
         QueryBuilder<Record> queryBuilder = daoManager.getDaoSession().queryBuilder(Record.class);
         List<Record> list = queryBuilder.where(RecordDao.Properties.Id.eq(id)).list();
         return list.get(0);
     }
 
-    /**
-     * 插入流水
+    /*
+    插入流水
      */
     public boolean insertRecord(Record record) {
         return daoManager.getDaoSession().insert(record) != -1;
+    }
+
+    /*
+    用id更新流水
+     */
+    public boolean updateRecord(Record record){
+        boolean flag = false;
+        try {
+            daoManager.getDaoSession().update(record);
+            flag = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return flag;
     }
 }
