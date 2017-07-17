@@ -71,7 +71,7 @@ public class Record extends AppCompatActivity {
 
         //获取当月所有日期数组
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat fm = new SimpleDateFormat("YYYY-MM-DD");
+        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
         cal.add(Calendar.MONTH, -Status.month);
         cal.set(Calendar.DAY_OF_MONTH, 1);//获取第一天
         Date currentDate = cal.getTime();//日期指针

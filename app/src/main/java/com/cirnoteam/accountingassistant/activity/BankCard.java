@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.AccountUtils;
+import com.cirnoteam.accountingassistant.entity.Account;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,10 +32,11 @@ public class BankCard extends AppCompatActivity {
 
     private String[] bankcardnumbers = new String[]
             {"123", "456", "789",};
-
+    private List<Account> accounts = new ArrayList<Account>();
     public void toNewBankcard(View view) {
         Intent intent = new Intent(this, NewBankcard.class);
         startActivity(intent);
+        finish();
     }
 
 //    public void toBankcard(View view) {
@@ -46,15 +49,17 @@ public class BankCard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bank_card);
         //String[] bankcardnames = ReadDB.readAccount(this.getFilesDir().toString());
+        AccountUtils accountUtils = new AccountUtils(this);
+        accounts = accountUtils.queryBuilder();
         //创建一个List集合，集合的元素是Map
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         List<Map<String, Object>> listItems =
                 new ArrayList<Map<String, Object>>();
-        for (int i = 0; i < bankcardnames.length; i++) {
+        for(Account account:accounts){
             Map<String, Object> listItem = new HashMap<String, Object>();
-            listItem.put("bankcardname", bankcardnames[i]);
-            listItem.put("bankcardnumber", bankcardnumbers[i]);
+            listItem.put("bankcardname", account.getName());
+            listItem.put("bankcardnumber", account.getType());
             listItems.add(listItem);
         }
 
@@ -71,7 +76,7 @@ public class BankCard extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case AlertDialog.BUTTON_POSITIVE:
-                        //删除list中的一行
+                        deleteAccount();
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
                         break;
@@ -116,4 +121,7 @@ public class BankCard extends AppCompatActivity {
         }
 
     };
+    public void deleteAccount(){
+
+    }
 }
