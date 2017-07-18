@@ -12,8 +12,6 @@ import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
-import com.cirnoteam.accountingassistant.database.SaveDB;
-import com.cirnoteam.accountingassistant.entity.*;
 import com.cirnoteam.accountingassistant.entity.Record;
 
 import java.text.SimpleDateFormat;

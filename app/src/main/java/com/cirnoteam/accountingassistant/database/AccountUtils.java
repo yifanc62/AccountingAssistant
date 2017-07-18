@@ -4,49 +4,198 @@ import android.content.Context;
 
 import com.cirnoteam.accountingassistant.entity.Account;
 import com.cirnoteam.accountingassistant.gen.AccountDao;
-import com.cirnoteam.accountingassistant.gen.BookDao;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- * Created by Yifan on 2017/7/15.
+ * BookUtils
+ * 账户操作类
+ *
+ * @author Yifan
+ * @version 1.2
  */
 
 public class AccountUtils {
     private DaoManager daoManager;
+    private Context context;
+
+    public static final int TYPE_现金 = 0;
+    public static final int TYPE_银行卡 = 1;
+    public static final int TYPE_支付宝余额 = 2;
+    public static final int TYPE_QQ钱包余额 = 3;
+    public static final int TYPE_微信余额 = 4;
+    public static final int TYPE_余额宝 = 5;
+    public static final int TYPE_交通卡 = 6;
+    public static final int TYPE_储值卡 = 7;
+    public static final int TYPE_校园卡 = 8;
+    public static final int TYPE_礼品卡 = 9;
+
     public AccountUtils(Context context) {
         daoManager = DaoManager.getInstance();
         daoManager.initManager(context);
-    }
-    public List<Account> queryBuilder() {
-        //查询构建器
-        QueryBuilder<Account> queryBuilder = daoManager.getDaoSession().queryBuilder(Account.class);
-        List<Account> list = queryBuilder.list();
-        return list;
+        this.context = context;
     }
 
-    public boolean insertAccount(Account account) {
+    private boolean insertAccount(Account account) {
         return daoManager.getDaoSession().insert(account) != -1;
     }
 
-    public Account getAccount(long id) {
-        QueryBuilder<Account> builder = daoManager.getDaoSession().queryBuilder(Account.class).where(AccountDao.Properties.Id.eq(id));
-        return builder.unique();
-    }
-    public boolean deleteAccount(Account account) {
+    private boolean updateAccount(Account account) {
         boolean flag = false;
         try {
-            //删除指定ID
+            daoManager.getDaoSession().update(account);
+            flag = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    private boolean deleteAccount(Account account) {
+        boolean flag = false;
+        try {
             daoManager.getDaoSession().delete(account);
             flag = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //daoManager.getDaoSession().deleteAll(); //删除所有记录
+        return flag;
+    }
+
+    public Account getAccount(Long accountId) {
+        QueryBuilder<Account> builder = daoManager.getDaoSession().queryBuilder(Account.class);
+        return builder.where(AccountDao.Properties.Id.eq(accountId)).unique();
+    }
+
+    public List<Account> getAllAccounts(Long bookId) {
+        QueryBuilder<Account> builder = daoManager.getDaoSession().queryBuilder(Account.class);
+        return builder.where(AccountDao.Properties.Bookid.eq(bookId)).list();
+    }
+
+    public boolean addAccount(Long bookId, Integer type, Float balance, String name) {
+        DirtyUtils util = new DirtyUtils(context);
+        boolean flag = true;
+        if (name.equals("")) {
+            name = null;
+        }
+        Account account = new Account(null, bookId, type, balance, name, null);
+        if (!insertAccount(account)) {
+            flag = false;
+        }
+        if (!util.addDirty(account, false)) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    public boolean setAccountRemoteId(Long accountId, Long remoteId) {
+        Account account = getAccount(accountId);
+        account.setRemoteid(remoteId);
+        return updateAccount(account);
+    }
+
+    public boolean hasAccountRemoteId(Long accountId) {
+        return getAccount(accountId).getRemoteid() != null;
+    }
+
+    public boolean updateAccountType(Long accountId, Integer type) {
+        DirtyUtils util = new DirtyUtils(context);
+        boolean flag = true;
+        Account account = getAccount(accountId);
+        account.setType(type);
+        if (!util.addDirty(account, false)) {
+            flag = false;
+        }
+        if (!updateAccount(account)) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    public boolean updateAccountName(Long accountId, String newName) {
+        DirtyUtils util = new DirtyUtils(context);
+        boolean flag = true;
+        Account account = getAccount(accountId);
+        account.setName(newName);
+        if (!util.addDirty(account, false)) {
+            flag = false;
+        }
+        if (!updateAccount(account)) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    public boolean updateAccountBalance(Long accountId, Float newBalance) {
+        DirtyUtils util = new DirtyUtils(context);
+        boolean flag = true;
+        Account account = getAccount(accountId);
+        account.setBalance(newBalance);
+        if (!util.addDirty(account, false)) {
+            flag = false;
+        }
+        if (!updateAccount(account)) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    public boolean calculateAccountBalanceByAmount(Long accountId, Boolean expense, Float amount) {
+        DirtyUtils util = new DirtyUtils(context);
+        boolean flag = true;
+        Account account = getAccount(accountId);
+        Float balance = account.getBalance();
+        if (expense) {
+            balance -= amount;
+        } else {
+            balance += amount;
+        }
+        account.setBalance(balance);
+        if (!util.addDirty(account, false)) {
+            flag = false;
+        }
+        if (!updateAccount(account)) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    public boolean calculateAccountBalanceByAmount(Account account, Boolean expense, Float amount) {
+        DirtyUtils util = new DirtyUtils(context);
+        boolean flag = true;
+        Float balance = account.getBalance();
+        if (expense) {
+            balance -= amount;
+        } else {
+            balance += amount;
+        }
+        account.setBalance(balance);
+        if (!util.addDirty(account, false)) {
+            flag = false;
+        }
+        if (!updateAccount(account)) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    public boolean hasAccountName(Long accountId) {
+        return getAccount(accountId).getName() != null;
+    }
+
+    public boolean deleteAccount(Long accountId) {
+        DirtyUtils util = new DirtyUtils(context);
+        boolean flag = true;
+        Account account = getAccount(accountId);
+        if (!util.addDirty(account, true)) {
+            flag = false;
+        }
+        if (!deleteAccount(account)) {
+            flag = false;
+        }
         return flag;
     }
 }

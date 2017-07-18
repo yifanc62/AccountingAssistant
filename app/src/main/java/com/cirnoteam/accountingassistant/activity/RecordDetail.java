@@ -13,10 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
-//import com.cirnoteam.accountingassistant.database.ReadDB;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
-import com.cirnoteam.accountingassistant.database.UpdateDB;
-import com.cirnoteam.accountingassistant.entity.*;
 import com.cirnoteam.accountingassistant.entity.Record;
 
 import java.text.SimpleDateFormat;

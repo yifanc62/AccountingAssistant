@@ -11,7 +11,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.database.AccountUtils;
-import com.cirnoteam.accountingassistant.database.SaveDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ import com.cirnoteam.accountingassistant.entity.Book;
 
 public class NewBankcard extends AppCompatActivity {
 
-    String type,account;
+    String type, account;
 
     private List<String> list_type = new ArrayList<String>();
     private Spinner spinner_type;
@@ -47,7 +46,7 @@ public class NewBankcard extends AppCompatActivity {
         list_type.add("银行卡");
         list_type.add("现金");
 
-        spinner_type = (Spinner)findViewById(R.id.spinner_type);
+        spinner_type = (Spinner) findViewById(R.id.spinner_type);
         adapter_type = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_type);
         spinner_type.setAdapter(adapter_type);
 
@@ -67,16 +66,16 @@ public class NewBankcard extends AppCompatActivity {
 
     }
 
-    public void createAccount(View view){
-        EditText editText_account = (EditText)findViewById(R.id.account_id);
+    public void createAccount(View view) {
+        EditText editText_account = (EditText) findViewById(R.id.account_id);
 
         Account account = new Account();
         account.setBook(new Book());
-        account.setBookid((long)1);
+        account.setBookid((long) 1);
         account.setName(editText_account.getText().toString());
         account.setType(Integer.valueOf(type));
         AccountUtils accountUtils = new AccountUtils(this);
-        if(accountUtils.insertAccount(account))
+        if (accountUtils.insertAccount(account))
             Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
 //        if(!TextUtils.isEmpty(editText_account.getText()))
 //            account = editText_account.getText().toString();

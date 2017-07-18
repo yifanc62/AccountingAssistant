@@ -20,11 +20,13 @@ android {
         }
     }
     greendao {
-        schemaVersion 1
+        schemaVersion 3
         daoPackage 'com.cirnoteam.accountingassistant.gen'
         targetGenDir 'src/main/java'
     }
     productFlavors {
+    }
+    compileOptions {
     }
 }
 

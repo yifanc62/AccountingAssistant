@@ -31,6 +31,8 @@ public class Account {
     private Book book;
     @NotNull
     private Integer type;
+    @NotNull
+    private Float balance;
     private String name;
     @Unique
     private Long remoteid;
@@ -47,12 +49,13 @@ public class Account {
     @Generated(hash = 335469827)
     private transient AccountDao myDao;
 
-    @Generated(hash = 28241216)
-    public Account(Long id, @NotNull Long bookid, @NotNull Integer type,
+    @Generated(hash = 1916921196)
+    public Account(Long id, @NotNull Long bookid, @NotNull Integer type, @NotNull Float balance,
                    String name, Long remoteid) {
         this.id = id;
         this.bookid = bookid;
         this.type = type;
+        this.balance = balance;
         this.name = name;
         this.remoteid = remoteid;
     }
@@ -214,5 +217,13 @@ public class Account {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getAccountDao() : null;
+    }
+
+    public Float getBalance() {
+        return this.balance;
+    }
+
+    public void setBalance(Float balance) {
+        this.balance = balance;
     }
 }

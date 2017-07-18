@@ -2,6 +2,7 @@ package com.cirnoteam.accountingassistant.database;
 
 import android.content.Context;
 
+import com.cirnoteam.accountingassistant.entity.Account;
 import com.cirnoteam.accountingassistant.entity.Book;
 import com.cirnoteam.accountingassistant.entity.User;
 import com.cirnoteam.accountingassistant.gen.BookDao;
@@ -17,7 +18,7 @@ import java.util.List;
  * 账本操作类
  *
  * @author Yifan
- * @version 1.0
+ * @version 1.2
  */
 
 public class BookUtils {
@@ -28,17 +29,6 @@ public class BookUtils {
         daoManager = DaoManager.getInstance();
         daoManager.initManager(context);
         this.context = context;
-    }
-
-    public Book getBook(Long id) {
-        QueryBuilder<Book> builder = daoManager.getDaoSession().queryBuilder(Book.class);
-        return builder.where(BookDao.Properties.Id.eq(id)).unique();
-    }
-
-    public List<Book> getAllBooks(String username) {
-        QueryBuilder<User> builder = daoManager.getDaoSession().queryBuilder(User.class);
-        User user = builder.where(UserDao.Properties.Username.eq(username)).unique();
-        return user.getBooks();
     }
 
     private boolean insertBook(Book book) {
@@ -67,15 +57,47 @@ public class BookUtils {
         return flag;
     }
 
-    public boolean addBook(String bookName, String username) {
-        Book book = new Book(null, username, bookName, null);
-        return insertBook(book);
+    public Book getBook(Long bookId) {
+        QueryBuilder<Book> builder = daoManager.getDaoSession().queryBuilder(Book.class);
+        return builder.where(BookDao.Properties.Id.eq(bookId)).unique();
     }
 
-    public boolean setRemoteId(Long bookId, Long remoteId) {
+    public List<Book> getAllBooks(String username) {
+        QueryBuilder<User> builder = daoManager.getDaoSession().queryBuilder(User.class);
+        User user = builder.where(UserDao.Properties.Username.eq(username)).unique();
+        return user.getBooks();
+    }
+
+    public Float getTotalBalance(Long bookId) {
+        AccountUtils util = new AccountUtils(context);
+        Float balance = 0F;
+        for (Account account : util.getAllAccounts(bookId)) {
+            balance += account.getBalance();
+        }
+        return balance;
+    }
+
+    public boolean addBook(String username, String bookName) {
+        DirtyUtils util = new DirtyUtils(context);
+        boolean flag = true;
+        Book book = new Book(null, username, bookName, null);
+        if (!insertBook(book)) {
+            flag = false;
+        }
+        if (!util.addDirty(book, false)) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    public boolean setBookRemoteId(Long bookId, Long remoteId) {
         Book book = getBook(bookId);
         book.setRemoteid(remoteId);
         return updateBook(book);
+    }
+
+    public boolean hasBookRemoteId(Long bookId) {
+        return getBook(bookId).getRemoteid() != null;
     }
 
     public boolean updateBookName(Long bookId, String newName) {

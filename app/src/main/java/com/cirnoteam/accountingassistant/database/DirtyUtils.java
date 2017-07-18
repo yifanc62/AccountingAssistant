@@ -20,7 +20,7 @@ import java.util.List;
  * 脏数据操作类
  *
  * @author Yifan
- * @version 1.1
+ * @version 1.2
  */
 
 public class DirtyUtils {
@@ -62,15 +62,14 @@ public class DirtyUtils {
         return flag;
     }
 
-    private Dirty getDirty(Long rid, int type) {
+    private Dirty getDirty(Long rid, Integer type) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
         return builder.where(DirtyDao.Properties.Rid.eq(rid)).where(DirtyDao.Properties.Type.eq(type)).unique();
     }
 
-    private boolean isDirtyExists(Long rid, int type) {
+    private boolean isDirtyExists(Long rid, Integer type) {
         return getDirty(rid, type) != null;
     }
-
 
     public boolean deleteAllDirty(String username) {
         boolean flag = true;
@@ -82,7 +81,7 @@ public class DirtyUtils {
         return flag;
     }
 
-    public boolean addDirty(Book book, boolean deleted) {
+    public boolean addDirty(Book book, Boolean deleted) {
         Long rid = book.getId();
         int type = TYPE_BOOK;
         if (deleted) {
@@ -134,7 +133,7 @@ public class DirtyUtils {
         }
     }
 
-    public boolean addDirty(Account account, boolean deleted) {
+    public boolean addDirty(Account account, Boolean deleted) {
         Long rid = account.getId();
         int type = TYPE_ACCOUNT;
         if (deleted) {
@@ -186,7 +185,7 @@ public class DirtyUtils {
         }
     }
 
-    public boolean addDirty(Record record, boolean deleted) {
+    public boolean addDirty(Record record, Boolean deleted) {
         Long rid = record.getId();
         int type = TYPE_RECORD;
         if (deleted) {
@@ -220,7 +219,7 @@ public class DirtyUtils {
 
     public List<Book> getAllModifiedBooks(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
-        List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_BOOK)).where(DirtyDao.Properties.Deleted.eq(false)).list();
+        List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_BOOK)).where(DirtyDao.Properties.Deleted.eq(false)).where(DirtyDao.Properties.Remoteid.isNotNull()).list();
         List<Book> books = new ArrayList<>();
         BookUtils util = new BookUtils(context);
         for (Dirty dirty : dirties) {
@@ -231,7 +230,7 @@ public class DirtyUtils {
 
     public List<Account> getAllModifiedAccounts(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
-        List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_ACCOUNT)).where(DirtyDao.Properties.Deleted.eq(false)).list();
+        List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_ACCOUNT)).where(DirtyDao.Properties.Deleted.eq(false)).where(DirtyDao.Properties.Remoteid.isNotNull()).list();
         List<Account> accounts = new ArrayList<>();
         AccountUtils util = new AccountUtils(context);
         for (Dirty dirty : dirties) {
@@ -242,11 +241,44 @@ public class DirtyUtils {
 
     public List<Record> getAllModifiedRecords(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
-        List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_RECORD)).where(DirtyDao.Properties.Deleted.eq(false)).list();
+        List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_RECORD)).where(DirtyDao.Properties.Deleted.eq(false)).where(DirtyDao.Properties.Remoteid.isNotNull()).list();
         List<Record> records = new ArrayList<>();
         RecordUtils util = new RecordUtils(context);
         for (Dirty dirty : dirties) {
-            records.add(util.ReadRecordById(dirty.getRid()));
+            records.add(util.getRecord(dirty.getRid()));
+        }
+        return records;
+    }
+
+    public List<Book> getAllNewAddedBooks(String username) {
+        QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
+        List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_BOOK)).where(DirtyDao.Properties.Remoteid.isNull()).list();
+        List<Book> books = new ArrayList<>();
+        BookUtils util = new BookUtils(context);
+        for (Dirty dirty : dirties) {
+            books.add(util.getBook(dirty.getRid()));
+        }
+        return books;
+    }
+
+    public List<Account> getAllNewAddedAccounts(String username) {
+        QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
+        List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_ACCOUNT)).where(DirtyDao.Properties.Remoteid.isNull()).list();
+        List<Account> accounts = new ArrayList<>();
+        AccountUtils util = new AccountUtils(context);
+        for (Dirty dirty : dirties) {
+            accounts.add(util.getAccount(dirty.getRid()));
+        }
+        return accounts;
+    }
+
+    public List<Record> getAllNewAddedRecords(String username) {
+        QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
+        List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_RECORD)).where(DirtyDao.Properties.Remoteid.isNull()).list();
+        List<Record> records = new ArrayList<>();
+        RecordUtils util = new RecordUtils(context);
+        for (Dirty dirty : dirties) {
+            records.add(util.getRecord(dirty.getRid()));
         }
         return records;
     }

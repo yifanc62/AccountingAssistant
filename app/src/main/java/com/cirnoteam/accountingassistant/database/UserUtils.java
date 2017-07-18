@@ -18,7 +18,7 @@ import java.util.UUID;
  * 用户操作类
  *
  * @author Yifan
- * @version 1.0
+ * @version 1.2
  */
 
 public class UserUtils {
