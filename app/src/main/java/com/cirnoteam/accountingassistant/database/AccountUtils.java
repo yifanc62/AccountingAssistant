@@ -31,7 +31,7 @@ public class AccountUtils {
     public static final int TYPE_交通卡 = 6;
     public static final int TYPE_储值卡 = 7;
     public static final int TYPE_校园卡 = 8;
-    public static final int TYPE_礼品卡 = 9;
+    public static final int TYPE_其他账户 = 9;
 
     public AccountUtils(Context context) {
         daoManager = DaoManager.getInstance();
@@ -65,6 +65,31 @@ public class AccountUtils {
         return flag;
     }
 
+    private String getDefaultAccountName(Integer type) {
+        switch (type) {
+            case 0:
+                return "现金";
+            case 1:
+                return "银行卡";
+            case 2:
+                return "支付宝余额";
+            case 3:
+                return "QQ钱包余额";
+            case 4:
+                return "微信余额";
+            case 5:
+                return "余额宝";
+            case 6:
+                return "交通卡";
+            case 7:
+                return "储值卡";
+            case 8:
+                return "校园卡";
+            default:
+                return "其他账户";
+        }
+    }
+
     public Account getAccount(Long accountId) {
         QueryBuilder<Account> builder = daoManager.getDaoSession().queryBuilder(Account.class);
         return builder.where(AccountDao.Properties.Id.eq(accountId)).unique();
@@ -81,7 +106,7 @@ public class AccountUtils {
         if (name.equals("")) {
             name = null;
         }
-        Account account = new Account(null, bookId, type, balance, name, null);
+        Account account = new Account(null, bookId, type, balance == null ? 0 : balance, name == null ? getDefaultAccountName(type) : (name.equals("") ? getDefaultAccountName(type) : name), null);
         if (!insertAccount(account)) {
             flag = false;
         }
