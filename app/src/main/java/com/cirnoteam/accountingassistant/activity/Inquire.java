@@ -138,11 +138,8 @@ public class Inquire extends AppCompatActivity {
 
     public void initActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setTitle("查询");
-        toolbar.setLogo(R.drawable.ic_notifications_black_24dp);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_home_black_24dp);
-        //toolbar.setOnMenuItemClickListener();
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

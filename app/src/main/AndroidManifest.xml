@@ -9,16 +9,14 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/cirno4"
         android:label="记账助手"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
-            android:label="记账助手">
+            android:name=".activity.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.Home" />
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
             </intent-filter>
         </activity>
@@ -26,7 +24,7 @@
             android:name=".activity.LogIn"
             android:label="登录">
             <intent-filter>
-                <action android:name="android.intent.action.LOGIN" />
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -46,7 +44,7 @@
         </activity>
         <activity
             android:name=".activity.Record"
-            android:label="流水记录">
+            android:label="">
             <intent-filter>
                 <action android:name="android.intent.action.RECORD" />
             </intent-filter>

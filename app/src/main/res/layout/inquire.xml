@@ -57,7 +57,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="4"
-        android:gravity="center"/>
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/textView"
@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/L4"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/L3">
+        android:layout_below="@+id/L3">i
 
         <TextView
             android:id="@+id/textView6"

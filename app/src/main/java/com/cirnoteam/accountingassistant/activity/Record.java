@@ -68,6 +68,7 @@ public class Record extends AppCompatActivity {
 
     };
 
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record);
@@ -298,12 +299,8 @@ public class Record extends AppCompatActivity {
 
     public void initActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_record_toolbar);
-        //setTitle("流水页面");
-        //toolbar.setSubtitle("流水");
-        //toolbar.setLogo(R.drawable.ic_notifications_black_24dp);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_menu_share);
-        //toolbar.setOnMenuItemClickListener();
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

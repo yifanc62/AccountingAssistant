@@ -7,6 +7,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -50,6 +51,7 @@ public class BankCard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bank_card);
+        
         //String[] bankcardnames = ReadDB.readAccount(this.getFilesDir().toString());
         AccountUtils accountUtils = new AccountUtils(this);
         accounts = accountUtils.getAllAccounts(1L);
@@ -154,6 +156,8 @@ public class BankCard extends AppCompatActivity {
         }
 
     };
+
+
     public void deleteAccountRecord(long id){
         AccountUtils accountUtils = new AccountUtils(this);
         accountUtils.deleteAccount(id);
