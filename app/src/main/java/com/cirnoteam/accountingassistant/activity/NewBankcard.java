@@ -69,13 +69,13 @@ public class NewBankcard extends AppCompatActivity {
     public void createAccount(View view) {
         EditText editText_account = (EditText) findViewById(R.id.account_id);
 
-        Account account = new Account();
-        account.setBook(new Book());
-        account.setBookid((long) 1);
-        account.setName(editText_account.getText().toString());
-        account.setType(Integer.valueOf(type));
+//        Account account = new Account();
+//        account.setBook(new Book());
+//        account.setBookid((long) 1);
+//        account.setName(editText_account.getText().toString());
+//        account.setType(Integer.valueOf(type));
         AccountUtils accountUtils = new AccountUtils(this);
-        if (accountUtils.insertAccount(account))
+        if (accountUtils.addAccount(1L,Integer.valueOf(type),10000F,editText_account.getText().toString()))
             Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
 //        if(!TextUtils.isEmpty(editText_account.getText()))
 //            account = editText_account.getText().toString();

@@ -12,7 +12,10 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.RecordUtils;
+import com.cirnoteam.accountingassistant.entity.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,21 +29,27 @@ public class Inquire extends AppCompatActivity {
     private List<String> list_date = new ArrayList<String>();
     private List<String> list_type = new ArrayList<String>();
     private List<String> list_account = new ArrayList<String>();
+    private List<String> list_result = new ArrayList<String>();
     private Spinner spinner_date;
     private Spinner spinner_type;
     private Spinner spinner_account;
+    private ListView listView;
     private ArrayAdapter<String> adapter_date;
     private ArrayAdapter<String> adapter_type;
     private ArrayAdapter<String> adapter_account;
-    private String[] data = {"1", "2", "3", "4", "5"};
+    private ArrayAdapter<String> recordAdapter;
+    private String[] data = {};
+    private List<com.cirnoteam.accountingassistant.entity.Record> records = new ArrayList<com.cirnoteam.accountingassistant.entity.Record>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inquire);
         initActionBar();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(Inquire.this, android.R.layout.simple_list_item_1, data);
-        ListView listView = (ListView) findViewById(R.id.listview_result);
+        listView = (ListView) findViewById(R.id.listview_result);
         listView.setAdapter(adapter);
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -123,6 +132,8 @@ public class Inquire extends AppCompatActivity {
             }
         });
 
+
+
     }
 
     public void initActionBar() {
@@ -143,5 +154,51 @@ public class Inquire extends AppCompatActivity {
     public void inquire(View view) {
         EditText editText = (EditText) findViewById(R.id.text_inquire);
         inquire = editText.toString();
+
+        RecordUtils recordUtils = new RecordUtils(this);
+        records = recordUtils.queryBuilder();
+        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
+        long i = 1;
+        for(com.cirnoteam.accountingassistant.entity.Record record:records) {
+//            if(recordUtils.getRecordById(i).equals(null))
+//                break;
+            String newRecord = " ";
+            newRecord += fm.format(record.getTime());
+            newRecord += " ";
+            newRecord += record.getExpense()?"收入 ":"支出 ";
+            newRecord += record.getAmount();
+            newRecord += " ";
+            switch (record.getType()){
+                case 0:newRecord += " 一日三餐";
+                    break;
+                case 1:newRecord += " 购物消费";
+                    break;
+                case 2:newRecord += " 水电煤气";
+                    break;
+                case 3:newRecord += " 交通花费";
+                    break;
+                case 4:newRecord += " 医疗消费";
+                    break;
+                case 5:newRecord += " 其他支出";
+                    break;
+                case 6:newRecord += " 经营获利";
+                    break;
+                case 7:newRecord += " 工资收入";
+                    break;
+                case 8:newRecord += " 路上捡钱";
+                    break;
+                case 9:newRecord += " 其他收入";
+                    break;
+            }
+
+
+            list_result.add(newRecord);
+            i++;
+        }
+//        list_result.add("撒打算打算");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(Inquire.this, android.R.layout.simple_list_item_1, list_result);
+        listView = (ListView) findViewById(R.id.listview_result);
+        listView.setAdapter(adapter);
     }
 }

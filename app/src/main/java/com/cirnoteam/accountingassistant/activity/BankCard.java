@@ -28,14 +28,13 @@ import java.util.List;
  */
 
 public class BankCard extends AppCompatActivity {
-    //    private String[] bankcardnames = new String[]
+//    private String[] bankcardnames = new String[]
 //            {"支付宝1","银行卡1","现金1"};
 //
 //    private String[] bankcardnumbers = new String[]
 //            {"123", "456", "789",};
     private List<Account> accounts = new ArrayList<Account>();
     public long item;
-
     public void toNewBankcard(View view) {
         Intent intent = new Intent(this, NewBankcard.class);
         startActivity(intent);
@@ -53,8 +52,7 @@ public class BankCard extends AppCompatActivity {
         setContentView(R.layout.bank_card);
         //String[] bankcardnames = ReadDB.readAccount(this.getFilesDir().toString());
         AccountUtils accountUtils = new AccountUtils(this);
-        //TODO 修改获得的ID
-        accounts = accountUtils.getAllAccounts(0L);
+        accounts = accountUtils.getAllAccounts(1L);
         //创建一个List集合，集合的元素是Map
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -63,7 +61,7 @@ public class BankCard extends AppCompatActivity {
                 new ArrayList<Map<String, Object>>();
         long[] map = new long[accounts.size()];
         int i = 0;
-        for (Account account : accounts) {
+        for(Account account:accounts){
             Map<String, Object> listItem = new HashMap<String, Object>();
             listItem.put("bankcardname", account.getName());
             listItem.put("bankcardnumber", getTypeName(account));
@@ -87,7 +85,7 @@ public class BankCard extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 delete.show();
                 item = finalMap[i];
-                Toast.makeText(getApplicationContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),String.valueOf(i),Toast.LENGTH_SHORT).show();
             }
         });
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
@@ -95,7 +93,7 @@ public class BankCard extends AppCompatActivity {
                 switch (which) {
                     case AlertDialog.BUTTON_POSITIVE:
                         deleteAccountRecord(item);
-                        Intent intent = new Intent(getApplicationContext(), BankCard.class);
+                        Intent intent = new Intent(getApplicationContext(),BankCard.class);
                         startActivity(intent);
                         finish();
                         break;
@@ -139,21 +137,20 @@ public class BankCard extends AppCompatActivity {
         }
 
     };
-
-    public void deleteAccountRecord(long id) {
+    public void deleteAccountRecord(long id){
         AccountUtils accountUtils = new AccountUtils(this);
-        accountUtils.deleteAccount(accountUtils.getAccount(id));
+        accountUtils.deleteAccount(id);
 
         //Todo:dirty table
     }
 
-    public String getTypeName(Account account) {
+    public String getTypeName(Account account){
         String string = new String();
-        if (account.getType().equals(0))
+        if(account.getType().equals(0))
             string = "支付宝";
-        if (account.getType().equals(1))
+        if(account.getType().equals(1))
             string = "银行卡";
-        if (account.getType().equals(2))
+        if(account.getType().equals(2))
             string = "现金";
         return string;
     }

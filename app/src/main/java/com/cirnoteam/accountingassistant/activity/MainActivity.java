@@ -20,14 +20,14 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
-import com.cirnoteam.accountingassistant.database.OpCtDatabase;
+import com.cirnoteam.accountingassistant.database.BookUtils;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
-import com.cirnoteam.accountingassistant.entity.User;
-import com.cirnoteam.accountingassistant.gen.DaoMaster;
-import com.cirnoteam.accountingassistant.gen.UserDao;
+import com.cirnoteam.accountingassistant.entity.Book;
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,14 +37,18 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{;
 
-    private List<String> book = new ArrayList<>();
+    private List<String> bookName = new ArrayList<>();
     private List<String> record = new ArrayList<>();
+    private List<Book> list_books = new ArrayList<>();
     private ImageButton leftmenu;
     private TextView mDate;
     private Spinner mySpinner;
     private ArrayAdapter<String> bookAdapter;
     private ListView myListView;
     private ArrayAdapter<String> recordAdapter;
+    private List<com.cirnoteam.accountingassistant.entity.Record> records = new ArrayList<com.cirnoteam.accountingassistant.entity.Record>();
+    //private Book book = new Book();
+    private BookUtils bookUtils = new BookUtils(this);
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -76,13 +80,18 @@ public class MainActivity extends AppCompatActivity
     private void showInputDialog() {
         final EditText editText = new EditText(MainActivity.this);
         final AlertDialog.Builder inputDialog = new AlertDialog.Builder(MainActivity.this);
-        ;
+
         inputDialog.setTitle("请输入账本名称").setView(editText);
         inputDialog.setPositiveButton("确定",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        bookAdapter.insert(editText.getText().toString(),0);
+                        //bookAdapter.insert(editText.getText().toString(),0);
+                        if(bookUtils.addBook(editText.getText().toString(),"1"))
+                            Toast.makeText(getApplicationContext(),"添加成功",Toast.LENGTH_SHORT);
+                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
                     }
                 });
         inputDialog.setNegativeButton("取消",
@@ -117,14 +126,23 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+
+        UserUtils userUtils = new UserUtils(this);
+        String token = userUtils.generateUuid();
+        userUtils.register("1","1996",token);
+        userUtils.login("1");
         mySpinner = (Spinner)findViewById(R.id.spinner_book);
-        //第二步：为下拉列表定义一个适配器，这里就用到里前面定义的list。
-        bookAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, book);
+//        第二步：为下拉列表定义一个适配器，这里就用到里前面定义的list
+        list_books = bookUtils.getAllBooks("1");
+        for(Book list_book:list_books){
+            bookName.add(list_book.getName());
+        }
+        bookAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, bookName);
         //第三步：为适配器设置下拉列表下拉时的菜单样式。
         bookAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //第四步：将适配器添加到下拉列表上
         mySpinner.setAdapter(bookAdapter);
-        bookAdapter.add("默认账本");
+        //bookAdapter.add("默认账本");
         bookAdapter.add("＋");
         //第五步：为下拉列表设置各种事件的响应，这个事响应菜单被选中
         mySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
@@ -146,17 +164,20 @@ public class MainActivity extends AppCompatActivity
         //String newRecord = " ";
 //        com.cirnoteam.accountingassistant.entity.Record newRecord = new com.cirnoteam.accountingassistant.entity.Record();
         RecordUtils recordUtils = new RecordUtils(this);
+        records = recordUtils.queryBuilder();
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
-        for(int i = 4;i >0;i--) {
-            if(recordUtils.getRecordById((long)i).equals(null))
-                break;
+        int i = 0;
+        for(com.cirnoteam.accountingassistant.entity.Record _record : records) {
+//            if(recordUtils.getRecordById((long)i).equals(null))
+//                break;
+
             String newRecord = " ";
-            newRecord += fm.format(recordUtils.getRecordById((long)i).getTime());
+            newRecord += fm.format(_record.getTime());
             newRecord += " ";
-            newRecord += recordUtils.getRecordById((long)i).getExpense()?"收入 ":"支出 ";
-            newRecord += recordUtils.getRecordById((long)i).getAmount();
+            newRecord += _record.getExpense()?"收入 ":"支出 ";
+            newRecord += _record.getAmount();
             newRecord += " ";
-            switch (recordUtils.getRecordById((long)i).getType()){
+            switch (_record.getType()){
                 case 0:newRecord += " 一日三餐";
                     break;
                 case 1:newRecord += " 购物消费";
@@ -181,6 +202,9 @@ public class MainActivity extends AppCompatActivity
 
 
             record.add(newRecord);
+            i++;
+            if(i == 4)
+                break;
         }
 //        record.add("撒打算打算");
         myListView = (ListView) findViewById(R.id.listview);

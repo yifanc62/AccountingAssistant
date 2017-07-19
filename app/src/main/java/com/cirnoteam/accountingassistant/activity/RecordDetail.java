@@ -182,7 +182,7 @@ public class RecordDetail extends AppCompatActivity {
         newRec.setType(type);
         newRec.setTime(time);
         newRec.setRemark(remark);
-        if(u.updateRecord(newRec))
+        if(u.updateRecord(null,1L,expense,(float)amount,remark,type,time))
             Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, com.cirnoteam.accountingassistant.activity.Record.class);
         startActivity(intent);
@@ -197,7 +197,7 @@ public class RecordDetail extends AppCompatActivity {
 
     public void delete(View view){
         RecordUtils u = new RecordUtils(this);
-        if(u.deleteRecordById(recordid))
+        if(u.deleteRecord(recordid))
             Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, com.cirnoteam.accountingassistant.activity.Record.class);
         startActivity(intent);
