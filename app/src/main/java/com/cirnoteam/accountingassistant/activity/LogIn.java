@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.UserUtils;
 
 
 /**
@@ -38,14 +39,17 @@ public class LogIn extends AppCompatActivity {
 
     public void toMainActivity(View view) {
         String password = "";
-        String account = "";
+        String userName = "";
 
         EditText editText1 = (EditText) findViewById(R.id.password);
         password = editText1.getText().toString();
-        EditText editText2 = (EditText) findViewById(R.id.account);
-        account = editText2.getText().toString();
+        EditText editText2 = (EditText) findViewById(R.id.userName);
+        userName = editText2.getText().toString();
 
         AlertDialog empty = new AlertDialog.Builder(this).create();
+        AlertDialog notFoundUser = new AlertDialog.Builder(this).create();
+        AlertDialog mismatch = new AlertDialog.Builder(this).create();
+
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
@@ -56,15 +60,30 @@ public class LogIn extends AppCompatActivity {
         };
         empty.setTitle("输入错误");
         empty.setMessage("输入框不能为空");
-        empty.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
-                listener);
-        if (password.equals("") || account.equals(""))
-            empty.show();
-            //TODO:检验账号密码正确性
+        empty.setButton(DialogInterface.BUTTON_POSITIVE, "确定",listener);
+        mismatch.setTitle("密码错误");
+        mismatch.setMessage("密码与用户名不匹配");
+        mismatch.setButton(DialogInterface.BUTTON_POSITIVE, "确定",listener);
+        notFoundUser.setTitle("用户名错误");
+        notFoundUser.setMessage("未找到该用户");
+        notFoundUser.setButton(DialogInterface.BUTTON_POSITIVE, "确定",listener);
 
+        if (password.equals("") || userName.equals(""))
+            empty.show();
         else {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            //TODO:检验账号密码正确性
+            UserUtils userUtils = new UserUtils(this);
+            try{
+                if(userUtils.getUser(userName).getPassword().equals(password)){
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                }
+                else
+                    mismatch.show();
+            }
+            catch (Exception e){
+                notFoundUser.show();
+            }
         }
     }
 }

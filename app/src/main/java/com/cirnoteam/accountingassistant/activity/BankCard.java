@@ -63,8 +63,8 @@ public class BankCard extends AppCompatActivity {
         int i = 0;
         for(Account account:accounts){
             Map<String, Object> listItem = new HashMap<String, Object>();
-            listItem.put("bankcardname", account.getName());
-            listItem.put("bankcardnumber", getTypeName(account));
+            listItem.put("accountNumber", account.getName());
+            listItem.put("accountName", getTypeName(account)+" 余额:"+account.getBalance());
             listItems.add(listItem);
             map[i] = accounts.get(i).getId();
             i++;
@@ -73,19 +73,24 @@ public class BankCard extends AppCompatActivity {
 
         //创建一个SimpleAdapter
         SimpleAdapter simpleAdapter = new SimpleAdapter(this, listItems, R.layout.simple_item,
-                new String[]{"bankcardname", "bankcardnumber"},
+                new String[]{"accountNumber", "accountName"},
                 new int[]{R.id.bankcardname, R.id.bankcardnumber});
         ListView list = (ListView) findViewById(R.id.BankCardListView);
         //为ListView设置Adapter
         list.setAdapter(simpleAdapter);
 
         final AlertDialog delete = new AlertDialog.Builder(this).create();
+        final AlertDialog errorDelete = new AlertDialog.Builder(this).create();
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                delete.show();
-                item = finalMap[i];
-                Toast.makeText(getApplicationContext(),String.valueOf(i),Toast.LENGTH_SHORT).show();
+                if(i == 0)
+                    errorDelete.show();
+                else {
+                    delete.show();
+                    item = finalMap[i];
+                    Toast.makeText(getApplicationContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
+                }
             }
         });
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
@@ -102,12 +107,24 @@ public class BankCard extends AppCompatActivity {
                 }
             }
         };
+        DialogInterface.OnClickListener listener_2 = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case AlertDialog.BUTTON_POSITIVE:
+                        break;
+                }
+            }
+        };
         delete.setTitle("删除数据");
         delete.setMessage("是否要删除这一行的数据？");
         delete.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
                 listener);
         delete.setButton(DialogInterface.BUTTON_NEGATIVE, "取消",
                 listener);
+        errorDelete.setTitle("不可删除");
+        errorDelete.setMessage("该账户为默认账户，不可删除");
+        errorDelete.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
+                listener_2);
 
 
     }
@@ -145,13 +162,27 @@ public class BankCard extends AppCompatActivity {
     }
 
     public String getTypeName(Account account){
-        String string = new String();
-        if(account.getType().equals(0))
-            string = "支付宝";
-        if(account.getType().equals(1))
-            string = "银行卡";
-        if(account.getType().equals(2))
-            string = "现金";
-        return string;
+        switch (account.getType()){
+        case 0:
+        return "现金";
+        case 1:
+        return "银行卡";
+        case 2:
+        return "支付宝余额";
+        case 3:
+        return "QQ钱包余额";
+        case 4:
+        return "微信余额";
+        case 5:
+        return "余额宝";
+        case 6:
+        return "交通卡";
+        case 7:
+        return "储值卡";
+        case 8:
+        return "校园卡";
+        default:
+        return "其他账户";
+        }
     }
 }

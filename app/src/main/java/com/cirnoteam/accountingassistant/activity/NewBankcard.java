@@ -1,5 +1,7 @@
 package com.cirnoteam.accountingassistant.activity;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -42,9 +44,16 @@ public class NewBankcard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newbankcard);
 
-        list_type.add("支付宝");
-        list_type.add("银行卡");
         list_type.add("现金");
+        list_type.add("银行卡");
+        list_type.add("支付宝余额");
+        list_type.add("QQ钱包余额");
+        list_type.add("微信余额");
+        list_type.add("余额宝");
+        list_type.add("交通卡");
+        list_type.add("储值卡");
+        list_type.add("校园卡");
+        list_type.add("其他账户");
 
         spinner_type = (Spinner) findViewById(R.id.spinner_type);
         adapter_type = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_type);
@@ -68,15 +77,27 @@ public class NewBankcard extends AppCompatActivity {
 
     public void createAccount(View view) {
         EditText editText_account = (EditText) findViewById(R.id.account_id);
-
-//        Account account = new Account();
-//        account.setBook(new Book());
-//        account.setBookid((long) 1);
-//        account.setName(editText_account.getText().toString());
-//        account.setType(Integer.valueOf(type));
-        AccountUtils accountUtils = new AccountUtils(this);
+        AlertDialog empty = new AlertDialog.Builder(this).create();
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case AlertDialog.BUTTON_POSITIVE:
+                        break;
+                }
+            }
+        };
+        empty.setTitle("输入错误");
+        empty.setMessage("输入框不能为空");
+        empty.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
+                listener);
+        if(editText_account.getText().toString().equals(null)){
+            empty.show();
+        }
+        else{
+            AccountUtils accountUtils = new AccountUtils(this);
         if (accountUtils.addAccount(1L,Integer.valueOf(type),10000F,editText_account.getText().toString()))
             Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
+        }
 //        if(!TextUtils.isEmpty(editText_account.getText()))
 //            account = editText_account.getText().toString();
 //        else

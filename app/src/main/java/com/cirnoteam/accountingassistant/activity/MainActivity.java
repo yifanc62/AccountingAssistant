@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity
     private List<com.cirnoteam.accountingassistant.entity.Record> records = new ArrayList<com.cirnoteam.accountingassistant.entity.Record>();
     //private Book book = new Book();
     private BookUtils bookUtils = new BookUtils(this);
+    private UserUtils userUtils = new UserUtils(this);
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -87,8 +88,8 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //bookAdapter.insert(editText.getText().toString(),0);
-                        if(bookUtils.addBook(editText.getText().toString(),"1"))
-                            Toast.makeText(getApplicationContext(),"添加成功",Toast.LENGTH_SHORT);
+                        if(bookUtils.addBook(editText.getText().toString(),"UZ"))
+                            Toast.makeText(getApplicationContext(),"添加成功",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         startActivity(intent);
@@ -127,13 +128,13 @@ public class MainActivity extends AppCompatActivity
         });
 
 
-        UserUtils userUtils = new UserUtils(this);
-        String token = userUtils.generateUuid();
-        userUtils.register("1","1996",token);
-        userUtils.login("1");
+//        UserUtils userUtils = new UserUtils(this);
+//        String token = userUtils.generateUuid();
+//        userUtils.register("1","1996",token);
+//        userUtils.login("1");
         mySpinner = (Spinner)findViewById(R.id.spinner_book);
 //        第二步：为下拉列表定义一个适配器，这里就用到里前面定义的list
-        list_books = bookUtils.getAllBooks("1");
+        list_books = bookUtils.getAllBooks("UZ");
         for(Book list_book:list_books){
             bookName.add(list_book.getName());
         }
