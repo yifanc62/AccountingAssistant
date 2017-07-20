@@ -7,7 +7,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,33 +28,16 @@ import java.util.List;
  */
 
 public class BankCard extends AppCompatActivity {
-//    private String[] bankcardnames = new String[]
-//            {"支付宝1","银行卡1","现金1"};
-//
-//    private String[] bankcardnumbers = new String[]
-//            {"123", "456", "789",};
     private List<Account> accounts = new ArrayList<Account>();
     public long item;
-    public void toNewBankcard(View view) {
-        Intent intent = new Intent(this, NewBankcard.class);
-        startActivity(intent);
-        finish();
-    }
 
-//    public void toBankcard(View view) {
-//        Intent intent = new Intent(this, BankCard.class);
-//        startActivity(intent);
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bank_card);
-        
-        //String[] bankcardnames = ReadDB.readAccount(this.getFilesDir().toString());
         AccountUtils accountUtils = new AccountUtils(this);
         accounts = accountUtils.getAllAccounts(1L);
-        //创建一个List集合，集合的元素是Map
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_user);
@@ -156,8 +138,6 @@ public class BankCard extends AppCompatActivity {
         }
 
     };
-
-
     public void deleteAccountRecord(long id){
         AccountUtils accountUtils = new AccountUtils(this);
         accountUtils.deleteAccount(id);
@@ -172,11 +152,11 @@ public class BankCard extends AppCompatActivity {
         case 1:
         return "银行卡";
         case 2:
-        return "支付宝余额";
+        return "支付宝";
         case 3:
-        return "QQ钱包余额";
+        return "QQ钱包";
         case 4:
-        return "微信余额";
+        return "微信";
         case 5:
         return "余额宝";
         case 6:
@@ -188,5 +168,10 @@ public class BankCard extends AppCompatActivity {
         default:
         return "其他账户";
         }
+    }
+    public void toNewBankcard(View view) {
+        Intent intent = new Intent(this, NewBankcard.class);
+        startActivity(intent);
+        finish();
     }
 }

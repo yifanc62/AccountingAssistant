@@ -65,7 +65,7 @@ public class AccountUtils {
         return flag;
     }
 
-    private String getDefaultAccountName(Integer type) {
+    public String getDefaultAccountName(Integer type) {
         switch (type) {
             case 0:
                 return "现金";
@@ -222,5 +222,12 @@ public class AccountUtils {
             flag = false;
         }
         return flag;
+    }
+    /*
+    查询账本的所有账户
+     */
+    public List<Account> getAccountsOfBook(Long bookid){
+        QueryBuilder<Account> queryBuilder = daoManager.getDaoSession().queryBuilder(Account.class);
+        return queryBuilder.where(AccountDao.Properties.Bookid.eq(bookid)).list();
     }
 }

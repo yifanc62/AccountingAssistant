@@ -40,8 +40,6 @@
         android:layout_above="@+id/navigation"
         android:layout_below="@+id/activity_record_toolbar"
         android:childDivider="#efefef"
-        android:divider="#efefef"
-        android:dividerHeight="1dp"
         android:groupIndicator="@null"
         android:scrollbars="none"
         android:layout_marginStart="8dp"

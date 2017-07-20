@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //bookAdapter.insert(editText.getText().toString(),0);
-                        if(bookUtils.addBook(editText.getText().toString(),userUtils.getCurrentUsername()))
+                        if(bookUtils.addBook(userUtils.getCurrentUsername(),editText.getText().toString()))
                             Toast.makeText(getApplicationContext(),"添加成功",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

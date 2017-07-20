@@ -1,5 +1,6 @@
 package com.cirnoteam.accountingassistant.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
 /**
@@ -10,5 +11,4 @@ public class Status extends AppCompatActivity {
     public static String username;
     public static int bookid;
     public static int month = 0;
-    public static int id;
 }

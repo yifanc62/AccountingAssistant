@@ -148,6 +148,12 @@ public class Record extends AppCompatActivity {
             };
             private String[] armType = dayF;
             private List<List<String>> arms = recordF;
+            public void setArmType(String[] str){
+                armType = str;
+            }
+            public void setArms(List<List<String>> list){
+                arms = list;
+            }
             //private String[][] arms = {{"o","p","q"},{"r","s","t"},{"1","3","5","10"}};
             private TextView getTextView(){
                 AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,64);
@@ -268,9 +274,9 @@ public class Record extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 Intent intent = new Intent(getApplicationContext(),RecordDetail.class);
-                intent.putExtra("extra_data", recordidF.get(groupPosition).get(childPosition));
+                intent.putExtra("recordid", recordidF.get(groupPosition).get(childPosition));
+                intent.putExtra("backpage", 0);//标记返回界面
                 startActivity(intent);
-                finish();
                 return true;
             }
         });
@@ -295,6 +301,11 @@ public class Record extends AppCompatActivity {
                 arg0.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
     }
 
     public void initActionBar() {
