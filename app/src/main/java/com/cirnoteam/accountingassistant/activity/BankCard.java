@@ -7,6 +7,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,9 +29,9 @@ import java.util.List;
  */
 
 public class BankCard extends AppCompatActivity {
+
     private List<Account> accounts = new ArrayList<Account>();
     public long item;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +139,8 @@ public class BankCard extends AppCompatActivity {
         }
 
     };
+
+
     public void deleteAccountRecord(long id){
         AccountUtils accountUtils = new AccountUtils(this);
         accountUtils.deleteAccount(id);
