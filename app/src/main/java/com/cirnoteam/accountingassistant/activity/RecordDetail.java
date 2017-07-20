@@ -134,7 +134,7 @@ public class RecordDetail extends AppCompatActivity {
                     op.setText(" -");
                 else if(arg2 == 1)
                     op.setText(" +");
-                expense = arg2==0;
+                expense = !(arg2==0);
                 //Toast.makeText(getApplicationContext(), adapter_inout.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }

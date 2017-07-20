@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -41,7 +42,8 @@ public class MainActivity extends AppCompatActivity
     private List<String> bookName = new ArrayList<>();
     private List<String> record = new ArrayList<>();
     private List<Book> list_books = new ArrayList<>();
-    private List<Long> list_id = new ArrayList<>();
+    private List<Long> list_book_id = new ArrayList<>();
+    private List<Long> list_record_id = new ArrayList<>();
     private ImageButton leftmenu;
     private TextView mDate;
     private Spinner mySpinner;
@@ -98,19 +100,8 @@ public class MainActivity extends AppCompatActivity
 //                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
 //                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 //                        startActivity(intent);
-                            //刷新adapter
-                            bookAdapter.clear();
-                            list_id.clear();
-                            list_books = bookUtils.getAllBooks(userUtils.getCurrentUsername());
-                            for(Book list_book:list_books){
-                                bookAdapter.add(list_book.getName());
-                                list_id.add(list_book.getId());
-                            }
-                            Status.bookid = list_books.get(list_books.size()-1).getId();//此处获得的最后一个账本的id，可能不是刚添加的账本，待优化
-                            bookAdapter.add("＋");
-                            mySpinner.setSelection(bookAdapter.getPosition(bookUtils.getBook(id).getName()));
-                            //mySpinner.setSelection(bookAdapter.getPosition(list_books.get(list_books.size()-1).getName()));//设置当前选项
-                            bookAdapter.notifyDataSetChanged();
+                            //刷新spinner
+                            reSetSpinner();
                         }
                     }
                 });
@@ -148,53 +139,37 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        reSetSpinner();//调用设spinner值方法
 
-//        UserUtils userUtils = new UserUtils(this);
-//        String token = userUtils.generateUuid();
-//        userUtils.register("1","1996",token);
-//        userUtils.login("1");
-        mySpinner = (Spinner)findViewById(R.id.spinner_book);
-//        第二步：为下拉列表定义一个适配器，这里就用到里前面定义的list
-        list_books = bookUtils.getAllBooks(userUtils.getCurrentUsername());
-        for(Book list_book:list_books){
-            bookName.add(list_book.getName());
-            list_id.add(list_book.getId());
-        }
-        bookAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, bookName);
-        Status.bookid = list_id.get(0);
-        bookAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //第四步：将适配器添加到下拉列表上
-        mySpinner.setAdapter(bookAdapter);
-        //bookAdapter.add("默认账本");
-        bookAdapter.add("＋");
-        //第五步：为下拉列表设置各种事件的响应，这个事响应菜单被选中
-        mySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+        reSetList();//调用设流水列表值方法
+
+        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                if (arg2 == (bookAdapter.getPosition("＋"))) {
-                    showInputDialog();
-                    arg0.setVisibility(View.VISIBLE);
-                } else{
-                    Status.bookid = list_id.get(arg2);
-                    // TODO 刷新主界面（下面的四条流水）
-                }
-                arg0.setVisibility(View.VISIBLE);
-            }
-
-            public void onNothingSelected(AdapterView<?> arg0) {
-                arg0.setVisibility(View.VISIBLE);
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(), Record.class);
+                intent.putExtra("recordid", list_record_id.get(i));
+                startActivity(intent);
             }
         });
-        //String newRecord = " ";
-//        com.cirnoteam.accountingassistant.entity.Record newRecord = new com.cirnoteam.accountingassistant.entity.Record();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(Status.bookid != null)
+            mySpinner.setSelection(bookAdapter.getPosition(bookUtils.getBook(Status.bookid).getName()));
+        reSetList();//调用设置方法以刷新
+        reSetSpinner();
+    }
+
+    private void reSetList(){//刷新、设置list的值
+        list_record_id.clear();
+        record.clear();
         RecordUtils recordUtils = new RecordUtils(this);
-        records = recordUtils.queryBuilder();
+        records = recordUtils.queryBuilder();//TODO 待完善，应改为查询当前账本
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
         int i = 0;
         for(com.cirnoteam.accountingassistant.entity.Record _record : records) {
-//            if(recordUtils.getRecordById((long)i).equals(null))
-//                break;
-
             String newRecord = " ";
             newRecord += fm.format(_record.getTime());
             newRecord += " ";
@@ -223,33 +198,54 @@ public class MainActivity extends AppCompatActivity
                 case 9:newRecord += " 其他收入";
                     break;
             }
-
-
+            list_record_id.add(_record.getId());
             record.add(newRecord);
             i++;
             if(i == 4)
                 break;
         }
-//        record.add("撒打算打算");
         myListView = (ListView) findViewById(R.id.listview);
         myListView.setDividerHeight(5);
         recordAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, record);
         myListView.setAdapter(recordAdapter);
-
-
-        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getApplicationContext(), Chart.class);
-                startActivity(intent);
-            }
-        });
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        mySpinner.setSelection(bookAdapter.getPosition(bookUtils.getBook(Status.bookid).getName()));
+    private void reSetSpinner(){
+        list_book_id.clear();
+        bookName.clear();
+        mySpinner = (Spinner)findViewById(R.id.spinner_book);
+//        第二步：为下拉列表定义一个适配器，这里就用到里前面定义的list
+        list_books = bookUtils.getAllBooks(userUtils.getCurrentUsername());
+        for(Book list_book:list_books){
+            bookName.add(list_book.getName());
+            list_book_id.add(list_book.getId());
+        }
+        bookAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, bookName);
+        if(list_book_id.size()!=0)
+            Status.bookid = list_book_id.get(0);
+        bookAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //第四步：将适配器添加到下拉列表上
+        mySpinner.setAdapter(bookAdapter);
+        //bookAdapter.add("默认账本");
+        bookAdapter.add("＋");
+        //第五步：为下拉列表设置各种事件的响应，这个事响应菜单被选中
+        mySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                if (arg2 == (bookAdapter.getPosition("＋"))) {
+                    showInputDialog();
+                    arg0.setVisibility(View.VISIBLE);
+                } else{
+                    Status.bookid = list_book_id.get(arg2);
+                    reSetList();//调用设值方法以刷新
+                }
+                arg0.setVisibility(View.VISIBLE);
+            }
+
+            public void onNothingSelected(AdapterView<?> arg0) {
+                arg0.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

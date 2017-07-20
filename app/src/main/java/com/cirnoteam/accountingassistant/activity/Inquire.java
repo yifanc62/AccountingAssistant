@@ -221,7 +221,7 @@ public class Inquire extends AppCompatActivity {
     }
 
     public void inquire(View view) {
-        final List<Long> list_id = new ArrayList<>();
+        List<Long> list_id = new ArrayList<>();
         EditText editText = (EditText) findViewById(R.id.text_inquire);
         inquire = editText.getText().toString();
         List<String> list_result = new ArrayList<String>();
@@ -266,6 +266,7 @@ public class Inquire extends AppCompatActivity {
             list_result.add(newRecord);
             list_id.add(records.get(i).getId());
         }
+        final List<Long> list_idF = list_id;
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(Inquire.this, android.R.layout.simple_list_item_1, list_result);
         listView = (ListView) findViewById(R.id.listview_result);
@@ -276,7 +277,7 @@ public class Inquire extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getApplicationContext(), RecordDetail.class);
-                intent.putExtra("recordid", list_id.get(i));//传递流水id
+                intent.putExtra("recordid", list_idF.get(i));//传递流水id
                 startActivity(intent);
             }
         });

@@ -121,14 +121,14 @@ public class BankCard extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    Intent intentToMain = new Intent(BankCard.this, MainActivity.class);
-                    intentToMain.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intentToMain);
+                    finish();
+                    overridePendingTransition(0,0);
                     return true;
                 case R.id.navigation_record:
                     Intent intentToRecord = new Intent(BankCard.this, Record.class);
-                    intentToRecord.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intentToRecord);
+                    finish();
+                    overridePendingTransition(0,0);
                     return true;
                 case R.id.navigation_user:
 
@@ -175,6 +175,5 @@ public class BankCard extends AppCompatActivity {
     public void toNewBankcard(View view) {
         Intent intent = new Intent(this, NewBankcard.class);
         startActivity(intent);
-        finish();
     }
 }

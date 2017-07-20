@@ -49,17 +49,16 @@ public class Record extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    Intent intentToMain = new Intent(Record.this, MainActivity.class);
-                    intentToMain.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intentToMain);
+                    finish();
+                    overridePendingTransition(0,0);
                     return true;
                 case R.id.navigation_record:
-
                     return true;
                 case R.id.navigation_user:
                     Intent intentToUser = new Intent(Record.this, BankCard.class);
-                    intentToUser.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intentToUser);
+                    finish();
+                    overridePendingTransition(0,0);
                     return true;
             }
             return false;
@@ -68,10 +67,14 @@ public class Record extends AppCompatActivity {
 
     };
 
-
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         //获取当月所有日期数组
         Calendar cal = Calendar.getInstance();
@@ -300,11 +303,6 @@ public class Record extends AppCompatActivity {
                 arg0.setVisibility(View.VISIBLE);
             }
         });
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
     }
 
     public void initActionBar() {

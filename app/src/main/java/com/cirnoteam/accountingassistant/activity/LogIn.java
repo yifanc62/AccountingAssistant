@@ -26,16 +26,16 @@ public class LogIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_in);
 
-        try{
-            UserUtils userUtils = new UserUtils(this);
-            userUtils.getCurrentUser();
-            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-
-            startActivity(intent);
-        }
-        catch (Exception e){
-            Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
-        }
+//        try{
+//            UserUtils userUtils = new UserUtils(this);
+//            userUtils.getCurrentUser();
+//            finish();
+//            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+//            startActivity(intent);
+//        }
+//        catch (Exception e){
+//            Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
+//        }
 
     }
 
@@ -87,6 +87,7 @@ public class LogIn extends AppCompatActivity {
             UserUtils userUtils = new UserUtils(this);
             try{
                 if(userUtils.getUser(userName).getPassword().equals(password)){
+                    finish();
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
                 }
