@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
     private List<String> bookName = new ArrayList<>();
     private List<String> record = new ArrayList<>();
     private List<Book> list_books = new ArrayList<>();
+    private List<Long> list_id = new ArrayList<>();
     private ImageButton leftmenu;
     private TextView mDate;
     private Spinner mySpinner;
@@ -88,17 +89,32 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //bookAdapter.insert(editText.getText().toString(),0);
-                        if(bookUtils.addBook(userUtils.getCurrentUsername(),editText.getText().toString()))
-                            Toast.makeText(getApplicationContext(),"添加成功",Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        startActivity(intent);
+                        if(bookUtils.addBook(userUtils.getCurrentUsername(),editText.getText().toString())) {
+                            Toast.makeText(getApplicationContext(), "添加成功", Toast.LENGTH_SHORT).show();
+//                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                        startActivity(intent);
+                            //刷新adapter
+                            bookAdapter.clear();
+                            list_id.clear();
+                            list_books = bookUtils.getAllBooks(userUtils.getCurrentUsername());
+                            for(Book list_book:list_books){
+                                bookAdapter.add(list_book.getName());
+                                list_id.add(list_book.getId());
+                            }
+                            Status.bookid = list_books.get(list_books.size()-1).getId();//此处获得的最后一个账本的id，可能不是刚添加的账本，待优化
+                            bookAdapter.add("＋");
+                            mySpinner.setSelection(bookAdapter.getPosition(list_books.get(list_books.size()-1).getName()));//设置当前选项
+                            bookAdapter.notifyDataSetChanged();
+                        }
                     }
                 });
         inputDialog.setNegativeButton("取消",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        mySpinner.setSelection(bookAdapter.getPosition(bookUtils.getBook(Status.bookid).getName()));
+                        //把spinner的当前选项还原为正确选项
                     }
                 });
         inputDialog.show();
@@ -137,6 +153,7 @@ public class MainActivity extends AppCompatActivity
         list_books = bookUtils.getAllBooks(userUtils.getCurrentUsername());
         for(Book list_book:list_books){
             bookName.add(list_book.getName());
+            list_id.add(list_book.getId());
         }
         bookAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, bookName);
         //第三步：为适配器设置下拉列表下拉时的菜单样式。
@@ -152,13 +169,14 @@ public class MainActivity extends AppCompatActivity
                 if (arg2 == (bookAdapter.getPosition("＋"))) {
                     showInputDialog();
                     arg0.setVisibility(View.VISIBLE);
-                } else
+                } else{
+                    Status.bookid = list_id.get(arg2);
+                    // TODO 刷新主界面（下面的四条流水）
+                }
                 arg0.setVisibility(View.VISIBLE);
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
                 arg0.setVisibility(View.VISIBLE);
             }
         });
@@ -221,6 +239,12 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        mySpinner.setSelection(bookAdapter.getPosition(bookUtils.getBook(Status.bookid).getName()));
     }
 
     @Override

@@ -38,7 +38,7 @@ public class BankCard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bank_card);
         AccountUtils accountUtils = new AccountUtils(this);
-        accounts = accountUtils.getAllAccounts(1L);
+        accounts = accountUtils.getAllAccounts(Status.bookid);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_user);

@@ -95,7 +95,7 @@ public class NewBankcard extends AppCompatActivity {
         }
         else{
             AccountUtils accountUtils = new AccountUtils(this);
-        if (accountUtils.addAccount(1L,Integer.valueOf(type),10000F,editText_account.getText().toString()))
+        if (accountUtils.addAccount(Status.bookid,Integer.valueOf(type),10000F,editText_account.getText().toString()))
             Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
         }
 //        if(!TextUtils.isEmpty(editText_account.getText()))
