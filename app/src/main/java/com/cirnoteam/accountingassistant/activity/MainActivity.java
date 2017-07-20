@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //bookAdapter.insert(editText.getText().toString(),0);
-                        if(bookUtils.addBook(editText.getText().toString(),"UZ"))
+                        if(bookUtils.addBook(userUtils.getCurrentUsername(),editText.getText().toString()))
                             Toast.makeText(getApplicationContext(),"添加成功",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -127,14 +127,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
-//        UserUtils userUtils = new UserUtils(this);
-//        String token = userUtils.generateUuid();
-//        userUtils.register("1","1996",token);
-//        userUtils.login("1");
         mySpinner = (Spinner)findViewById(R.id.spinner_book);
 //        第二步：为下拉列表定义一个适配器，这里就用到里前面定义的list
-        list_books = bookUtils.getAllBooks("UZ");
+        list_books = bookUtils.getAllBooks(userUtils.getCurrentUsername());
         for(Book list_book:list_books){
             bookName.add(list_book.getName());
         }

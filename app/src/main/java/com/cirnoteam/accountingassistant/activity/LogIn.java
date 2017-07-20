@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
 import com.cirnoteam.accountingassistant.database.UserUtils;
@@ -24,6 +25,17 @@ public class LogIn extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_in);
+
+        try{
+            UserUtils userUtils = new UserUtils(this);
+            userUtils.getCurrentUser();
+            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+
+            startActivity(intent);
+        }
+        catch (Exception e){
+            Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
+        }
 
     }
 
