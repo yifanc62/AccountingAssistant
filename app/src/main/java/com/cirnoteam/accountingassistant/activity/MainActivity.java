@@ -1,4 +1,3 @@
-//嘻嘻
 package com.cirnoteam.accountingassistant.activity;
 
 import android.content.Intent;
@@ -297,6 +296,10 @@ public class MainActivity extends AppCompatActivity
 
     public void toInquire(View view) {
         Intent intent = new Intent(this, Inquire.class);
+        startActivity(intent);
+    }
+    public void toChart(View view){
+        Intent intent = new Intent(this,Chart.class);
         startActivity(intent);
     }
 }

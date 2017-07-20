@@ -123,4 +123,13 @@
         android:background="?android:attr/windowBackground"
         app:menu="@menu/navigation" />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="图表"
+        android:onClick="toChart"
+        android:layout_above="@+id/record"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

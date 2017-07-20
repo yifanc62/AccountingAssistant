@@ -38,7 +38,7 @@ public class Chart extends AppCompatActivity {
     private List<Record> list_records = new ArrayList<>();
     private List<String> list_date = new ArrayList<>();
     private ArrayAdapter<String> adapter_date;
-    float[] type = new float[10];
+
     String[] typeName = new String[]{
         "一日三餐","购物消费","水电煤气","交通花费","医疗消费","其他支出","经营获利","工资收入","路上捡钱","其他收入"
     };
@@ -118,6 +118,13 @@ public class Chart extends AppCompatActivity {
                 arg0.setVisibility(View.VISIBLE);
             }
         });
+
+    }
+
+    public void changeChart(View view){
+
+
+        float[] type = new float[10];
         type = typeDivide(startDate,endDate);
 
 
@@ -132,10 +139,10 @@ public class Chart extends AppCompatActivity {
         pieChart.setDragDecelerationFrictionCoef(1f);//设置阻尼系数,范围在[0,1]之间,越小饼状图转动越困难
 
         pieChart.setDrawCenterText(true);//是否绘制中间的文字
-        pieChart.setCenterTextColor(Color.RED);//中间的文字颜色
+        pieChart.setCenterTextColor(Color.argb(0xff,0x87,0xce,0xeb));//中间的文字颜色
         pieChart.setCenterTextSize(16);//中间的文字字体大小
 
-        pieChart.setDrawHoleEnabled(false);//是否绘制饼状图中间的圆
+        pieChart.setDrawHoleEnabled(true);//是否绘制饼状图中间的圆
         pieChart.setHoleColor(Color.WHITE);//饼状图中间的圆的绘制颜色
         pieChart.setHoleRadius(58f);//饼状图中间的圆的半径大小
 
@@ -162,7 +169,8 @@ public class Chart extends AppCompatActivity {
         pieChart.setEntryLabelTextSize(10f);//设置绘制Label的字体大小
 
         //pieChart.setOnChartValueSelectedListener(this);//设值点击时候的回调
-        pieChart.animateY(3400, Easing.EasingOption.EaseInQuad);//设置Y轴上的绘制动画
+        pieChart.animateY(340, Easing.EasingOption.EaseInQuad);
+        //设置Y轴上的绘制动画
         ArrayList<PieEntry> pieEntries = new ArrayList<>();
         //for(Record list_record : list_records){
         for(int i = 9;i >= 0;i--){
@@ -173,8 +181,8 @@ public class Chart extends AppCompatActivity {
         }
         String centerText = "总流水";
         pieChart.setCenterText(centerText);//设置中间的文字
-        PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
-        //pieDataSet.setColors(getPieChartColors());
+        PieDataSet pieDataSet = new PieDataSet(pieEntries,"");
+        pieDataSet.setColors(getPieChartColors());
         pieDataSet.setSliceSpace(3f);//设置选中的Tab离两边的距离
         pieDataSet.setSelectionShift(5f);//设置选中的tab的多出来的
         PieData pieData = new PieData();
@@ -189,8 +197,15 @@ public class Chart extends AppCompatActivity {
         pieChart.highlightValues(null);
         pieChart.invalidate();
     }
+
+    private int[] getPieChartColors() {
+        int[] color = new int[]{Color.argb(0xff,0x9f,0x79,0xee),Color.argb(0xff,0xdc,0x14,0x3c),Color.argb(0xff,0xee,0xad,0x0e),Color.argb(0xff,0x96,0x96,0x96),Color.argb(0xff,0x8d,0xee,0xee),Color.argb(0xff,0x66,0xcd,0x00),Color.argb(0xff,0x1e,0x90,0xff),Color.argb(0xff,0xcd,0x33,0x33),Color.argb(0xff,0xcd,0xc1,0xc5),Color.argb(0xff,0xff,0x8c,0x69)};
+                return color;
+    }
+
     public float[] typeDivide(Date startDate,Date endDate){
-        for(int i = 10;i > 0;i--){
+        float[] type = new float[10];
+        for(int i = 9;i >= 0;i--){
             list_records = recordUtils.searchRecord(1L,startDate,endDate,
                 null,
                 i,

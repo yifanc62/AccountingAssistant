@@ -16,5 +16,15 @@
         android:layout_height="320dip"
         android:layout_below="@id/spinner_date"/>
 
+    <Button
+        android:id="@+id/change_chart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pie_chart"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="21dp"
+        android:text="点击生成图表"
+        android:onClick="changeChart"/>
+
 
 </RelativeLayout>
