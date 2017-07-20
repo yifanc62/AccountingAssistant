@@ -1,5 +1,6 @@
 package com.cirnoteam.accountingassistant.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -11,7 +12,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.AccountUtils;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
+import com.cirnoteam.accountingassistant.entity.Account;
 import com.cirnoteam.accountingassistant.entity.Record;
 
 import java.text.SimpleDateFormat;
@@ -30,10 +33,10 @@ import static com.cirnoteam.accountingassistant.R.id.time_edit;
 public class NewRecord extends AppCompatActivity {
     //将要直接插入数据库的临时变量
     String remark;
-    String account;
     float amount;
     boolean expense;
     int type;
+    Long accountid;
     Date time;
 
     private List<String> list_inout = new ArrayList<String>();
@@ -62,10 +65,14 @@ public class NewRecord extends AppCompatActivity {
         list_type.add("工资收入");
         list_type.add("路上捡钱");
         list_type.add("其他收入");
-        while (true) {
-            //TODO 查询数据库中的账户表，添加到list_account
-            break;
+        AccountUtils u = new AccountUtils(this);
+        List<Account> list_accounts = u.getAccountsOfBook(1L);
+        List<Long> list_id = new ArrayList<>();
+        for(int i=0;i<list_accounts.size();i++){
+            list_account.add(u.getDefaultAccountName(list_accounts.get(i).getType()) + " " + list_accounts.get(i).getName());
+            list_id.add(list_accounts.get(i).getId());
         }
+        final List<Long> list_idF = list_id;
 
 
         spinner_inout = (Spinner) findViewById(R.id.spinner_inout);
@@ -115,7 +122,7 @@ public class NewRecord extends AppCompatActivity {
         spinner_account.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-                account = adapter_account.getItem(arg2).toString();
+                accountid = list_idF.get(arg2);
                 //Toast.makeText(getApplicationContext(), adapter_account.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -152,16 +159,14 @@ public class NewRecord extends AppCompatActivity {
             record.setRemark(remark);
             record.setType(type);
             record.setTime(time);
-            record.setAccountid(1L);
+            record.setAccountid(accountid);
             RecordUtils u = new RecordUtils(this);
-            if(u.insertRecord(record))//这句崩
+            if(u.addRecord(accountid,expense,amount,remark,type,time))
                 Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
             finish();
     }
 
     public void back(View view) {
-        //Intent intent = new Intent(this, MainActivity.class);
-        //startActivity(intent);
         finish();
     }
 }

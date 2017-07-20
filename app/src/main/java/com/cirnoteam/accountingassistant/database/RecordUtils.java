@@ -12,6 +12,8 @@ import com.cirnoteam.accountingassistant.gen.UserDao;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.text.DateFormat;
+import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -27,7 +29,7 @@ import static com.cirnoteam.accountingassistant.database.DaoManager.TAG;
  * 流水操作类
  *
  * @author Yifan
- * @version 0.8
+ * @version 1.2
  */
 
 public class RecordUtils {
@@ -74,10 +76,10 @@ public class RecordUtils {
      * 查询某天的流水
      */
     public List<Record> readRecordOfDday(Date date){
-        GregorianCalendar gc=new GregorianCalendar();
-        gc.setTime(date);
-        gc.add(Calendar.DAY_OF_MONTH, -1);
-        Date date1 = gc.getTime();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)-1);
+        Date date1 = cal.getTime();
         QueryBuilder<Record> queryBuilder = daoManager.getDaoSession().queryBuilder(Record.class);
         List<Record> list = queryBuilder.where(RecordDao.Properties.Time.between(date1,date)).list();
         return list;
@@ -160,9 +162,9 @@ public class RecordUtils {
             if (endDate != null) {
                 Calendar calendarEnd = Calendar.getInstance();
                 calendarEnd.setTime(endDate);
-                calendarEnd.set(Calendar.HOUR_OF_DAY, 0);
-                calendarEnd.set(Calendar.MINUTE, 0);
-                calendarEnd.set(Calendar.SECOND, 0);
+                calendarEnd.set(Calendar.HOUR_OF_DAY, 23);
+                calendarEnd.set(Calendar.MINUTE, 59);
+                calendarEnd.set(Calendar.SECOND, 59);
                 endDate = calendarEnd.getTime();
                 builder = builder.where(RecordDao.Properties.Time.between(startDate, endDate));
             } else {

@@ -10,13 +10,17 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.AccountUtils;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
 import com.cirnoteam.accountingassistant.entity.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,19 +28,25 @@ import java.util.List;
  */
 
 public class Inquire extends AppCompatActivity {
-    String date, type, account, inquire;
+    String inquire;
+    Date startDate, endDate;
+    Long accountId;
+    int type, expenseFlag;
     float amount = 0;
+    boolean expense;
     private List<String> list_date = new ArrayList<String>();
     private List<String> list_type = new ArrayList<String>();
     private List<String> list_account = new ArrayList<String>();
-    private List<String> list_result = new ArrayList<String>();
+    private List<String> list_expense = new ArrayList<String>();
     private Spinner spinner_date;
     private Spinner spinner_type;
     private Spinner spinner_account;
+    private Spinner spinner_expense;
     private ListView listView;
     private ArrayAdapter<String> adapter_date;
     private ArrayAdapter<String> adapter_type;
     private ArrayAdapter<String> adapter_account;
+    private ArrayAdapter<String> adapter_expense;
     private ArrayAdapter<String> recordAdapter;
     private String[] data = {};
     private List<com.cirnoteam.accountingassistant.entity.Record> records = new ArrayList<com.cirnoteam.accountingassistant.entity.Record>();
@@ -48,15 +58,6 @@ public class Inquire extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(Inquire.this, android.R.layout.simple_list_item_1, data);
         listView = (ListView) findViewById(R.id.listview_result);
         listView.setAdapter(adapter);
-
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getApplicationContext(), RecordDetail.class);
-                startActivity(intent);
-            }
-        });
 
         list_date.add("全期间");
         list_date.add("本日");
@@ -76,24 +77,32 @@ public class Inquire extends AppCompatActivity {
         list_type.add("其他收入");
 
         list_account.add("所有账户");
-        list_account.add("账户1");
-        list_account.add("账户2");
-
+        AccountUtils u = new AccountUtils(this);
+        final List<Account> list_accounts = u.getAccountsOfBook(1L);
+        for(int i=0;i<list_accounts.size();i++) {
+            list_account.add(u.getDefaultAccountName(list_accounts.get(i).getType()) + " " + list_accounts.get(i).getName());
+            //获得账户类型名称和账户名字，填入spinner
+        }
+        list_expense.add("全部");
+        list_expense.add("收入");
+        list_expense.add("支出");
 
         spinner_date = (Spinner) findViewById(R.id.spinner_date);
         spinner_type = (Spinner) findViewById(R.id.spinner_type);
         spinner_account = (Spinner) findViewById(R.id.spinner_account);
+        spinner_expense = (Spinner) findViewById(R.id.spinner_expense);
         adapter_date = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_date);
         adapter_type = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_type);
         adapter_account = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_account);
+        adapter_expense = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_expense);
         spinner_date.setAdapter(adapter_date);
         spinner_type.setAdapter(adapter_type);
         spinner_account.setAdapter(adapter_account);
+        spinner_expense.setAdapter(adapter_expense);
 
         spinner_type.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
-                type = adapter_type.getItem(arg2).toString();
+                type = arg2==0 ? -1 : arg2-1;
                 //Toast.makeText(getApplicationContext(), adapter_type.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -106,8 +115,7 @@ public class Inquire extends AppCompatActivity {
 
         spinner_account.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
-                account = adapter_type.getItem(arg2).toString();
+                accountId = arg2==0 ? -1L : list_accounts.get(arg2-1).getId();
                 ///Toast.makeText(getApplicationContext(), adapter_account.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -120,8 +128,71 @@ public class Inquire extends AppCompatActivity {
 
         spinner_date.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                Calendar cal = Calendar.getInstance();
+                try {
+                    switch (arg2) {
+                        case 0://全周期
+                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            startDate = df.parse("2015-01-01 00:00:00");
+                            endDate = Calendar.getInstance().getTime();
+                            break;
+                        case 1://本日
+                            cal = Calendar.getInstance();
+                            endDate = cal.getTime();
+                            cal.set(Calendar.HOUR_OF_DAY, 0);
+                            cal.set(Calendar.MINUTE, 0);
+                            cal.set(Calendar.SECOND, 0);
+                            startDate = cal.getTime();
+                            break;
+                        case 2://本周
+                            cal = Calendar.getInstance();
+                            endDate = cal.getTime();
+                            cal.set(Calendar.DAY_OF_WEEK, -5);//存疑，不知道为什么设为零会跳到周六
+                            cal.set(Calendar.HOUR_OF_DAY, 0);
+                            cal.set(Calendar.MINUTE, 0);
+                            cal.set(Calendar.SECOND, 0);
+                            startDate = cal.getTime();
+                            break;
+                        case 3://本月
+                            cal = Calendar.getInstance();
+                            endDate = cal.getTime();
+                            cal.set(Calendar.WEEK_OF_MONTH, 0);
+                            cal.set(Calendar.DAY_OF_WEEK, 0);
+                            cal.set(Calendar.HOUR_OF_DAY, 0);
+                            cal.set(Calendar.MINUTE, 0);
+                            cal.set(Calendar.SECOND, 0);
+                            startDate = cal.getTime();
+                            break;
+                        case 4://本年
+                            cal = Calendar.getInstance();
+                            endDate = cal.getTime();
+                            cal.set(Calendar.MONTH, 0);
+                            cal.set(Calendar.WEEK_OF_MONTH, 0);
+                            cal.set(Calendar.DAY_OF_WEEK, 0);
+                            cal.set(Calendar.HOUR_OF_DAY, 0);
+                            cal.set(Calendar.MINUTE, 0);
+                            cal.set(Calendar.SECOND, 0);
+                            startDate = cal.getTime();
+                            break;
+                    }
+                } catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "日期spinner出错", Toast.LENGTH_SHORT).show();
+                }
+                //Toast.makeText(getApplicationContext(), adapter_date.getItem(arg2), Toast.LENGTH_SHORT).show();
+                arg0.setVisibility(View.VISIBLE);
+            }
 
-                date = adapter_date.getItem(arg2).toString();
+            public void onNothingSelected(AdapterView<?> arg0) {
+                //Toast.makeText(getApplicationContext(), "none", Toast.LENGTH_SHORT).show();
+                arg0.setVisibility(View.VISIBLE);
+            }
+        });
+
+        spinner_expense.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                expenseFlag=arg2;
+                if(expenseFlag==1)expense=true;
+                if(expenseFlag==2)expense=false;
                 //Toast.makeText(getApplicationContext(), adapter_date.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -133,8 +204,8 @@ public class Inquire extends AppCompatActivity {
         });
 
 
-
     }
+
 
     public void initActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -152,23 +223,27 @@ public class Inquire extends AppCompatActivity {
     }
 
     public void inquire(View view) {
+        final List<Long> list_id = new ArrayList<>();
         EditText editText = (EditText) findViewById(R.id.text_inquire);
-        inquire = editText.toString();
-
+        inquire = editText.getText().toString();
+        List<String> list_result = new ArrayList<String>();
         RecordUtils recordUtils = new RecordUtils(this);
-        records = recordUtils.queryBuilder();
-        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
-        long i = 1;
-        for(com.cirnoteam.accountingassistant.entity.Record record:records) {
-//            if(recordUtils.getRecordById(i).equals(null))
-//                break;
+        //records = recordUtils.searchRecord(1L, null, null, null, null, null, null, null, null);
+        records = recordUtils.searchRecord(1L,startDate,endDate,
+                (accountId==-1 ? null : accountId),
+                (type==-1 ? null : type),
+                (expenseFlag==0 ? null : expense),
+                null,null,inquire);
+        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        //long i = 1;
+        for(int i=0; i<records.size(); i++) {
             String newRecord = " ";
-            newRecord += fm.format(record.getTime());
+            newRecord += fm.format(records.get(i).getTime());
             newRecord += " ";
-            newRecord += record.getExpense()?"收入 ":"支出 ";
-            newRecord += record.getAmount();
+            newRecord += records.get(i).getExpense()?"收入 ":"支出 ";
+            newRecord += records.get(i).getAmount();
             newRecord += " ";
-            switch (record.getType()){
+            switch (records.get(i).getType()){
                 case 0:newRecord += " 一日三餐";
                     break;
                 case 1:newRecord += " 购物消费";
@@ -190,15 +265,22 @@ public class Inquire extends AppCompatActivity {
                 case 9:newRecord += " 其他收入";
                     break;
             }
-
-
             list_result.add(newRecord);
-            i++;
+            list_id.add(records.get(i).getId());
         }
-//        list_result.add("撒打算打算");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(Inquire.this, android.R.layout.simple_list_item_1, list_result);
         listView = (ListView) findViewById(R.id.listview_result);
         listView.setAdapter(adapter);
+        Toast.makeText(getApplicationContext(), "搜索完成", Toast.LENGTH_SHORT).show();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(), RecordDetail.class);
+                intent.putExtra("recordid", list_id.get(i));//传递流水id
+                startActivity(intent);
+            }
+        });
     }
 }

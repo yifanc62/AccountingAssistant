@@ -13,7 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
+//import com.cirnoteam.accountingassistant.database.ReadDB;
+import com.cirnoteam.accountingassistant.database.AccountUtils;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
+import com.cirnoteam.accountingassistant.entity.*;
 import com.cirnoteam.accountingassistant.entity.Record;
 
 import java.text.SimpleDateFormat;
@@ -32,9 +35,10 @@ import static com.cirnoteam.accountingassistant.R.id.time_edit;
 public class RecordDetail extends AppCompatActivity {
 
     //用于修改的临时变量
-    String remark, recid, account;
+    String remark, recid;
+    Long accountid;
     Date time;
-    int type;
+    int type, backpage;
     float amount;
     boolean expense;
     Long recordid;
@@ -55,7 +59,9 @@ public class RecordDetail extends AppCompatActivity {
         setContentView(R.layout.record_detail);
         //获取上一个Activity传过来的值(流水id)
         Intent intent = getIntent();
-        recordid = intent.getLongExtra("extra_data", -1L);
+        recordid = intent.getLongExtra("recordid", -1L);
+        backpage = intent.getIntExtra("backpage", 0);
+        Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
 
         list_inout.add("支出");
         list_inout.add("收入");
@@ -69,10 +75,14 @@ public class RecordDetail extends AppCompatActivity {
         list_type.add("工资收入");
         list_type.add("路上捡钱");
         list_type.add("其他收入");
-        while (true) {
-            //TODO 查询数据库中的账户表，添加到list_account
-            break;
+        AccountUtils u = new AccountUtils(this);
+        List<Account> list_accounts = u.getAccountsOfBook(1L);
+        List<Long> list_id = new ArrayList<>();
+        for(int i=0;i<list_accounts.size();i++) {
+            list_account.add(u.getDefaultAccountName(list_accounts.get(i).getType()) + " " + list_accounts.get(i).getName());
+            list_id.add(list_accounts.get(i).getId());
         }
+        final List<Long> list_idF = list_id;
 
 
         spinner_inout = (Spinner) findViewById(R.id.spinner_inout);
@@ -98,13 +108,17 @@ public class RecordDetail extends AppCompatActivity {
          *setSelection即把该spinner的默认值设置为第一个参数所指的值
          ***/
         try {
-            RecordUtils u = new RecordUtils(this);
-            com.cirnoteam.accountingassistant.entity.Record rec = u.ReadRecordById(recordid);
+            RecordUtils ut = new RecordUtils(this);
+            com.cirnoteam.accountingassistant.entity.Record rec = ut.ReadRecordById(recordid);
             spinner_inout.setSelection(rec.getExpense() ? 1:0);
             editText_amount.setText(String.valueOf(rec.getAmount()));
             editText_remark.setText(rec.getRemark());
             spinner_type.setSelection(rec.getType());
             editText_time.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(rec.getTime()));
+            for(int i=0;i<list_accounts.size();i++){
+                if(rec.getAccountid() == list_accounts.get(i).getId())
+                    spinner_account.setSelection(i);
+            }
             recid = String.valueOf(rec.getId());
             //Toast.makeText(getApplicationContext(), recid, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
@@ -146,7 +160,7 @@ public class RecordDetail extends AppCompatActivity {
         spinner_account.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-                account = adapter_account.getItem(arg2).toString();
+                accountid = list_idF.get(arg2);
                 //Toast.makeText(getApplicationContext(), adapter_account.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -176,22 +190,23 @@ public class RecordDetail extends AppCompatActivity {
         //if (UpdateDB.updateRecord(this.getFilesDir().toString(), expense, amount, remark, type, time, recid, "username"))
           //  Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
         RecordUtils u = new RecordUtils(this);
-        Record newRec = u.getRecordById(recordid);
-        newRec.setExpense(expense);
-        newRec.setAmount(amount);
-        newRec.setType(type);
-        newRec.setTime(time);
-        newRec.setRemark(remark);
-        if(u.updateRecord(null,1L,expense,(float)amount,remark,type,time))
+        if(u.updateRecord(recordid,accountid,expense,amount,remark,type,time))
             Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, com.cirnoteam.accountingassistant.activity.Record.class);
-        startActivity(intent);
         finish();
     }
 
     public void back(View view) {
-        Intent intent = new Intent(this, com.cirnoteam.accountingassistant.activity.Record.class);
-        startActivity(intent);
+        /*if(backpage == 0){
+            Intent intent = new Intent(this, com.cirnoteam.accountingassistant.activity.Record.class);
+            startActivity(intent);
+            finish();
+        }else if(backpage == 1){
+            Intent intent = new Intent(this, com.cirnoteam.accountingassistant.activity.Inquire.class);
+            startActivity(intent);
+            finish();
+        }else {
+            Toast.makeText(getApplicationContext(), "不可能？！不知道返回到哪个页面了？！", Toast.LENGTH_SHORT).show();
+        }*/
         finish();
     }
 
@@ -199,8 +214,6 @@ public class RecordDetail extends AppCompatActivity {
         RecordUtils u = new RecordUtils(this);
         if(u.deleteRecord(recordid))
             Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, com.cirnoteam.accountingassistant.activity.Record.class);
-        startActivity(intent);
         finish();
     }
 }
