@@ -28,6 +28,11 @@
                 <action android:name="android.intent.action.MAINACTIVITY" />
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
         </activity>
+        <activity
+            android:name=".activity.Chart"
+            android:label="图表">
+            <action android:name="android.intent.action.CHART" />
+        </activity>
 
         <activity
             android:name=".activity.Register"
@@ -41,7 +46,7 @@
         </activity>
         <activity
             android:name=".activity.Record"
-            android:label="流水记录">
+            android:label="">
                 <action android:name="android.intent.action.RECORD" />
         </activity>
 

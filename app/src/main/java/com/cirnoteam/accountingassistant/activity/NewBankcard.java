@@ -77,7 +77,9 @@ public class NewBankcard extends AppCompatActivity {
 
     public void createAccount(View view) {
         EditText editText_account = (EditText) findViewById(R.id.account_id);
+        EditText balance =  (EditText)findViewById(R.id.account_banlance);
         AlertDialog empty = new AlertDialog.Builder(this).create();
+
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
@@ -95,7 +97,7 @@ public class NewBankcard extends AppCompatActivity {
         }
         else{
             AccountUtils accountUtils = new AccountUtils(this);
-        if (accountUtils.addAccount(Status.bookid,Integer.valueOf(type),10000F,editText_account.getText().toString()))
+        if (accountUtils.addAccount(1L,Integer.valueOf(type),Float.valueOf(balance.getText().toString()),editText_account.getText().toString()))
             Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
         }
 //        if(!TextUtils.isEmpty(editText_account.getText()))

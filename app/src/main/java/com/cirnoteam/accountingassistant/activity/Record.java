@@ -156,11 +156,10 @@ public class Record extends AppCompatActivity {
             }
             //private String[][] arms = {{"o","p","q"},{"r","s","t"},{"1","3","5","10"}};
             private TextView getTextView(){
-                AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,64);
+                AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 TextView textView = new TextView(Record.this);
                 textView.setLayoutParams(lp);
-                textView.setGravity(Gravity.CENTER_VERTICAL|Gravity.LEFT);
-                textView.setPadding(36,0,0,0);
+                textView.setPadding(50,50,0,50);
                 textView.setTextSize(20);
                 return textView;
             }

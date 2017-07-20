@@ -17,27 +17,49 @@
         android:layout_weight="2"/>
 
     <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/L6"
+    android:layout_gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/bankcardname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/L6"
+        android:text="账户名称"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/account_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="请填写卡号或账号或编号"
+        android:selectAllOnFocus="true" />
+
+
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/L7"
         android:layout_gravity="center_horizontal">
 
         <TextView
-            android:id="@+id/bankcardname"
+            android:id="@+id/accountBalance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="账户名称"
+            android:text="账户余额"
             android:textSize="20sp" />
 
         <EditText
-            android:id="@+id/account_id"
+            android:id="@+id/account_banlance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="请填写卡号或账号或编号"
+            android:hint="请填写账户或现金的余额"
             android:selectAllOnFocus="true" />
 
-    </LinearLayout>
 
+    </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -45,7 +67,7 @@
 
 
     <LinearLayout
-        android:id="@+id/L7"
+        android:id="@+id/L8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/L6"
@@ -87,7 +109,7 @@
         android:id="@+id/newBankCard_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/L7"
+        android:layout_below="@+id/L8"
         android:layout_gravity="center_horizontal"
         android:onClick="createAccount"
         android:text="确认" />

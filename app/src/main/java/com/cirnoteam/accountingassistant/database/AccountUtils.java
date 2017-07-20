@@ -188,25 +188,6 @@ public class AccountUtils {
         return flag;
     }
 
-    public boolean calculateAccountBalanceByAmount(Account account, Boolean expense, Float amount) {
-        DirtyUtils util = new DirtyUtils(context);
-        boolean flag = true;
-        Float balance = account.getBalance();
-        if (expense) {
-            balance -= amount;
-        } else {
-            balance += amount;
-        }
-        account.setBalance(balance);
-        if (!util.addDirty(account, false)) {
-            flag = false;
-        }
-        if (!updateAccount(account)) {
-            flag = false;
-        }
-        return flag;
-    }
-
     public boolean hasAccountName(Long accountId) {
         return getAccount(accountId).getName() != null;
     }

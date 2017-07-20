@@ -278,7 +278,7 @@ public class RecordUtils {
         DirtyUtils utilDirty = new DirtyUtils(context);
         boolean flag = true;
         Record record = new Record(null, accountId, expense, amount, remark == null ? "" : remark, type, time, null);
-        if (!utilAccount.calculateAccountBalanceByAmount(record.getAccount(), expense, amount)) {
+        if (!utilAccount.calculateAccountBalanceByAmount(record.getAccountid(), expense, amount)) {
             flag = false;
         }
         if (!insertRecord(record)) {
@@ -314,15 +314,15 @@ public class RecordUtils {
             record.setExpense(expense);
             if (amount != null) {
                 record.setAmount(amount);
-                if (!utilAccount.calculateAccountBalanceByAmount(record.getAccount(), !expenseLast, amountLast)) {
+                if (!utilAccount.calculateAccountBalanceByAmount(record.getAccountid(), !expenseLast, amountLast)) {
                     flag = false;
                 }
-                if (!utilAccount.calculateAccountBalanceByAmount(record.getAccount(), expense, amount)) {
+                if (!utilAccount.calculateAccountBalanceByAmount(record.getAccountid(), expense, amount)) {
                     flag = false;
                 }
             } else {
                 if (expense != expenseLast) {
-                    if (!utilAccount.calculateAccountBalanceByAmount(record.getAccount(), expense, amountLast * 2)) {
+                    if (!utilAccount.calculateAccountBalanceByAmount(record.getAccountid(), expense, amountLast * 2)) {
                         flag = false;
                     }
                 }
@@ -330,7 +330,7 @@ public class RecordUtils {
         } else {
             if (amount != null) {
                 record.setAmount(amount);
-                if (!utilAccount.calculateAccountBalanceByAmount(record.getAccount(), expenseLast, amount - amountLast)) {
+                if (!utilAccount.calculateAccountBalanceByAmount(record.getAccountid(), expenseLast, amount - amountLast)) {
                     flag = false;
                 }
             }
@@ -358,7 +358,7 @@ public class RecordUtils {
         DirtyUtils utilDirty = new DirtyUtils(context);
         boolean flag = true;
         Record record = getRecord(recordId);
-        if (!utilAccount.calculateAccountBalanceByAmount(record.getAccount(), !record.getExpense(), record.getAmount())) {
+        if (!utilAccount.calculateAccountBalanceByAmount(record.getAccountid(), !record.getExpense(), record.getAmount())) {
             flag = false;
         }
         if (!utilDirty.addDirty(record, true)) {

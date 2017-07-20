@@ -77,7 +77,7 @@ public class BookUtils {
         return balance;
     }
 
-    public boolean addBook(String username, String bookName) {
+    public Long addBook(String username, String bookName) {
         DirtyUtils util = new DirtyUtils(context);
         boolean flag = true;
         Book book = new Book(null, username, bookName, null);
@@ -87,7 +87,7 @@ public class BookUtils {
         if (!util.addDirty(book, false)) {
             flag = false;
         }
-        return flag;
+        return flag ? book.getId() : -1L;
     }
 
     public boolean setBookRemoteId(Long bookId, Long remoteId) {

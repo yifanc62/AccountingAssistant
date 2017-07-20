@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.AccountUtils;
 import com.cirnoteam.accountingassistant.database.BookUtils;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     //private Book book = new Book();
     private BookUtils bookUtils = new BookUtils(this);
     private UserUtils userUtils = new UserUtils(this);
+    private AccountUtils accountUtils = new AccountUtils(this);
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -89,7 +91,9 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //bookAdapter.insert(editText.getText().toString(),0);
-                        if(bookUtils.addBook(userUtils.getCurrentUsername(),editText.getText().toString())) {
+                        Long id;
+                        if((id = bookUtils.addBook(userUtils.getCurrentUsername(),editText.getText().toString()))!=-1) {
+                            accountUtils.addAccount(id,0,1000F,"默认账户");
                             Toast.makeText(getApplicationContext(), "添加成功", Toast.LENGTH_SHORT).show();
 //                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
 //                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -104,7 +108,8 @@ public class MainActivity extends AppCompatActivity
                             }
                             Status.bookid = list_books.get(list_books.size()-1).getId();//此处获得的最后一个账本的id，可能不是刚添加的账本，待优化
                             bookAdapter.add("＋");
-                            mySpinner.setSelection(bookAdapter.getPosition(list_books.get(list_books.size()-1).getName()));//设置当前选项
+                            mySpinner.setSelection(bookAdapter.getPosition(bookUtils.getBook(id).getName()));
+                            //mySpinner.setSelection(bookAdapter.getPosition(list_books.get(list_books.size()-1).getName()));//设置当前选项
                             bookAdapter.notifyDataSetChanged();
                         }
                     }
@@ -139,7 +144,7 @@ public class MainActivity extends AppCompatActivity
         leftmenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                drawer.openDrawer(Gravity.LEFT);
+                drawer.openDrawer(Gravity.START);
             }
         });
 
@@ -156,7 +161,7 @@ public class MainActivity extends AppCompatActivity
             list_id.add(list_book.getId());
         }
         bookAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, bookName);
-        //第三步：为适配器设置下拉列表下拉时的菜单样式。
+        Status.bookid = list_id.get(0);
         bookAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //第四步：将适配器添加到下拉列表上
         mySpinner.setAdapter(bookAdapter);
@@ -235,7 +240,7 @@ public class MainActivity extends AppCompatActivity
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getApplicationContext(), Record.class);
+                Intent intent = new Intent(getApplicationContext(), Chart.class);
                 startActivity(intent);
             }
         });

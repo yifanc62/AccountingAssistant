@@ -43,4 +43,5 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
     compile 'org.greenrobot:greendao:3.2.2'
     compile 'net.zetetic:android-database-sqlcipher:3.5.7@aar'
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
 }
