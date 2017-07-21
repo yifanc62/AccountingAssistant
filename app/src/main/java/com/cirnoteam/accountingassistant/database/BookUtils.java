@@ -63,9 +63,11 @@ public class BookUtils {
     }
 
     public List<Book> getAllBooks(String username) {
-        QueryBuilder<User> builder = daoManager.getDaoSession().queryBuilder(User.class);
-        User user = builder.where(UserDao.Properties.Username.eq(username)).unique();
-        return user.getBooks();
+        QueryBuilder<Book> builder = daoManager.getDaoSession().queryBuilder(Book.class);
+        return builder.where(BookDao.Properties.Username.eq(username)).list();
+//        QueryBuilder<User> builder = daoManager.getDaoSession().queryBuilder(User.class);
+//        User user = builder.where(UserDao.Properties.Username.eq(username)).unique();
+//        return user.getBooks();
     }
 
     public Float getTotalBalance(Long bookId) {

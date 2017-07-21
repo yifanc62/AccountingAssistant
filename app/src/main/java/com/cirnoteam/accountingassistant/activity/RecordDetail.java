@@ -76,7 +76,7 @@ public class RecordDetail extends AppCompatActivity {
         list_type.add("路上捡钱");
         list_type.add("其他收入");
         AccountUtils u = new AccountUtils(this);
-        List<Account> list_accounts = u.getAccountsOfBook(1L);
+        List<Account> list_accounts = u.getAccountsOfBook(Status.bookid);
         List<Long> list_id = new ArrayList<>();
         for(int i=0;i<list_accounts.size();i++) {
             list_account.add(u.getDefaultAccountName(list_accounts.get(i).getType()) + " " + list_accounts.get(i).getName());

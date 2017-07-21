@@ -37,6 +37,13 @@ public class BankCard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bank_card);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setContentView(R.layout.bank_card);
+
         AccountUtils accountUtils = new AccountUtils(this);
         accounts = accountUtils.getAllAccounts(Status.bookid);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -110,8 +117,6 @@ public class BankCard extends AppCompatActivity {
         errorDelete.setMessage("该账户为默认账户，不可删除");
         errorDelete.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
                 listener_2);
-
-
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

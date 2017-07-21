@@ -6,6 +6,7 @@ import android.content.Context;
 import com.cirnoteam.accountingassistant.entity.Account;
 import com.cirnoteam.accountingassistant.entity.Record;
 import com.cirnoteam.accountingassistant.entity.User;
+import com.cirnoteam.accountingassistant.gen.AccountDao;
 import com.cirnoteam.accountingassistant.gen.RecordDao;
 import com.cirnoteam.accountingassistant.gen.UserDao;
 
@@ -95,6 +96,38 @@ public class RecordUtils {
     }
 
     /*
+    查询最近四条id
+     */
+    public List<Record> getLateast4Records(Long bookid){
+        List<Record> records = getAllRecordsByBook(bookid);
+
+        List<Record> myRecord = new ArrayList<>();
+        switch (records.size()){
+            case 0:
+                break;
+            case 1:
+                myRecord.add(records.get(0));
+                break;
+            case 2:
+                myRecord.add(records.get(0));
+                myRecord.add(records.get(1));
+                break;
+            case 3:
+                myRecord.add(records.get(0));
+                myRecord.add(records.get(1));
+                myRecord.add(records.get(2));
+                break;
+            default:
+                myRecord.add(records.get(0));
+                myRecord.add(records.get(1));
+                myRecord.add(records.get(2));
+                myRecord.add(records.get(3));
+                break;
+        }
+        return myRecord;
+    }
+
+    /*
     插入流水
      */
     public boolean insertRecord(Record record) {
@@ -135,12 +168,12 @@ public class RecordUtils {
 
     public List<Record> getAllRecordsByBook(Long bookId) {
         AccountUtils util = new AccountUtils(context);
-        List<Record> records = new ArrayList<>();
+        List<Long> accountIds = new ArrayList<>();
         for (Account account : util.getAllAccounts(bookId)) {
-            records.addAll(account.getRecords());
+            accountIds.add(account.getId());
         }
-        Collections.sort(records, recordComparator);
-        return records;
+        QueryBuilder<Record> builder = daoManager.getDaoSession().queryBuilder(Record.class);
+        return builder.orderDesc(RecordDao.Properties.Time).where(RecordDao.Properties.Accountid.in(accountIds)).list();
     }
 
     public List<Record> searchRecord(Long bookId, Date startDate, Date endDate, Long accountId, Integer type, Boolean expense, Float amount, Boolean greaterThan, String searchText) {

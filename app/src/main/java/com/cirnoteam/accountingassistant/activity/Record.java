@@ -94,7 +94,7 @@ public class Record extends AppCompatActivity {
             record.add(new ArrayList<String>());
             recordid.add(new ArrayList<Long>());
             day[i-1] = fm.format(currentDate);
-            list = u.readRecordOfDday(currentDate);
+            list = u.getRecordOfDayByBook(Status.bookid,currentDate);//TODO 需要getRecordOfDayByBook
             for(int j=0;j<list.size();j++){
                 recordStatement = " ";
                 recordStatement += list.get(j).getExpense() ? "支出" : "收入";
