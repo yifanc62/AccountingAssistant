@@ -19,6 +19,7 @@
             android:label="⑨号账本">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -77,9 +78,7 @@
         <activity
             android:name=".activity.NewBankcard"
             android:label="新增账户">
-
-                <action android:name="android.intent.action.NEWBANKCARD" />
-
+            <action android:name="android.intent.action.NEWBANKCARD" />
             >
         </activity>
         <activity
@@ -96,6 +95,10 @@
             android:windowSoftInputMode="adjustResize">
             <action android:name="android.intent.action.CHANGEPASSWORD" />
         </activity>
+        <activity
+            android:name=".activity.Activate"
+            android:label="@string/title_activity_activate"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

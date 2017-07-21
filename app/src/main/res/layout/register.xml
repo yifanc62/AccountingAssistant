@@ -22,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="用户名:"
+            android:gravity="center"
             android:textSize="16sp" />
 
         <EditText
@@ -30,6 +31,7 @@
             android:layout_height="wrap_content"
             android:ems="12"
             android:hint="请填写登录账号"
+            android:gravity="center"
             android:selectAllOnFocus="true" />
     </TableRow>
 
@@ -47,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="请填写登录密码"
+            android:gravity="center"
             android:ems="12"
             android:inputType="numberPassword" />
     </TableRow>
@@ -63,6 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="请再次输入密码"
+            android:gravity="center"
             android:ems="12"
             android:inputType="numberPassword" />
     </TableRow>
@@ -81,18 +85,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="请填写要绑定的邮箱"
+            android:gravity="center"
             android:ems="12"
             android:inputType="textEmailAddress" />
     </TableRow>
+
+    </TableLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"/>
+
 
     <Button
         android:id="@+id/register_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:onClick="register"
         android:text="注册" />
 
-    </TableLayout>
 
     <View
         android:layout_width="match_parent"
