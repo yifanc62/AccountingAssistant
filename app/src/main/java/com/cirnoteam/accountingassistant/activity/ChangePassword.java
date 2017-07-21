@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.UserUtils;
 
 public class ChangePassword extends AppCompatActivity {
 
@@ -17,7 +20,7 @@ public class ChangePassword extends AppCompatActivity {
         setContentView(R.layout.change_password);
     }
 
-    public void changepassword (View view){
+    public void changePassword (View view){
         String old_password = "";
         String new_password = "";
 
@@ -49,15 +52,18 @@ public class ChangePassword extends AppCompatActivity {
         old_password_wrong.setTitle("输入错误");
         old_password_wrong.setMessage("旧密码输入错误");
         old_password_wrong.setButton(DialogInterface.BUTTON_POSITIVE, "确定", listener);
+        UserUtils userUtils = new UserUtils(this);
 
         if (old_password.equals("")||new_password.equals(""))
             empty.show();
-        else if(old_password.equals(""))            //TODO:检验旧密码是否与用户数据一致
+        else if(!userUtils.getCurrentUser().getPassword().equals(old_password))
             old_password_wrong.show();
         else if (old_password.equals(new_password))
             repeated_password.show();
         else {
-            //TODO:修改用户密码为新密码
+            if(userUtils.updateCurrentPassword(new_password))
+                Toast.makeText(getApplication(),"修改成功",Toast.LENGTH_SHORT).show();
+                //todo:服务器修改
         }
     }
 }

@@ -42,7 +42,8 @@
             android:layout_height="wrap_content"
             android:hint="请输入激活码"
             android:gravity="center"
-            android:ems="10"/>
+            android:ems="10"
+            android:id="@+id/edit_code"/>
 
     </LinearLayout>
 
@@ -55,7 +56,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="激活"/>
+        android:text="激活"
+        android:onClick="activate"/>
 
     <View
         android:layout_width="match_parent"

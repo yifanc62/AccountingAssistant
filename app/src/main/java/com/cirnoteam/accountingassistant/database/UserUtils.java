@@ -44,7 +44,7 @@ public class UserUtils {
         return flag;
     }
 
-    private String getDefaultDeviceName() {
+    public String getDefaultDeviceName() {
         return Build.MODEL;
     }
 

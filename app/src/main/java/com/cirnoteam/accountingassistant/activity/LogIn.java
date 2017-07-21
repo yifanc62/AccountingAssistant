@@ -26,16 +26,19 @@ public class LogIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_in);
 
-        try{
-            UserUtils userUtils = new UserUtils(this);
-            userUtils.getCurrentUser();
+
+        UserUtils userUtils = new UserUtils(this);
+        if(userUtils.getCurrentUser() == null)
+            Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
+        else {
             finish();
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-            startActivity(intent);
+        startActivity(intent);
         }
-        catch (Exception e){
-            Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
-        }
+
+
+
+
 
     }
 
