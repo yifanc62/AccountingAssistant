@@ -3,8 +3,14 @@ package com.cirnoteam.accountingassistant.activity;
 
 import android.content.Intent;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
@@ -12,6 +18,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,7 +40,7 @@ import com.cirnoteam.accountingassistant.database.RecordUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
 import com.cirnoteam.accountingassistant.entity.Book;
 
-
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,6 +65,12 @@ public class MainActivity extends AppCompatActivity
     private BookUtils bookUtils = new BookUtils(this);
     private UserUtils userUtils = new UserUtils(this);
     private AccountUtils accountUtils = new AccountUtils(this);
+    private ImageView photo;
+
+    protected static final int CHOOSE_PICTURE = 0;
+    protected static final int TAKE_PICTURE = 1;
+    private static final int CROP_SMALL_PICTURE = 2;
+    protected static Uri tempUri;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -158,11 +172,17 @@ public class MainActivity extends AppCompatActivity
         mDate = (TextView) findViewById(R.id.Date);
         mDate.setText(currentDate);
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         leftmenu = (ImageButton) findViewById(R.id.user);
         leftmenu.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
             @Override
             public void onClick(View view) {
+                TextView username = (TextView)findViewById(R.id.username);
+                username.setText(userUtils.getCurrentUsername());
                 drawer.openDrawer(Gravity.START);
             }
         });
@@ -219,10 +239,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume() {
+    public void onResume(){
         super.onResume();
-
-        reSetSpinner();//调用设spinner值方法
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation.setSelectedItemId(R.id.navigation_home);
         if(Status.bookid != null) {
             for(int i=0;i<list_book_id.size();i++) {
                 if(list_book_id.get(i) == Status.bookid)
@@ -232,7 +253,7 @@ public class MainActivity extends AppCompatActivity
 
         reSetList();//调用设流水列表值方法
 
-        Toast.makeText(getApplicationContext(), "onResume", Toast.LENGTH_SHORT).show();
+
     }
 
     private void reSetList(){//刷新、设置list的值
@@ -306,6 +327,8 @@ public class MainActivity extends AppCompatActivity
         //((BaseAdapter) mySpinner.getAdapter()).notifyDataSetChanged();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -316,20 +339,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @SuppressWarnings("StatementWithEmptyBody")
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        if (id == R.id.change_photo) {
+            showChoosePicDialog();
+        } else if (id == R.id.log_off) {
 
         }
 
@@ -337,6 +356,105 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    /**
+     * 显示修改头像的对话框
+     */
+    protected void showChoosePicDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("设置头像");
+        String[] items = { "选择本地照片", "拍照" };
+        builder.setNegativeButton("取消", null);
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case CHOOSE_PICTURE: // 选择本地照片
+                        Intent openAlbumIntent = new Intent(
+                                Intent.ACTION_GET_CONTENT);
+                        openAlbumIntent.setType("image/*");
+                        startActivityForResult(openAlbumIntent, CHOOSE_PICTURE);
+                        break;
+                    case TAKE_PICTURE: // 拍照
+                        Intent openCameraIntent = new Intent(
+                                MediaStore.ACTION_IMAGE_CAPTURE);
+                        tempUri = Uri.fromFile(new File(Environment
+                                .getExternalStorageDirectory(), "image.jpg"));
+                        // 指定照片保存路径（SD卡），image.jpg为一个临时文件，每次拍照后这个图片都会被替换
+                        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+                        startActivityForResult(openCameraIntent, TAKE_PICTURE);
+                        break;
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) { // 如果返回码是可以用的
+            switch (requestCode) {
+                case TAKE_PICTURE:
+                    startPhotoZoom(tempUri); // 开始对图片进行裁剪处理
+                    break;
+                case CHOOSE_PICTURE:
+                    startPhotoZoom(data.getData()); // 开始对图片进行裁剪处理
+                    break;
+                case CROP_SMALL_PICTURE:
+                    if (data != null) {
+                        setImageToView(data); // 让刚才选择裁剪得到的图片显示在界面上
+                    }
+                    break;
+            }
+        }
+    }
+
+    /**
+     * 裁剪图片方法实现
+     *
+     * @param uri
+     */
+    protected void startPhotoZoom(Uri uri) {
+        if (uri == null) {
+            Log.i("tag", "The uri is not exist.");
+        }
+        tempUri = uri;
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        // 设置裁剪
+        intent.putExtra("crop", "true");
+        // aspectX aspectY 是宽高的比例
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        // outputX outputY 是裁剪图片宽高
+        intent.putExtra("outputX", 150);
+        intent.putExtra("outputY", 150);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, CROP_SMALL_PICTURE);
+    }
+
+    /**
+     * 保存裁剪之后的图片数据
+     *
+     */
+    protected void setImageToView(Intent data) {
+        Bundle extras = data.getExtras();
+        if (extras != null) {
+            Bitmap bmp = extras.getParcelable("data");
+            photo = (ImageView)findViewById(R.id.userphoto) ;
+            photo.setImageBitmap(bmp);
+            uploadPic(bmp);
+        }
+    }
+
+    private void uploadPic(Bitmap bitmap) {
+        // 上传至服务器
+    }
+
+
 
     public void toLogIn(View view) {
         Intent intent = new Intent(this, Record.class);
