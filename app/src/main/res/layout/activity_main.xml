@@ -42,9 +42,9 @@
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="20dp"
-            app:srcCompat="@drawable/ic_search_black_24dp"
+            app:srcCompat="@drawable/ic_chart_black_24dp"
             android:background="#00000000"
-            android:onClick="toInquire"/>
+            android:onClick="toChart"/>
 
 
         <ImageButton
@@ -132,14 +132,5 @@
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
         app:menu="@menu/navigation" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="图表"
-        android:onClick="toChart"
-        android:layout_above="@+id/record"
-        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

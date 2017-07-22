@@ -34,6 +34,14 @@ public class BankCard extends AppCompatActivity {
     public long item;
 
     @Override
+    protected void onResume(){
+        super.onResume();
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation.setSelectedItemId(R.id.navigation_user);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bank_card);
