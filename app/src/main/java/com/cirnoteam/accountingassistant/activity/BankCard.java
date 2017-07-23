@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -33,7 +35,6 @@ public class BankCard extends AppCompatActivity {
     private List<Account> accounts = new ArrayList<Account>();
     public long item;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +51,6 @@ public class BankCard extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_user);
-
         List<Map<String, Object>> listItems =
                 new ArrayList<Map<String, Object>>();
         long[] map = new long[accounts.size()];
@@ -119,6 +119,9 @@ public class BankCard extends AppCompatActivity {
         errorDelete.setMessage("该账户为默认账户，不可删除");
         errorDelete.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
                 listener_2);
+
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        list.startAnimation(scaleAnimation);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

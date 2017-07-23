@@ -14,10 +14,11 @@
 
 
     <TableLayout
+        android:id="@+id/T4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/T4">
+        android:background="@drawable/side">
 
         <TableRow
             android:layout_width="wrap_content"
@@ -34,9 +35,9 @@
                 android:id="@+id/userName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="请填写登录账号"
-                android:gravity="center"
                 android:ems="12"
+                android:gravity="center"
+                android:hint="请填写登录账号"
                 android:selectAllOnFocus="true" />
         </TableRow>
 
@@ -48,17 +49,17 @@
                 android:id="@+id/txt2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="密码:"
-                android:textSize="16sp"
-                android:gravity="center"/>
+                android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="请填写登录密码"
-                android:gravity="center"
                 android:ems="10"
+                android:gravity="center"
+                android:hint="请填写登录密码"
                 android:inputType="numberPassword" />
 
         </TableRow>
@@ -75,14 +76,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:background="@drawable/botton1"
         android:onClick="toMainActivity"
-        android:text="登录"/>
+        android:text="登录" />
 
     <Button
         android:id="@+id/register_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:background="@drawable/botton1"
         android:onClick="toRegister"
         android:text="注册" />
 

@@ -14,6 +14,8 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -139,6 +141,7 @@ public class Record extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dateSpinner.setAdapter(adapter);
         dateSpinner.setSelection(Status.month);
+        dateSpinner.setDropDownVerticalOffset(100);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -304,6 +307,9 @@ public class Record extends AppCompatActivity {
                 arg0.setVisibility(View.VISIBLE);
             }
         });
+
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        expandableListView.startAnimation(scaleAnimation);
     }
 
     public void initActionBar() {

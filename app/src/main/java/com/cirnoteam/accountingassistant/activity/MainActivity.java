@@ -1,4 +1,3 @@
-//嘻嘻
 package com.cirnoteam.accountingassistant.activity;
 
 import android.content.Intent;
@@ -8,6 +7,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -22,12 +23,15 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,15 +43,20 @@ import com.cirnoteam.accountingassistant.database.BookUtils;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
 import com.cirnoteam.accountingassistant.entity.Book;
+import com.github.mikephil.charting.utils.FileUtils;
+import com.github.mikephil.charting.utils.Utils;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{;
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     private List<String> bookName = new ArrayList<>();
     private List<String> record = new ArrayList<>();
@@ -65,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     private BookUtils bookUtils = new BookUtils(this);
     private UserUtils userUtils = new UserUtils(this);
     private AccountUtils accountUtils = new AccountUtils(this);
+    private Animation scaleAnimation;
     private ImageView photo;
 
     protected static final int CHOOSE_PICTURE = 0;
@@ -239,11 +249,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResume(){
+    protected void onResume() {
         super.onResume();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
+        reSetSpinner();
         if(Status.bookid != null) {
             for(int i=0;i<list_book_id.size();i++) {
                 if(list_book_id.get(i) == Status.bookid)
@@ -253,7 +264,11 @@ public class MainActivity extends AppCompatActivity
 
         reSetList();//调用设流水列表值方法
 
-
+        //动画
+        scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        myListView.startAnimation(scaleAnimation);
+        LinearLayout Line = (LinearLayout) findViewById(R.id.L1);
+        Line.startAnimation(scaleAnimation);
     }
 
     private void reSetList(){//刷新、设置list的值
@@ -268,7 +283,7 @@ public class MainActivity extends AppCompatActivity
             String newRecord = " ";
             newRecord += fm.format(_record.getTime());
             newRecord += " ";
-            newRecord += _record.getExpense()?"收入 ":"支出 ";
+            newRecord += _record.getExpense()?"支出 ":"收入 ";
             newRecord += _record.getAmount();
             newRecord += " ";
             switch (_record.getType()){
@@ -324,6 +339,7 @@ public class MainActivity extends AppCompatActivity
         //bookAdapter.add("默认账本");
         bookAdapter.add("＋");
         //第五步：为下拉列表设置各种事件的响应，这个事响应菜单被选中
+
         //((BaseAdapter) mySpinner.getAdapter()).notifyDataSetChanged();
     }
 
@@ -451,8 +467,37 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * 将Bitmap转换成文件
+     * 保存文件
+     * @param bm
+     * @param fileName
+     * @throws IOException
+     */
+    public static File saveFile(Bitmap bm,String savepath, String fileName){
+        String path = Environment.getExternalStorageDirectory()+savepath;
+        File dirFile = new File(path);
+        if(!dirFile.exists()){
+            dirFile.mkdir();
+        }
+        File userphoto = new File(dirFile , fileName);
+        if (userphoto.exists()) {
+            userphoto.delete();
+        }
+        try {
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(userphoto));
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return userphoto;
+    }
+
     private void uploadPic(Bitmap bitmap) {
         // 上传至服务器
+        saveFile(bitmap,"","userphoto.jpeg");
     }
 
 

@@ -11,7 +11,7 @@
     </uses-permission>
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/cirno4"
         android:label="记账助手"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -57,14 +57,12 @@
 
         <activity
             android:name=".activity.RecordDetail"
-            android:label="流水详情"
-            android:windowSoftInputMode="adjustResize">
+            android:label="流水详情">
                 <action android:name="android.intent.action.RECORDDETAIL" />
         </activity>
         <activity
             android:name=".activity.NewRecord"
-            android:label="记一笔新流水"
-            android:windowSoftInputMode="adjustResize">
+            android:label="记一笔新流水">
                 <action android:name="android.intent.action.NEWRECORD" />
         </activity>
         <activity
