@@ -51,6 +51,7 @@ public class Register extends AppCompatActivity {
     }
 
     public void register(View view) {
+        Toast.makeText(getApplicationContext(),"数据处理中，请稍等",Toast.LENGTH_SHORT).show();
 
         String emailMatch = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern pattern = Pattern.compile(emailMatch);

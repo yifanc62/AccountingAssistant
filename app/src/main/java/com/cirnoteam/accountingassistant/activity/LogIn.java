@@ -47,13 +47,13 @@ public class LogIn extends AppCompatActivity {
 
 
         UserUtils userUtils = new UserUtils(this);
-//        if(userUtils.getCurrentUser() == null)
-//            Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
-//        else {
-//            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
+        if(userUtils.getCurrentUser() == null)
+            Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
+        else {
+            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     public void toRegister(View view) {
@@ -62,7 +62,7 @@ public class LogIn extends AppCompatActivity {
     }
 
     public void toForgetPassword(View view) {
-        Intent intent = new Intent(this, ForgetPassword.class);
+        Intent intent = new Intent(this, TransitPassword.class);
         startActivity(intent);
     }
 
@@ -175,12 +175,14 @@ public class LogIn extends AppCompatActivity {
                 if(code == 200){
                     try {
                         String token = jsonObject.getJSONObject("entity").getString("token");
-                        if (userUtils.getUser(userName) == null)
+                        if (userUtils.getUser(userName) == null){
                             userUtils.register(userName,userPass,token,uuid,device);
+                            BookUtils bookUtils = new BookUtils(this);
+                            bookUtils.addBook(userName,"默认账本");
+                        }
                         if(userUtils.getUser(userName).getPassword().equals(userPass)){
                             userUtils.login(userName);
-                            BookUtils bookUtils = new BookUtils(this);
-                            bookUtils.addBook(userUtils.getCurrentUsername(),"默认账本");
+
                             Intent intent = new Intent(this, MainActivity.class);
                             startActivity(intent);
                             this.runOnUiThread(new Runnable() {

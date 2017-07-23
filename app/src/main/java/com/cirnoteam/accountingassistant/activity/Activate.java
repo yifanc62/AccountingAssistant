@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.BookUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
 
 import org.json.JSONObject;
@@ -117,6 +118,8 @@ public class Activate extends AppCompatActivity {
 
                 if(code == 200){
                     userUtils.register(userName,password,token,uuid,deviceName);
+                    BookUtils bookUtils = new BookUtils(this);
+                    bookUtils.addBook(userName,"默认账本");
                     Intent intent = new Intent(this,LogIn.class);
 
                     this.runOnUiThread(new Runnable() {

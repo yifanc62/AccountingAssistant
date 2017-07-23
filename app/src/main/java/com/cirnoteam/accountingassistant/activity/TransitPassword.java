@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.regex.Pattern;
 
 /**
  * Created by pc on 2017/7/23.
@@ -32,10 +33,15 @@ public class TransitPassword extends AppCompatActivity {
     }
 
     public void toChangePassword(View view){
+        String emailMatch = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        Pattern pattern = Pattern.compile(emailMatch);
         EditText editText1 = (EditText)findViewById(R.id.user_name);
         EditText editText2 = (EditText)findViewById(R.id.email);
         final String userName = editText1.getText().toString();
         final String email = editText2.getText().toString();
+
+        
+
 
         new Thread() {
             public void run() {
