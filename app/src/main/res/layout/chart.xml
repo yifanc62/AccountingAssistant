@@ -20,10 +20,11 @@
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pie_chart"
         android:layout_width="match_parent"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_height="320dip"
-        android:layout_below="@id/spinner_date"/>
+        android:layout_below="@id/spinner_date"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/side" />
 
     <Button
         android:id="@+id/change_chart"
@@ -32,8 +33,9 @@
         android:layout_below="@+id/pie_chart"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="21dp"
-        android:text="点击生成图表"
-        android:onClick="changeChart"/>
+        android:background="@drawable/botton1"
+        android:onClick="changeChart"
+        android:text="点击生成图表" />
 
 
 </RelativeLayout>

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -80,7 +82,7 @@ public class Inquire extends AppCompatActivity {
 
         list_account.add("所有账户");
         AccountUtils u = new AccountUtils(this);
-        final List<Account> list_accounts = u.getAccountsOfBook(1L);
+        final List<Account> list_accounts = u.getAccountsOfBook(Status.bookid);
         for(int i=0;i<list_accounts.size();i++) {
             list_account.add(u.getDefaultAccountName(list_accounts.get(i).getType()) + " " + list_accounts.get(i).getName());
             //获得账户类型名称和账户名字，填入spinner
@@ -205,7 +207,9 @@ public class Inquire extends AppCompatActivity {
             }
         });
 
-
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        ListView listView = (ListView) findViewById(R.id.listview_result);
+        listView.startAnimation(scaleAnimation);
     }
 
 
@@ -228,7 +232,7 @@ public class Inquire extends AppCompatActivity {
         List<String> list_result = new ArrayList<String>();
         RecordUtils recordUtils = new RecordUtils(this);
         //records = recordUtils.searchRecord(1L, null, null, null, null, null, null, null, null);
-        records = recordUtils.searchRecord(1L,startDate,endDate,
+        records = recordUtils.searchRecord(Status.bookid,startDate,endDate,
                 (accountId==-1 ? null : accountId),
                 (type==-1 ? null : type),
                 (expenseFlag==0 ? null : expense),
@@ -273,6 +277,9 @@ public class Inquire extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listview_result);
         listView.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), "搜索完成", Toast.LENGTH_SHORT).show();
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        ListView listView = (ListView) findViewById(R.id.listview_result);
+        listView.startAnimation(scaleAnimation);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

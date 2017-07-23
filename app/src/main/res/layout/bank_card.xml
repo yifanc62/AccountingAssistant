@@ -18,20 +18,23 @@
         android:id="@+id/newbankcard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/activity_account_toolbar"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_below="@+id/activity_account_toolbar"
+        android:background="@drawable/botton1"
         android:onClick="toNewBankcard"
         android:text="新增账户+" />
 
-        <ListView
-            android:id="@+id/BankCardListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_below="@+id/newbankcard"
-            android:layout_above="@+id/navigation"/>
+    <ListView
+        android:id="@+id/BankCardListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/navigation"
+        android:layout_below="@+id/newbankcard"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/side"
+        android:divider="@drawable/divider" />
 
 
     <android.support.design.widget.BottomNavigationView

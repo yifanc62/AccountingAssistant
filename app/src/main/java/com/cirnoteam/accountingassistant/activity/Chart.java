@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -121,6 +123,9 @@ public class Chart extends AppCompatActivity {
             }
         });
 
+        PieChart pieChart = (PieChart)findViewById(R.id.pie_chart);
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        pieChart.startAnimation(scaleAnimation);
     }
 
     public void changeChart(View view){
@@ -198,6 +203,9 @@ public class Chart extends AppCompatActivity {
 // undo all highlights
         pieChart.highlightValues(null);
         pieChart.invalidate();
+
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        pieChart.startAnimation(scaleAnimation);
     }
 
     private int[] getPieChartColors() {
@@ -208,7 +216,7 @@ public class Chart extends AppCompatActivity {
     public float[] typeDivide(Date startDate,Date endDate){
         float[] type = new float[10];
         for(int i = 9;i >= 0;i--){
-            list_records = recordUtils.searchRecord(1L,startDate,endDate,
+            list_records = recordUtils.searchRecord(Status.bookid,startDate,endDate,
                 null,
                 i,
                 null,

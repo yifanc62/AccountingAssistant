@@ -55,7 +55,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="激活"/>
+        android:background="@drawable/botton1"
+        android:text="激活" />
 
     <View
         android:layout_width="match_parent"
