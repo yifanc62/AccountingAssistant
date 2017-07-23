@@ -139,6 +139,7 @@ public class Record extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dateSpinner.setAdapter(adapter);
         dateSpinner.setSelection(Status.month);
+        dateSpinner.setDropDownVerticalOffset(100);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

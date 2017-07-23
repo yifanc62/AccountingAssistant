@@ -29,7 +29,8 @@
             android:id="@+id/spinner_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:spinnerMode="dropdown" />
 
     </android.support.v7.widget.Toolbar>
 

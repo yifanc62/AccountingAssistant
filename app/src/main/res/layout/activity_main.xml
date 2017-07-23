@@ -9,7 +9,6 @@
     android:layout_height="match_parent"
     tools:context="com.cirnoteam.accountingassistant.activity.MainActivity">
 
-
     <RelativeLayout
         android:id="@+id/topLine"
         android:layout_width="match_parent"

@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -38,15 +40,20 @@ import com.cirnoteam.accountingassistant.database.BookUtils;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
 import com.cirnoteam.accountingassistant.entity.Book;
+import com.github.mikephil.charting.utils.FileUtils;
+import com.github.mikephil.charting.utils.Utils;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{;
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     private List<String> bookName = new ArrayList<>();
     private List<String> record = new ArrayList<>();
@@ -448,10 +455,38 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void uploadPic(Bitmap bitmap) {
-        // 上传至服务器
+    /**
+     * 将Bitmap转换成文件
+     * 保存文件
+     * @param bm
+     * @param fileName
+     * @throws IOException
+     */
+    public static File saveFile(Bitmap bm,String savepath, String fileName){
+        String path = Environment.getExternalStorageDirectory()+savepath;
+        File dirFile = new File(path);
+        if(!dirFile.exists()){
+            dirFile.mkdir();
+        }
+        File userphoto = new File(dirFile , fileName);
+        if (userphoto.exists()) {
+            userphoto.delete();
+        }
+        try {
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(userphoto));
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return userphoto;
     }
 
+    private void uploadPic(Bitmap bitmap) {
+        // 上传至服务器
+        saveFile(bitmap,"","userphoto.jpeg");
+    }
 
 
     public void toLogIn(View view) {
