@@ -40,11 +40,12 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/navigation"
         android:layout_below="@+id/activity_record_toolbar"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/side"
         android:childDivider="#efefef"
-        android:divider="#00000000"
+        android:divider="@drawable/divider"
         android:groupIndicator="@null"
-        android:scrollbars="none"
-        android:layout_marginTop="15dp"/>
+        android:scrollbars="none" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"

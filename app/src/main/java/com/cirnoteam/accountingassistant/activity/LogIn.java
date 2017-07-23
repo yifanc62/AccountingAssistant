@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
@@ -32,11 +36,15 @@ public class LogIn extends AppCompatActivity {
             finish();
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(intent);
+            Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
         }
         catch (Exception e){
             Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
         }
 
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        TableLayout ta = (TableLayout) findViewById(R.id.T4);
+        ta.startAnimation(scaleAnimation);
     }
 
     public void toRegister(View view) {
@@ -83,7 +91,6 @@ public class LogIn extends AppCompatActivity {
         if (password.equals("") || userName.equals(""))
             empty.show();
         else {
-            //TODO:检验账号密码正确性
             UserUtils userUtils = new UserUtils(this);
             try{
                 if(userUtils.getUser(userName).getPassword().equals(password)){

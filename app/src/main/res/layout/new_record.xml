@@ -11,16 +11,18 @@
         android:background="?attr/colorPrimary"/>
 
     <TableLayout
+        android:id="@+id/T3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/T3"
         android:layout_below="@+id/activity_newrecord_toolbar"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="51dp"
+        android:background="@drawable/side">
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -153,7 +155,7 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -204,7 +206,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="备注"
-                android:textSize="30sp"/>
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/textView14"
@@ -230,8 +232,9 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:text="确定"
-        android:onClick="toCreate"/>
+        android:background="@drawable/botton1"
+        android:onClick="toCreate"
+        android:text="确定" />
 
 
 

@@ -1,3 +1,4 @@
+//嘻嘻
 package com.cirnoteam.accountingassistant.activity;
 
 import android.content.Intent;
@@ -23,12 +24,15 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -71,6 +75,7 @@ public class MainActivity extends AppCompatActivity
     private BookUtils bookUtils = new BookUtils(this);
     private UserUtils userUtils = new UserUtils(this);
     private AccountUtils accountUtils = new AccountUtils(this);
+    private Animation scaleAnimation;
     private ImageView photo;
 
     protected static final int CHOOSE_PICTURE = 0;
@@ -246,18 +251,26 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResume(){
+    protected void onResume() {
         super.onResume();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
+        reSetSpinner();
         if(Status.bookid != null) {
             for(int i=0;i<list_book_id.size();i++) {
                 if(list_book_id.get(i) == Status.bookid)
                     mySpinner.setSelection(i);
             }
         }
-        reSetList();//调用设置方法以刷新
+
+        reSetList();//调用设流水列表值方法
+
+        //动画
+        scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        myListView.startAnimation(scaleAnimation);
+        LinearLayout Line = (LinearLayout) findViewById(R.id.L1);
+        Line.startAnimation(scaleAnimation);
     }
 
     private void reSetList(){//刷新、设置list的值
@@ -272,7 +285,7 @@ public class MainActivity extends AppCompatActivity
             String newRecord = " ";
             newRecord += fm.format(_record.getTime());
             newRecord += " ";
-            newRecord += _record.getExpense()?"收入 ":"支出 ";
+            newRecord += _record.getExpense()?"支出 ":"收入 ";
             newRecord += _record.getAmount();
             newRecord += " ";
             switch (_record.getType()){
@@ -312,7 +325,7 @@ public class MainActivity extends AppCompatActivity
     private void reSetSpinner(){
         list_book_id.clear();
         bookName.clear();
-        mySpinner = (Spinner)findViewById(R.id.spinner_book);
+
 //        第二步：为下拉列表定义一个适配器，这里就用到里前面定义的list
         BookUtils u = new BookUtils(this);
         list_books = u.getAllBooks(userUtils.getCurrentUsername());
@@ -328,7 +341,6 @@ public class MainActivity extends AppCompatActivity
         //bookAdapter.add("默认账本");
         bookAdapter.add("＋");
         //第五步：为下拉列表设置各种事件的响应，这个事响应菜单被选中
-
         //((BaseAdapter) mySpinner.getAdapter()).notifyDataSetChanged();
     }
 

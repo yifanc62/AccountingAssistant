@@ -6,10 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
@@ -57,16 +60,6 @@ public class NewRecord extends AppCompatActivity {
 
         list_inout.add("支出");
         list_inout.add("收入");
-        list_type.add("一日三餐");
-        list_type.add("购物消费");
-        list_type.add("水电煤气");
-        list_type.add("交通花费");
-        list_type.add("医疗消费");
-        list_type.add("其他支出");
-        list_type.add("经营获利");
-        list_type.add("工资收入");
-        list_type.add("路上捡钱");
-        list_type.add("其他收入");
         AccountUtils u = new AccountUtils(this);
         List<Account> list_accounts = u.getAccountsOfBook(Status.bookid);
         List<Long> list_id = new ArrayList<>();
@@ -97,30 +90,16 @@ public class NewRecord extends AppCompatActivity {
         /*******************监听事件***********************/
         spinner_inout.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
-                expense = arg2==0 ? true : false;
-                //Toast.makeText(getApplicationContext(), adapter_inout.getItem(arg2), Toast.LENGTH_SHORT).show();
+                expense = arg2==0;
+                reSet_type(arg2);
                 arg0.setVisibility(View.VISIBLE);
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
-                //Toast.makeText(getApplicationContext(), "none", Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
         });
-        spinner_type.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-                type = arg2;
-                //Toast.makeText(getApplicationContext(), adapter_type.getItem(arg2), Toast.LENGTH_SHORT).show();
-                arg0.setVisibility(View.VISIBLE);
-            }
-
-            public void onNothingSelected(AdapterView<?> arg0) {
-                Toast.makeText(getApplicationContext(), "none", Toast.LENGTH_SHORT).show();
-                arg0.setVisibility(View.VISIBLE);
-            }
-        });
         spinner_account.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
@@ -135,37 +114,85 @@ public class NewRecord extends AppCompatActivity {
                 arg0.setVisibility(View.VISIBLE);
             }
         });
+
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        TableLayout T3 = (TableLayout) findViewById(R.id.T3);
+        T3.startAnimation(scaleAnimation);
+    }
+
+    //动态改变类型spinner
+    private void reSet_type(int inout){
+        if(inout == 0) {
+            list_type.clear();
+            list_type.add("一日三餐");
+            list_type.add("购物消费");
+            list_type.add("水电煤气");
+            list_type.add("交通花费");
+            list_type.add("医疗消费");
+            list_type.add("其他支出");
+            adapter_type = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_type);
+            spinner_type.setAdapter(adapter_type);
+            spinner_type.setSelection(0);
+            spinner_type.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                    type = arg2;
+                    arg0.setVisibility(View.VISIBLE);
+                }
+
+                public void onNothingSelected(AdapterView<?> arg0) {
+                    Toast.makeText(getApplicationContext(), "none", Toast.LENGTH_SHORT).show();
+                    arg0.setVisibility(View.VISIBLE);
+                }
+            });
+            //顺便改背景
+            TableLayout T3 = (TableLayout) findViewById(R.id.T3);
+            T3.setBackground(getResources().getDrawable(R.drawable.side_out));
+        }else if(inout == 1){
+            list_type.clear();
+            list_type.add("经营获利");
+            list_type.add("工资收入");
+            list_type.add("路上捡钱");
+            list_type.add("其他收入");
+            adapter_type = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_type);
+            spinner_type.setAdapter(adapter_type);
+            spinner_type.setSelection(0);
+            spinner_type.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                    type = arg2 + 6;
+                    arg0.setVisibility(View.VISIBLE);
+                }
+                public void onNothingSelected(AdapterView<?> arg0) {
+                    Toast.makeText(getApplicationContext(), "none", Toast.LENGTH_SHORT).show();
+                    arg0.setVisibility(View.VISIBLE);
+                }
+            });
+            //顺便改背景
+            TableLayout T3 = (TableLayout) findViewById(R.id.T3);
+            T3.setBackground(getResources().getDrawable(R.drawable.side_in));
+        }
     }
 
     public void toCreate(View view) {
-
             EditText editText_amount = (EditText) findViewById(amount_edit);
             if (!TextUtils.isEmpty(editText_amount.getText()))
                 amount = Float.parseFloat(editText_amount.getText().toString());
             else
                 amount = 0;
             SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            boolean flag = false;
             try{
                 time = fm.parse(((EditText) findViewById(time_edit)).getText().toString());
+                flag = true;
             }catch (Exception e){
-                Toast.makeText(getApplicationContext(), "存储失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "时间格式不对", Toast.LENGTH_SHORT).show();
             }
-
-            remark = ((EditText) findViewById(remark_edit)).getText().toString();
-            //Toast.makeText(getApplicationContext(), amount+inout+account+type+time_edit+remark_edit, Toast.LENGTH_SHORT).show();
-            //if (SaveDB.saveRecord(this.getFilesDir().toString(), expense, amount, remark, type, time))
-            //Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
-            com.cirnoteam.accountingassistant.entity.Record record = new Record();
-            record.setExpense(expense);
-            record.setAmount(amount);
-            record.setRemark(remark);
-            record.setType(type);
-            record.setTime(time);
-            record.setAccountid(accountid);
-            RecordUtils u = new RecordUtils(this);
-            if(u.addRecord(accountid,expense,amount,remark,type,time))
-                Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
-            finish();
+            if(flag) {
+                remark = ((EditText) findViewById(remark_edit)).getText().toString();
+                RecordUtils u = new RecordUtils(this);
+                if (u.addRecord(accountid, expense, amount, remark, type, time))
+                    Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
+                finish();
+            }
     }
 
     public void initActionBar() {

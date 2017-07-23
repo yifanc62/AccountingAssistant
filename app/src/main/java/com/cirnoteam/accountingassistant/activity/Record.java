@@ -14,6 +14,8 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -305,6 +307,9 @@ public class Record extends AppCompatActivity {
                 arg0.setVisibility(View.VISIBLE);
             }
         });
+
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        expandableListView.startAnimation(scaleAnimation);
     }
 
     public void initActionBar() {
