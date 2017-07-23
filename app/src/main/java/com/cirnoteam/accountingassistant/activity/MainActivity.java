@@ -349,7 +349,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.change_photo) {
             showChoosePicDialog();
         } else if (id == R.id.log_off) {
-
+            Intent intent = new Intent(this,TransitPassword.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

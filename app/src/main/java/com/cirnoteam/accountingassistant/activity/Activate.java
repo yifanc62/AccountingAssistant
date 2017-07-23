@@ -118,6 +118,14 @@ public class Activate extends AppCompatActivity {
                 if(code == 200){
                     userUtils.register(userName,password,token,uuid,deviceName);
                     Intent intent = new Intent(this,LogIn.class);
+
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 在这里把返回的数据写在控件上 会出现什么情况尼
+                            Toast.makeText(getApplicationContext(),"激活成功",Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     startActivity(intent);
                 }
 
@@ -131,13 +139,7 @@ public class Activate extends AppCompatActivity {
                     });
                 }
                 // 通过runOnUiThread方法进行修改主线程的控件内容
-                this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 在这里把返回的数据写在控件上 会出现什么情况尼
-                        Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
-                    }
-                });
+
 
             } else {
                 this.runOnUiThread(new Runnable() {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -86,14 +87,7 @@ public class Register extends AppCompatActivity {
                 listener);
 
         AlertDialog emailError = new AlertDialog.Builder(this).create();
-        DialogInterface.OnClickListener listener_3 = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case AlertDialog.BUTTON_POSITIVE:
-                        break;
-                }
-            }
-        };
+
         emailError.setTitle("输入错误");
         emailError.setMessage("邮箱格式输入错误");
         emailError.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
@@ -105,21 +99,16 @@ public class Register extends AppCompatActivity {
             passwordMatchError.show();
         else if (!matcher.matches())
             emailError.show();
-            //TODO：添加新用户至数据库
-
         else {
             new Thread() {
                 public void run() {
-                    RegisterByPost(userName,EncoderByMd5(password_1),email);
+                    registerByPost(userName,EncoderByMd5(password_1),email);
                 }
             }.start();
-
-            Intent intent = new Intent(this,Activate.class);
-            startActivity(intent);
         }
     }
 
-    public void RegisterByPost(String userName, String userPass,String email) {
+    public void registerByPost(String userName, String userPass,String email) {
 
         try {
 
@@ -159,7 +148,8 @@ public class Register extends AppCompatActivity {
             OutputStream os = urlConnection.getOutputStream();
             os.write(data.getBytes());
             os.flush();
-            if (urlConnection.getResponseCode() == 200) {
+            int c = urlConnection.getResponseCode();
+            if (c == 200) {
                 // 获取响应的输入流对象
                 InputStream is = urlConnection.getInputStream();
                 // 创建字节输出流对象
@@ -180,7 +170,7 @@ public class Register extends AppCompatActivity {
                 final String result = new String(baos.toByteArray());
                 JSONObject jsonObject = new JSONObject(result);
                 int code = jsonObject.getInt("code");
-                String token = jsonObject.getJSONObject("entity").getString("token");
+                String token = jsonObject.getJSONObject("entity").getString("activateToken");
                 final String message = jsonObject.getString("message");
 
                 if(code == 200){
@@ -189,35 +179,30 @@ public class Register extends AppCompatActivity {
                     intent.putExtra("userName",userName);
                     intent.putExtra("password",userPass);
                     startActivity(intent);
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),"注册成功，已向您邮箱发送验证邮件",Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
                 else{
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // 在这里把返回的数据写在控件上 会出现什么情况尼
                             Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
 
-                // 通过runOnUiThread方法进行修改主线程的控件内容
-                this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 在这里把返回的数据写在控件上 会出现什么情况尼
-                        Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
-                    }
-                });
 
             } else {
                 this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // 在这里把返回的数据写在控件上 会出现什么情况尼
                         Toast.makeText(getApplicationContext(),"注册失败",Toast.LENGTH_SHORT).show();
                     }
                 });
-                //System.out.println("链接失败.........");
             }
         } catch (Exception e) {
             e.printStackTrace();

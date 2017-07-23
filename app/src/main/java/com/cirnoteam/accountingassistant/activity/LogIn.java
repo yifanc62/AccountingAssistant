@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.BookUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
 import com.cirnoteam.accountingassistant.entity.User;
 
@@ -21,6 +22,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
 
 
 /**
@@ -45,18 +47,13 @@ public class LogIn extends AppCompatActivity {
 
 
         UserUtils userUtils = new UserUtils(this);
-        if(userUtils.getCurrentUser() == null)
-            Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
-        else {
-            finish();
-            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-        startActivity(intent);
-        }
-
-
-
-
-
+//        if(userUtils.getCurrentUser() == null)
+//            Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
+//        else {
+//            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }
     }
 
     public void toRegister(View view) {
@@ -104,7 +101,7 @@ public class LogIn extends AppCompatActivity {
         else {
             new Thread() {
                 public void run() {
-                    LoginByPost(userName,password);
+                    LoginByPost(userName,EncoderByMd5(password));
                 }
             }.start();
 
@@ -142,16 +139,6 @@ public class LogIn extends AppCompatActivity {
                     + "&uuid=" + URLEncoder.encode(uuid, "UTF-8");
             // 设置请求的头
             urlConnection.setRequestProperty("Connection", "keep-alive");
-            // 设置请求的头
-            urlConnection.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
-            // 设置请求的头
-            urlConnection.setRequestProperty("Content-Length",
-                    String.valueOf(data.getBytes().length));
-            // 设置请求的头
-            urlConnection
-                    .setRequestProperty("User-Agent",
-                            "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0");
 
             urlConnection.setDoOutput(true); // 发送POST请求必须设置允许输出
             urlConnection.setDoInput(true); // 发送POST请求必须设置允许输入
@@ -182,15 +169,18 @@ public class LogIn extends AppCompatActivity {
 
                 JSONObject jsonObject = new JSONObject(result);
                 int code = jsonObject.getInt("code");
-                String token = jsonObject.getJSONObject("entity").getString("token");
+
                 final String message = jsonObject.getString("message");
 
                 if(code == 200){
                     try {
+                        String token = jsonObject.getJSONObject("entity").getString("token");
                         if (userUtils.getUser(userName) == null)
                             userUtils.register(userName,userPass,token,uuid,device);
                         if(userUtils.getUser(userName).getPassword().equals(userPass)){
                             userUtils.login(userName);
+                            BookUtils bookUtils = new BookUtils(this);
+                            bookUtils.addBook(userUtils.getCurrentUsername(),"默认账本");
                             Intent intent = new Intent(this, MainActivity.class);
                             startActivity(intent);
                             this.runOnUiThread(new Runnable() {
@@ -238,11 +228,35 @@ public class LogIn extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"注册失败",Toast.LENGTH_SHORT).show();
                     }
                 });
-                //System.out.println("链接失败.........");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    public String EncoderByMd5(String str){
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            return convertByteToHexString(md5.digest(str.getBytes()));
+        }catch(Exception e){
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+
+    public static String convertByteToHexString(byte[] bytes) {
+        String result = "";
+        for (byte aByte : bytes) {
+            int temp = aByte & 0xff;
+            String tempHex = Integer.toHexString(temp);
+            if (tempHex.length() < 2)
+                result += "0" + tempHex;
+            else
+                result += tempHex;
+        }
+        return result;
+    }
 }
+
 
