@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,6 +44,7 @@ public class NewBankcard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newbankcard);
+        initActionBar();
 
         list_type.add("现金");
         list_type.add("银行卡");
@@ -111,6 +113,18 @@ public class NewBankcard extends AppCompatActivity {
 
 
         finish();
+    }
+
+    public void initActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_newbankcard_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
 }

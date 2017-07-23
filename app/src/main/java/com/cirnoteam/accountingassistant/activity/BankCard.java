@@ -33,13 +33,6 @@ public class BankCard extends AppCompatActivity {
     private List<Account> accounts = new ArrayList<Account>();
     public long item;
 
-    @Override
-    protected void onResume(){
-        super.onResume();
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_user);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +50,7 @@ public class BankCard extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_user);
+
         List<Map<String, Object>> listItems =
                 new ArrayList<Map<String, Object>>();
         long[] map = new long[accounts.size()];
