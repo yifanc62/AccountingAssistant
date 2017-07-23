@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 TextView username = (TextView)findViewById(R.id.username);
                 username.setText(userUtils.getCurrentUsername());
+
                 drawer.openDrawer(Gravity.START);
             }
         });

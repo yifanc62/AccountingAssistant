@@ -8,22 +8,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize" />
+        android:minHeight="?attr/actionBarSize">
 
     <Spinner
         android:id="@+id/spinner_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_alignParentTop="true" />
+        android:layout_marginEnd="20dp" />
+
+
+    </android.support.v7.widget.Toolbar>
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pie_chart"
         android:layout_width="match_parent"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_height="320dip"
-        android:layout_below="@id/spinner_date"/>
+        android:layout_height="320dp"
+        android:layout_below="@id/activity_chart_toolbar"/>
 
     <Button
         android:id="@+id/change_chart"
@@ -31,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/pie_chart"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="20dp"
         android:text="点击生成图表"
         android:onClick="changeChart"/>
 
