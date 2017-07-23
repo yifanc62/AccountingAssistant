@@ -111,55 +111,11 @@ public class Register extends AppCompatActivity {
             new Thread() {
                 public void run() {
                     RegisterByPost(userName,EncoderByMd5(password_1),email);
-                };
+                }
             }.start();
-//            UserUtils userUtils = new UserUtils(this);
-//            String token = "";
-//            userUtils.register(userName, password_1, token);
-//            userUtils.login(userName);
-//            Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
-//            finish();
+
             Intent intent = new Intent(this,Activate.class);
             startActivity(intent);
-
-//            try {
-//                URL url = new URL("http://cirnoteam.varkarix.com/login");
-//                StringBuffer strb = new StringBuffer();
-//                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//                connection.setDoOutput(true);
-//                connection.setDoInput(true);
-//                connection.setRequestMethod("POST");
-//                connection.setUseCaches(false);
-//                connection.setInstanceFollowRedirects(true);
-//                connection.setRequestProperty("Content-Type", "application/json");
-//                connection.connect();
-//                DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-//                JSONObject obj = new JSONObject();
-//                String json = java.net.URLEncoder.encode(obj.toString(), "utf-8");
-//                out.writeBytes(json);
-//                out.flush();
-//                out.close();
-//                // 读取响应
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//                String lines;
-//                StringBuffer sb = new StringBuffer("");
-//                while ((lines = reader.readLine()) != null) {
-//                    lines = URLDecoder.decode(lines, "utf-8");
-//                    sb.append(lines);
-//                }
-//                System.out.println(sb);
-//                reader.close();
-//                // 断开连接
-//                connection.disconnect();
-
-
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//            } catch (UnsupportedEncodingException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
         }
     }
 
@@ -222,6 +178,27 @@ public class Register extends AppCompatActivity {
                 baos.close();
                 // 返回字符串
                 final String result = new String(baos.toByteArray());
+                JSONObject jsonObject = new JSONObject(result);
+                int code = jsonObject.getInt("code");
+                String token = jsonObject.getJSONObject("entity").getString("token");
+                final String message = jsonObject.getString("message");
+
+                if(code == 200){
+                    Intent intent = new Intent(this,Activate.class);
+                    intent.putExtra("token",token);
+                    intent.putExtra("userName",userName);
+                    intent.putExtra("password",userPass);
+                    startActivity(intent);
+                }
+                else{
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 在这里把返回的数据写在控件上 会出现什么情况尼
+                            Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
 
                 // 通过runOnUiThread方法进行修改主线程的控件内容
                 this.runOnUiThread(new Runnable() {

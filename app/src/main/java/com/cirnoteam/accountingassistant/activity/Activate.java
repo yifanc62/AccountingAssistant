@@ -1,5 +1,6 @@
 package com.cirnoteam.accountingassistant.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
 import com.cirnoteam.accountingassistant.database.UserUtils;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -24,6 +27,10 @@ import static com.cirnoteam.accountingassistant.activity.Register.convertByteToH
 
 public class Activate extends AppCompatActivity {
 
+    private String token;
+    private String userName;
+    private String password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +38,10 @@ public class Activate extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("用户激活");
         setSupportActionBar(toolbar);
+        Intent intent = getIntent();
+        token = intent.getStringExtra("token");
+        userName = intent.getStringExtra("userName");
+        password = intent.getStringExtra("password");
 
 
     }
@@ -38,21 +49,23 @@ public class Activate extends AppCompatActivity {
     public void activate(View view)
     {
         EditText editText = (EditText)findViewById(R.id.edit_code);
-        String code = editText.getText().toString();
-        //Todo:匹配验证码
-        String token = "";
-        UserUtils userUtils = new UserUtils(this);
-        ActivateByPost(token,code,userUtils.getCurrentUsername());
+        final String ActivateCode = editText.getText().toString();
+        new Thread() {
+            public void run() {
+                ActivateByPost(token,ActivateCode,userName);
+            }
+        }.start();
+
     }
 
-    public void ActivateByPost(String token, String code,String userName) {
+    public void ActivateByPost(String token, String ActivateCode,String userName) {
 
         try {
             UserUtils userUtils = new UserUtils(this);
             String deviceName = userUtils.getDefaultDeviceName();
             String uuid = userUtils.generateUuid();
             // 请求的地址
-            String spec = "http://cirnoteam.varkarix.com/register";
+            String spec = "http://cirnoteam.varkarix.com/activate";
             // 根据地址创建URL对象
             URL url = new URL(spec);
             // 根据URL对象打开链接
@@ -66,21 +79,11 @@ public class Activate extends AppCompatActivity {
             // 传递的数据
             String data = "username=" + URLEncoder.encode(userName, "UTF-8")
                     + "&token=" + URLEncoder.encode(token, "UTF-8")
-                    + "&code=" + URLEncoder.encode(code, "UTF-8")
+                    + "&code=" + URLEncoder.encode(ActivateCode, "UTF-8")
                     + "&uuid=" + URLEncoder.encode(uuid,"UTF-8")
                     +" &device=" + URLEncoder.encode(deviceName,"UTF-8");
             // 设置请求的头
             urlConnection.setRequestProperty("Connection", "keep-alive");
-            // 设置请求的头
-            urlConnection.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
-            // 设置请求的头
-            urlConnection.setRequestProperty("Content-Length",
-                    String.valueOf(data.getBytes().length));
-            // 设置请求的头
-            urlConnection
-                    .setRequestProperty("User-Agent",
-                            "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0");
 
             urlConnection.setDoOutput(true); // 发送POST请求必须设置允许输出
             urlConnection.setDoInput(true); // 发送POST请求必须设置允许输入
@@ -108,7 +111,25 @@ public class Activate extends AppCompatActivity {
                 baos.close();
                 // 返回字符串
                 final String result = new String(baos.toByteArray());
+                JSONObject jsonObject = new JSONObject(result);
+                int code = jsonObject.getInt("code");
+                final String message = jsonObject.getString("message");
 
+                if(code == 200){
+                    userUtils.register(userName,password,token,uuid,deviceName);
+                    Intent intent = new Intent(this,LogIn.class);
+                    startActivity(intent);
+                }
+
+                else {
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 在这里把返回的数据写在控件上 会出现什么情况尼
+                            Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
                 // 通过runOnUiThread方法进行修改主线程的控件内容
                 this.runOnUiThread(new Runnable() {
                     @Override
@@ -126,7 +147,6 @@ public class Activate extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"注册失败",Toast.LENGTH_SHORT).show();
                     }
                 });
-                //System.out.println("链接失败.........");
             }
         } catch (Exception e) {
             e.printStackTrace();
