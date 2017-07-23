@@ -3,6 +3,7 @@ package com.cirnoteam.accountingassistant.activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -48,6 +49,7 @@ public class Chart extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chart);
+        initActionBar();
 
         list_date.add("全期间");
         list_date.add("本日");
@@ -216,4 +218,17 @@ public class Chart extends AppCompatActivity {
         }
         return type;
     }
+
+    public void initActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_chart_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
 }

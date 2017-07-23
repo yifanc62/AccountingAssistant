@@ -7,6 +7,13 @@
     android:orientation="vertical"
     tools:context="com.cirnoteam.accountingassistant.activity.ChangeEmail">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/activity_changeemail_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"

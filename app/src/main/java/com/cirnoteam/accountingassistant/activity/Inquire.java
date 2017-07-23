@@ -56,6 +56,7 @@ public class Inquire extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inquire);
         initActionBar();
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(Inquire.this, android.R.layout.simple_list_item_1, data);
         listView = (ListView) findViewById(R.id.listview_result);
         listView.setAdapter(adapter);
@@ -209,7 +210,7 @@ public class Inquire extends AppCompatActivity {
 
 
     public void initActionBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_inquire_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
