@@ -21,7 +21,7 @@
 
 
     <TableLayout
-        android:id="@+id/T4"
+        android:id="@+id/cgem_anim"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">

@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
@@ -36,6 +39,10 @@ public class ChangePassword extends AppCompatActivity {
         resetToken = intent.getStringExtra("resetToken");
         userName = intent.getStringExtra("userName");
         Toast.makeText(getApplicationContext(),"已向您的邮箱发送验证邮件",Toast.LENGTH_SHORT).show();
+
+        TableLayout tableLayout = (TableLayout) findViewById(R.id.table1);
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        tableLayout.startAnimation(scaleAnimation);
     }
 
     public void changePassword (View view){
