@@ -18,80 +18,78 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/side">
 
-        <TableRow>
+    <TableRow>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="用户名:"
+            android:gravity="center"
+            android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="用户名:"
-                android:textSize="16sp" />
+        <EditText
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="12"
+            android:hint="请填写登录账号"
+            android:gravity="center"
+            android:selectAllOnFocus="true" />
+    </TableRow>
 
-            <EditText
-                android:id="@+id/userName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="12"
-                android:gravity="center"
-                android:hint="请填写登录账号"
-                android:selectAllOnFocus="true" />
-        </TableRow>
+    <TableRow>
 
-        <TableRow>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="密码:"
+            android:gravity="center"
+            android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="密码:"
-                android:textSize="16sp" />
+        <EditText
+            android:id="@+id/password_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请填写登录密码"
+            android:gravity="center"
+            android:ems="12"
+            android:inputType="numberPassword" />
+    </TableRow>
 
-            <EditText
-                android:id="@+id/password_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="12"
-                android:gravity="center"
-                android:hint="请填写登录密码"
-                android:inputType="numberPassword" />
-        </TableRow>
+    <TableRow>
 
-        <TableRow>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="密码确认:"
+            android:textSize="16sp" />
+        <EditText
+            android:id="@+id/password_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请再次输入密码"
+            android:gravity="center"
+            android:ems="12"
+            android:inputType="numberPassword" />
+    </TableRow>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="密码确认:"
-                android:textSize="16sp" />
+    <TableRow>
 
-            <EditText
-                android:id="@+id/password_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="12"
-                android:gravity="center"
-                android:hint="请再次输入密码"
-                android:inputType="numberPassword" />
-        </TableRow>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="邮箱"
+            android:gravity="center"
+            android:textSize="16sp" />
 
-        <TableRow>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="邮箱"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="12"
-                android:gravity="center"
-                android:hint="请填写要绑定的邮箱"
-                android:inputType="textEmailAddress" />
-        </TableRow>
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请填写要绑定的邮箱"
+            android:gravity="center"
+            android:ems="12"
+            android:inputType="textEmailAddress" />
+    </TableRow>
 
     </TableLayout>
 

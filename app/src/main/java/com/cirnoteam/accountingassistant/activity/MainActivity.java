@@ -1,4 +1,3 @@
-//嘻嘻
 package com.cirnoteam.accountingassistant.activity;
 
 import android.content.Intent;
@@ -194,7 +193,6 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 TextView username = (TextView)findViewById(R.id.username);
                 username.setText(userUtils.getCurrentUsername());
-
                 drawer.openDrawer(Gravity.START);
             }
         });
@@ -273,11 +271,10 @@ public class MainActivity extends AppCompatActivity
         Line.startAnimation(scaleAnimation);
     }
 
-    private void reSetList(){//刷新、设置list的值
+    private void reSetList(){
         list_record_id.clear();
         record.clear();
         RecordUtils recordUtils = new RecordUtils(this);
-        //records = recordUtils.getLateast4Records(Status.bookid);
         records = recordUtils.getLateast4Records(Status.bookid);
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
         int i = 0;
@@ -341,6 +338,7 @@ public class MainActivity extends AppCompatActivity
         //bookAdapter.add("默认账本");
         bookAdapter.add("＋");
         //第五步：为下拉列表设置各种事件的响应，这个事响应菜单被选中
+
         //((BaseAdapter) mySpinner.getAdapter()).notifyDataSetChanged();
     }
 
@@ -365,8 +363,15 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         if (id == R.id.change_photo) {
             showChoosePicDialog();
-        } else if (id == R.id.log_off) {
-
+        } else if (id == R.id.change_password) {
+            Intent intent = new Intent(this,TransitPassword.class);
+            startActivity(intent);
+        }else if (id == R.id.log_off) {
+            UserUtils userUtils = new UserUtils(this);
+            userUtils.logout(userUtils.getCurrentUsername());
+            Intent intent = new Intent(this,LogIn.class);
+            startActivity(intent);
+            Toast.makeText(getApplication(),"注销成功",Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -498,12 +503,6 @@ public class MainActivity extends AppCompatActivity
     private void uploadPic(Bitmap bitmap) {
         // 上传至服务器
         saveFile(bitmap,"","userphoto.jpeg");
-    }
-
-
-    public void toLogIn(View view) {
-        Intent intent = new Intent(this, Record.class);
-        startActivity(intent);
     }
 
     public void toNewRecord(View view) {
