@@ -14,6 +14,7 @@ import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.AccountUtils;
 import com.cirnoteam.accountingassistant.database.BookUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
 import com.cirnoteam.accountingassistant.entity.User;
@@ -59,10 +60,6 @@ public class LogIn extends AppCompatActivity {
             finish();
             Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
         }
-        catch (Exception e){
-            Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
-        }
-
         Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
         TableLayout ta = (TableLayout) findViewById(R.id.T4);
         ta.startAnimation(scaleAnimation);
@@ -79,7 +76,6 @@ public class LogIn extends AppCompatActivity {
     }
 
     public void toMainActivity(View view) {
-
 
         EditText editText1 = (EditText) findViewById(R.id.password);
         final String password = editText1.getText().toString();
@@ -189,12 +185,17 @@ public class LogIn extends AppCompatActivity {
                         String token = jsonObject.getJSONObject("entity").getString("token");
                         if (userUtils.getUser(userName) == null){
                             userUtils.register(userName,userPass,token,uuid,device);
-                            BookUtils bookUtils = new BookUtils(this);
-                            bookUtils.addBook(userName,"默认账本");
+
+
                         }
                         if(userUtils.getUser(userName).getPassword().equals(userPass)){
                             userUtils.login(userName);
-
+                            BookUtils bookUtils = new BookUtils(this);
+                            AccountUtils accountUtils = new AccountUtils(this);
+                            if(bookUtils.getAllBooks(userUtils.getCurrentUsername()) == null) {
+                                long id = bookUtils.addBook(userName, "默认账本");
+                                accountUtils.addAccount(id, 0, 1000F, "默认账户");
+                            }
                             Intent intent = new Intent(this, MainActivity.class);
                             startActivity(intent);
                             this.runOnUiThread(new Runnable() {
@@ -224,15 +225,6 @@ public class LogIn extends AppCompatActivity {
                         }
                     });
                 }
-
-                // 通过runOnUiThread方法进行修改主线程的控件内容
-                this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 在这里把返回的数据写在控件上 会出现什么情况尼
-                        Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
-                    }
-                });
 
             } else {
                 this.runOnUiThread(new Runnable() {

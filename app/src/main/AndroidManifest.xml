@@ -103,6 +103,12 @@
             android:theme="@style/AppTheme">
             <action android:name="android.intent.action.ACTIVATE" />
         </activity>
+        <activity
+            android:name=".activity.TransitPassword"
+            android:label="跳转页面"
+            android:theme="@style/AppTheme">
+            <action android:name="android.intent.action.TRANSITPASSWORD" />
+        </activity>
     </application>
 
 </manifest>

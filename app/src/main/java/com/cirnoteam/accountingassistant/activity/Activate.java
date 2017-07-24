@@ -49,6 +49,7 @@ public class Activate extends AppCompatActivity {
 
     public void activate(View view)
     {
+        Toast.makeText(getApplicationContext(),"数据处理中，请不要进行其他操作",Toast.LENGTH_SHORT).show();
         EditText editText = (EditText)findViewById(R.id.edit_code);
         final String ActivateCode = editText.getText().toString();
         new Thread() {

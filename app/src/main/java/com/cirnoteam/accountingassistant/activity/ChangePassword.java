@@ -40,8 +40,6 @@ public class ChangePassword extends AppCompatActivity {
 
     public void changePassword (View view){
 
-        EditText editText1 = (EditText) findViewById(R.id.old_password);
-        final String old_password = editText1.getText().toString();
         EditText editText2 = (EditText) findViewById(R.id.new_password);
         final String new_password = editText2.getText().toString();
         EditText editText3 = (EditText)findViewById(R.id.code);
@@ -73,11 +71,9 @@ public class ChangePassword extends AppCompatActivity {
         old_password_wrong.setButton(DialogInterface.BUTTON_POSITIVE, "确定", listener);
         final UserUtils userUtils = new UserUtils(this);
 
-        if (old_password.equals("")||new_password.equals(""))
+        if (VCode.equals("")||new_password.equals(""))
             empty.show();
-        else if(!userUtils.getCurrentUser().getPassword().equals(old_password))
-            old_password_wrong.show();
-        else if (old_password.equals(new_password))
+        else if (userUtils.getCurrentPassword().equals(new_password))
             repeated_password.show();
         else {
             new Thread(){

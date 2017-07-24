@@ -1,7 +1,9 @@
 package com.cirnoteam.accountingassistant.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -19,6 +21,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -39,23 +42,45 @@ public class TransitPassword extends AppCompatActivity {
         EditText editText2 = (EditText)findViewById(R.id.email);
         final String userName = editText1.getText().toString();
         final String email = editText2.getText().toString();
+        Matcher matcher = pattern.matcher(email);
 
-        
-
-
-        new Thread() {
-            public void run() {
-                commitByPost(email,userName);
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case AlertDialog.BUTTON_POSITIVE:
+                        break;
+                }
             }
-        }.start();
+        };
+        AlertDialog empty = new AlertDialog.Builder(this).create();
+        empty.setTitle("输入错误");
+        empty.setMessage("输入框不能为空");
+        empty.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
+                listener);
+
+        AlertDialog emailError = new AlertDialog.Builder(this).create();
+        emailError.setTitle("输入错误");
+        emailError.setMessage("邮箱格式输入错误");
+        emailError.setButton(DialogInterface.BUTTON_POSITIVE, "确定",
+                listener);
+
+        if (userName.equals("") || email.equals(""))
+            empty.show();
+        else if (!matcher.matches())
+            emailError.show();
+        else {
+            new Thread() {
+                public void run() {
+                    commitByPost(email, userName);
+                }
+            }.start();
+        }
     }
 
     public void commitByPost(String email,String userName) {
 
         try {
             UserUtils userUtils = new UserUtils(this);
-            String deviceName = userUtils.getDefaultDeviceName();
-            String uuid = userUtils.generateUuid();
             // 请求的地址
             String spec = "http://cirnoteam.varkarix.com/authreset";
             // 根据地址创建URL对象
@@ -81,7 +106,8 @@ public class TransitPassword extends AppCompatActivity {
             OutputStream os = urlConnection.getOutputStream();
             os.write(data.getBytes());
             os.flush();
-            if (urlConnection.getResponseCode() == 200) {
+            int c = urlConnection.getResponseCode();
+            if (c == 200) {
                 // 获取响应的输入流对象
                 InputStream is = urlConnection.getInputStream();
                 // 创建字节输出流对象
@@ -130,20 +156,13 @@ public class TransitPassword extends AppCompatActivity {
                     });
                 }
                 // 通过runOnUiThread方法进行修改主线程的控件内容
-                this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 在这里把返回的数据写在控件上 会出现什么情况尼
-                        Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
-                    }
-                });
 
             } else {
                 this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         // 在这里把返回的数据写在控件上 会出现什么情况尼
-                        Toast.makeText(getApplicationContext(),"注册失败",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"连接服务器失败",Toast.LENGTH_SHORT).show();
                     }
                 });
             }
