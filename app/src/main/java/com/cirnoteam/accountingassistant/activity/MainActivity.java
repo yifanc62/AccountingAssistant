@@ -551,7 +551,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void sync() {
-        Toast.makeText(getApplicationContext(), "同步中，可能会耗时较久，请等待", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "同步数据中，可能会耗时较久，请等待", Toast.LENGTH_SHORT).show();
         new Thread() {
             public void run() {
                 syncNewAddedBookByPost();
@@ -615,8 +615,7 @@ public class MainActivity extends AppCompatActivity
                         Long remoteId = entry.getValue();
                         bookUtils.setBookRemoteId(id, remoteId);
                     }
-                }
-                if (response.getCode() != 200) {
+                } else {
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -644,7 +643,7 @@ public class MainActivity extends AppCompatActivity
             urlConnection.setConnectTimeout(5000);
 
             List<SyncBook> modifyBooks = dirtyUtils.getAllModifiedBooks(userUtils.getCurrentUsername());
-            BookReqEntity bookReqEntity = new BookReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setBooks(modifyBooks);
+            BookReqEntity bookReqEntity = new BookReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("modify").setBooks(modifyBooks);
             ObjectMapper mapper = new ObjectMapper();
             String data = mapper.writeValueAsString(bookReqEntity);
 
@@ -699,8 +698,8 @@ public class MainActivity extends AppCompatActivity
             urlConnection.setReadTimeout(5000);
             urlConnection.setConnectTimeout(5000);
 
-            List<SyncBook> modifyBooks = dirtyUtils.getAllDeletedBooks(userUtils.getCurrentUsername());
-            BookReqEntity bookReqEntity = new BookReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setBooks(modifyBooks);
+            List<SyncBook> deleteBooks = dirtyUtils.getAllDeletedBooks(userUtils.getCurrentUsername());
+            BookReqEntity bookReqEntity = new BookReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("delete").setBooks(deleteBooks);
             ObjectMapper mapper = new ObjectMapper();
             String data = mapper.writeValueAsString(bookReqEntity);
 
@@ -789,8 +788,7 @@ public class MainActivity extends AppCompatActivity
                         Long remoteId = entry.getValue();
                         accountUtils.setAccountRemoteId(id, remoteId);
                     }
-                }
-                if (response.getCode() != 200) {
+                } else {
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -817,7 +815,7 @@ public class MainActivity extends AppCompatActivity
             urlConnection.setConnectTimeout(5000);
 
             List<SyncAccount> modifyAccounts = dirtyUtils.getAllModifiedAccounts(userUtils.getCurrentUsername());
-            AccountReqEntity accountReqEntity = new AccountReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setAccounts(modifyAccounts);
+            AccountReqEntity accountReqEntity = new AccountReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("modify").setAccounts(modifyAccounts);
             ObjectMapper mapper = new ObjectMapper();
             String data = mapper.writeValueAsString(accountReqEntity);
 
@@ -861,7 +859,7 @@ public class MainActivity extends AppCompatActivity
 
     public void syncDeleteAccountByPost() {
         try {
-            String spec = "http://cirnoteam.varkarix.com/sync/modify/account";
+            String spec = "http://cirnoteam.varkarix.com/sync/delete/account";
             URL url = new URL(spec);
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
@@ -870,8 +868,8 @@ public class MainActivity extends AppCompatActivity
             urlConnection.setReadTimeout(5000);
             urlConnection.setConnectTimeout(5000);
 
-            List<SyncAccount> modifyAccounts = dirtyUtils.getAllDeletedAccounts(userUtils.getCurrentUsername());
-            AccountReqEntity accountReqEntity = new AccountReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setAccounts(modifyAccounts);
+            List<SyncAccount> deleteAccounts = dirtyUtils.getAllDeletedAccounts(userUtils.getCurrentUsername());
+            AccountReqEntity accountReqEntity = new AccountReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("delete").setAccounts(deleteAccounts);
             ObjectMapper mapper = new ObjectMapper();
             String data = mapper.writeValueAsString(accountReqEntity);
 
@@ -960,8 +958,7 @@ public class MainActivity extends AppCompatActivity
                         Long remoteId = entry.getValue();
                         recordUtils.setRecordRemoteId(id, remoteId);
                     }
-                }
-                if (response.getCode() != 200) {
+                } else {
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -988,7 +985,7 @@ public class MainActivity extends AppCompatActivity
             urlConnection.setConnectTimeout(5000);
 
             List<SyncRecord> modifyRecords = dirtyUtils.getAllModifiedRecords(userUtils.getCurrentUsername());
-            RecordReqEntity accountReqEntity = new RecordReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setRecords(modifyRecords);
+            RecordReqEntity accountReqEntity = new RecordReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("modify").setRecords(modifyRecords);
             ObjectMapper mapper = new ObjectMapper();
             String data = mapper.writeValueAsString(accountReqEntity);
 
@@ -1032,7 +1029,7 @@ public class MainActivity extends AppCompatActivity
 
     public void syncDeleteRecordByPost() {
         try {
-            String spec = "http://cirnoteam.varkarix.com/sync/modify/record";
+            String spec = "http://cirnoteam.varkarix.com/sync/delete/record";
             URL url = new URL(spec);
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
@@ -1041,8 +1038,8 @@ public class MainActivity extends AppCompatActivity
             urlConnection.setReadTimeout(5000);
             urlConnection.setConnectTimeout(5000);
 
-            List<SyncRecord> modifyRecords = dirtyUtils.getAllDeletedRecords(userUtils.getCurrentUsername());
-            RecordReqEntity accountReqEntity = new RecordReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setRecords(modifyRecords);
+            List<SyncRecord> deleteRecords = dirtyUtils.getAllDeletedRecords(userUtils.getCurrentUsername());
+            RecordReqEntity accountReqEntity = new RecordReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("delete").setRecords(deleteRecords);
             ObjectMapper mapper = new ObjectMapper();
             String data = mapper.writeValueAsString(accountReqEntity);
 
