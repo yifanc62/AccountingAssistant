@@ -310,6 +310,9 @@ public class Record extends AppCompatActivity {
 
         Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
         expandableListView.startAnimation(scaleAnimation);
+        Animation flyAnimation = AnimationUtils.loadAnimation(this, R.anim.flyin);
+        TextView textView = (TextView) findViewById(R.id.record_lab);
+        textView.startAnimation(flyAnimation);
     }
 
     public void initActionBar() {

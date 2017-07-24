@@ -27,13 +27,15 @@
             android:id="@+id/spinner_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:dropDownVerticalOffset="30dp" />
 
         <Spinner
             android:id="@+id/spinner_expense"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:dropDownVerticalOffset="30dp"/>
     </LinearLayout>
 
     <com.github.mikephil.charting.charts.PieChart
@@ -54,8 +56,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="59dp"
         android:background="@drawable/botton1"
-        android:onClick="changeChart"
-        android:text="点击生成图表" />
+        android:text="迷之按钮" />
 
 
 </RelativeLayout>

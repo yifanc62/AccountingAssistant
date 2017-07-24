@@ -7,8 +7,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +50,9 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
 
-
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        TableLayout ta = (TableLayout) findViewById(R.id.register_anim);
+        ta.startAnimation(scaleAnimation);
     }
 
     public void register(View view) {
