@@ -49,4 +49,7 @@ dependencies {
     compile files('src/main/libs/commons-logging.jar')
     compile files('src/main/libs/ezmorph-1.0.3.jar')
     compile files('src/main/libs/json-lib-2.4-jdk15.jar')
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.9'
+
 }

@@ -7,13 +7,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,7 +24,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -44,11 +40,16 @@ import com.cirnoteam.accountingassistant.database.DirtyUtils;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
 import com.cirnoteam.accountingassistant.entity.Book;
-import com.cirnoteam.accountingassistant.entity.User;
-import com.github.mikephil.charting.utils.FileUtils;
-import com.github.mikephil.charting.utils.Utils;
+import com.cirnoteam.accountingassistant.json.AccountReqEntity;
+import com.cirnoteam.accountingassistant.json.BookReqEntity;
+import com.cirnoteam.accountingassistant.json.RecordReqEntity;
+import com.cirnoteam.accountingassistant.json.RemoteIdRespEntity;
+import com.cirnoteam.accountingassistant.json.Response;
+import com.cirnoteam.accountingassistant.json.SyncAccount;
+import com.cirnoteam.accountingassistant.json.SyncBook;
+import com.cirnoteam.accountingassistant.json.SyncRecord;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -59,14 +60,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private List<String> bookName = new ArrayList<>();
     private List<String> record = new ArrayList<>();
@@ -80,10 +81,11 @@ public class MainActivity extends AppCompatActivity
     private ListView myListView;
     private ArrayAdapter<String> recordAdapter;
     private List<com.cirnoteam.accountingassistant.entity.Record> records = new ArrayList<com.cirnoteam.accountingassistant.entity.Record>();
-    //private Book book = new Book();
     private BookUtils bookUtils = new BookUtils(this);
     private UserUtils userUtils = new UserUtils(this);
     private AccountUtils accountUtils = new AccountUtils(this);
+    private RecordUtils recordUtils = new RecordUtils(this);
+    private DirtyUtils dirtyUtils = new DirtyUtils(this);
     private Animation scaleAnimation;
     private ImageView photo;
 
@@ -130,13 +132,13 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                         //bookAdapter.insert(editText.getText().toString(),0);
                         Long id;
-                        if((id = bookUtils.addBook(userUtils.getCurrentUsername(),editText.getText().toString()))!=-1) {
-                            accountUtils.addAccount(id,0,1000F,"默认账户");
+                        if ((id = bookUtils.addBook(userUtils.getCurrentUsername(), editText.getText().toString())) != -1) {
+                            accountUtils.addAccount(id, 0, 1000F, "默认账户");
                             Toast.makeText(getApplicationContext(), "添加成功", Toast.LENGTH_SHORT).show();
                             Status.bookid = id;
                             reSetSpinner();
-                            for(int i=0;i<list_book_id.size();i++) {
-                                if(list_book_id.get(i) == id)
+                            for (int i = 0; i < list_book_id.size(); i++) {
+                                if (list_book_id.get(i) == id)
                                     mySpinner.setSelection(i);
                             }
                         }
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity
                 });
         inputDialog.show();
     }
+
     private void showDeleteDialog() {
         final EditText editText = new EditText(MainActivity.this);
         final AlertDialog.Builder inputDialog = new AlertDialog.Builder(MainActivity.this);
@@ -162,7 +165,7 @@ public class MainActivity extends AppCompatActivity
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(bookUtils.deleteBook(Status.bookid))
+                        if (bookUtils.deleteBook(Status.bookid))
                             Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
                         reSetSpinner();
                         mySpinner.setSelection(0);
@@ -178,6 +181,7 @@ public class MainActivity extends AppCompatActivity
                 });
         inputDialog.show();
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -201,17 +205,17 @@ public class MainActivity extends AppCompatActivity
             @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
             @Override
             public void onClick(View view) {
-                TextView username = (TextView)findViewById(R.id.username);
+                TextView username = (TextView) findViewById(R.id.username);
                 username.setText(userUtils.getCurrentUsername());
                 drawer.openDrawer(Gravity.START);
             }
         });
 
         //spinner
-        mySpinner = (Spinner)findViewById(R.id.spinner_book);
+        mySpinner = (Spinner) findViewById(R.id.spinner_book);
         BookUtils u = new BookUtils(this);
         list_books = u.getAllBooks(userUtils.getCurrentUsername());
-        for(Book list_book:list_books){
+        for (Book list_book : list_books) {
             bookName.add(list_book.getName());
             list_book_id.add(list_book.getId());
         }
@@ -227,14 +231,14 @@ public class MainActivity extends AppCompatActivity
         mySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                if (arg2 == (bookAdapter.getCount()-1)) {
+                if (arg2 == (bookAdapter.getCount() - 1)) {
                     showInputDialog();
-                    for(int i=0;i<list_book_id.size();i++) {
-                        if(list_book_id.get(i) == Status.bookid)
+                    for (int i = 0; i < list_book_id.size(); i++) {
+                        if (list_book_id.get(i) == Status.bookid)
                             mySpinner.setSelection(i);
                     }//还原spinner选项
                     arg0.setVisibility(View.VISIBLE);
-                } else{
+                } else {
                     Status.bookid = list_book_id.get(arg2);
                     reSetList();//调用设值方法以刷新
                 }
@@ -265,9 +269,9 @@ public class MainActivity extends AppCompatActivity
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
         reSetSpinner();
-        if(Status.bookid != null) {
-            for(int i=0;i<list_book_id.size();i++) {
-                if(list_book_id.get(i) == Status.bookid)
+        if (Status.bookid != null) {
+            for (int i = 0; i < list_book_id.size(); i++) {
+                if (list_book_id.get(i) == Status.bookid)
                     mySpinner.setSelection(i);
             }
         }
@@ -281,46 +285,56 @@ public class MainActivity extends AppCompatActivity
         Line.startAnimation(scaleAnimation);
     }
 
-    private void reSetList(){
+    private void reSetList() {
         list_record_id.clear();
         record.clear();
         RecordUtils recordUtils = new RecordUtils(this);
         records = recordUtils.getLateast4Records(Status.bookid);
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
         int i = 0;
-        for(com.cirnoteam.accountingassistant.entity.Record _record : records) {
+        for (com.cirnoteam.accountingassistant.entity.Record _record : records) {
             String newRecord = " ";
             newRecord += fm.format(_record.getTime());
             newRecord += " ";
-            newRecord += _record.getExpense()?"支出 ":"收入 ";
+            newRecord += _record.getExpense() ? "支出 " : "收入 ";
             newRecord += _record.getAmount();
             newRecord += " ";
-            switch (_record.getType()){
-                case 0:newRecord += " 一日三餐";
+            switch (_record.getType()) {
+                case 0:
+                    newRecord += " 一日三餐";
                     break;
-                case 1:newRecord += " 购物消费";
+                case 1:
+                    newRecord += " 购物消费";
                     break;
-                case 2:newRecord += " 水电煤气";
+                case 2:
+                    newRecord += " 水电煤气";
                     break;
-                case 3:newRecord += " 交通花费";
+                case 3:
+                    newRecord += " 交通花费";
                     break;
-                case 4:newRecord += " 医疗消费";
+                case 4:
+                    newRecord += " 医疗消费";
                     break;
-                case 5:newRecord += " 其他支出";
+                case 5:
+                    newRecord += " 其他支出";
                     break;
-                case 6:newRecord += " 经营获利";
+                case 6:
+                    newRecord += " 经营获利";
                     break;
-                case 7:newRecord += " 工资收入";
+                case 7:
+                    newRecord += " 工资收入";
                     break;
-                case 8:newRecord += " 路上捡钱";
+                case 8:
+                    newRecord += " 路上捡钱";
                     break;
-                case 9:newRecord += " 其他收入";
+                case 9:
+                    newRecord += " 其他收入";
                     break;
             }
             list_record_id.add(_record.getId());
             record.add(newRecord);
             i++;
-            if(i == 4)
+            if (i == 4)
                 break;
         }
         myListView = (ListView) findViewById(R.id.listview);
@@ -329,14 +343,14 @@ public class MainActivity extends AppCompatActivity
         myListView.setAdapter(recordAdapter);
     }
 
-    private void reSetSpinner(){
+    private void reSetSpinner() {
         list_book_id.clear();
         bookName.clear();
 
 //        第二步：为下拉列表定义一个适配器，这里就用到里前面定义的list
         BookUtils u = new BookUtils(this);
         list_books = u.getAllBooks(userUtils.getCurrentUsername());
-        for(Book list_book:list_books){
+        for (Book list_book : list_books) {
             bookName.add(list_book.getName());
             list_book_id.add(list_book.getId());
         }
@@ -374,16 +388,16 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.change_photo) {
             showChoosePicDialog();
         } else if (id == R.id.change_password) {
-            Intent intent = new Intent(this,TransitPassword.class);
+            Intent intent = new Intent(this, TransitPassword.class);
             startActivity(intent);
-        }else if (id == R.id.log_off) {
+        } else if (id == R.id.log_off) {
             UserUtils userUtils = new UserUtils(this);
             userUtils.logout(userUtils.getCurrentUsername());
-            Intent intent = new Intent(this,LogIn.class);
+            Intent intent = new Intent(this, LogIn.class);
             startActivity(intent);
-            Toast.makeText(getApplication(),"注销成功",Toast.LENGTH_SHORT).show();
-        }else if (id == R.id.sync){
-
+            Toast.makeText(getApplication(), "注销成功", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.sync) {
+            sync();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -398,7 +412,7 @@ public class MainActivity extends AppCompatActivity
     protected void showChoosePicDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("设置头像");
-        String[] items = { "选择本地照片", "拍照" };
+        String[] items = {"选择本地照片", "拍照"};
         builder.setNegativeButton("取消", null);
         builder.setItems(items, new DialogInterface.OnClickListener() {
 
@@ -472,13 +486,12 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 保存裁剪之后的图片数据
-     *
      */
     protected void setImageToView(Intent data) {
         Bundle extras = data.getExtras();
         if (extras != null) {
             Bitmap bmp = extras.getParcelable("data");
-            photo = (ImageView)findViewById(R.id.userphoto) ;
+            photo = (ImageView) findViewById(R.id.userphoto);
             photo.setImageBitmap(bmp);
             uploadPic(bmp);
         }
@@ -487,17 +500,18 @@ public class MainActivity extends AppCompatActivity
     /**
      * 将Bitmap转换成文件
      * 保存文件
+     *
      * @param bm
      * @param fileName
      * @throws IOException
      */
-    public static File saveFile(Bitmap bm,String savepath, String fileName){
-        String path = Environment.getExternalStorageDirectory()+savepath;
+    public static File saveFile(Bitmap bm, String savepath, String fileName) {
+        String path = Environment.getExternalStorageDirectory() + savepath;
         File dirFile = new File(path);
-        if(!dirFile.exists()){
+        if (!dirFile.exists()) {
             dirFile.mkdir();
         }
-        File userphoto = new File(dirFile , fileName);
+        File userphoto = new File(dirFile, fileName);
         if (userphoto.exists()) {
             userphoto.delete();
         }
@@ -514,7 +528,7 @@ public class MainActivity extends AppCompatActivity
 
     private void uploadPic(Bitmap bitmap) {
         // 上传至服务器
-        saveFile(bitmap,"","userphoto.jpeg");
+        saveFile(bitmap, "", "userphoto.jpeg");
     }
 
     public void toNewRecord(View view) {
@@ -526,75 +540,544 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, Inquire.class);
         startActivity(intent);
     }
-    public void toChart(View view){
-        Intent intent = new Intent(this,Chart.class);
+
+    public void toChart(View view) {
+        Intent intent = new Intent(this, Chart.class);
         startActivity(intent);
     }
 
-    public void toDeleteBook(View view){
+    public void toDeleteBook(View view) {
         showDeleteDialog();
     }
 
-    public void syncBookByPost(String email, String userName) {
+    public void sync() {
+        Toast.makeText(getApplicationContext(), "同步中，可能会耗时较久，请等待", Toast.LENGTH_SHORT).show();
+        new Thread() {
+            public void run() {
+                syncNewAddedBookByPost();
+                syncModifyBookByPost();
+                syncDeleteBookByPost();
+                syncNewAddedAccountByPost();
+                syncModifyAccountByPost();
+                syncDeleteAccountByPost();
+                syncNewAddedRecordByPost();
+                syncModifyRecordByPost();
+                syncDeleteRecordByPost();
+            }
+        }.start();
+    }
+
+    public void syncNewAddedBookByPost() {
 
         try {
-            DirtyUtils dirtyUtils = new DirtyUtils(this);
-            // 请求的地址
-            String spec = "http://cirnoteam.varkarix.com/authreset";
-            // 根据地址创建URL对象
+            String spec = "http://cirnoteam.varkarix.com/sync/add/book";
             URL url = new URL(spec);
-            // 根据URL对象打开链接
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
-            // 设置请求的方式
+
             urlConnection.setRequestMethod("POST");
-            // 设置请求的超时时间
             urlConnection.setReadTimeout(5000);
             urlConnection.setConnectTimeout(5000);
-            // 传递的数据
-            String data = "username=" + URLEncoder.encode(userName, "UTF-8")
-                    + "&email=" + URLEncoder.encode(email, "UTF-8");
-            // 设置请求的头
-            UserUtils userUtils = new UserUtils(this);
-            User user = userUtils.getUser("saika");
-            net.sf.json.JSONObject jsonObject_1 = net.sf.json.JSONObject.fromObject(user);
-            urlConnection.setRequestProperty("Connection", "keep-alive");
 
-            urlConnection.setDoOutput(true); // 发送POST请求必须设置允许输出
-            urlConnection.setDoInput(true); // 发送POST请求必须设置允许输入
-            //setDoInput的默认值就是true
-            //获取输出流
+            List<SyncBook> newAddedBooks = dirtyUtils.getAllNewAddedBooks(userUtils.getCurrentUsername());
+            BookReqEntity bookReqEntity = new BookReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setBooks(newAddedBooks);
+            ObjectMapper mapper = new ObjectMapper();
+            String data = mapper.writeValueAsString(bookReqEntity);
+
+            urlConnection.setRequestProperty("Connection", "keep-alive");
+            urlConnection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+
             OutputStream os = urlConnection.getOutputStream();
             os.write(data.getBytes());
             os.flush();
             int c = urlConnection.getResponseCode();
             if (c == 200) {
-                // 获取响应的输入流对象
                 InputStream is = urlConnection.getInputStream();
-                // 创建字节输出流对象
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                // 定义读取的长度
                 int len = 0;
-                // 定义缓冲区
                 byte buffer[] = new byte[1024];
-                // 按照缓冲区的大小，循环读取
                 while ((len = is.read(buffer)) != -1) {
-                    // 根据读取的长度写入到os对象中
                     baos.write(buffer, 0, len);
                 }
-                // 释放资源
                 is.close();
                 baos.close();
-                // 返回字符串
                 final String result = new String(baos.toByteArray());
-                JSONObject jsonObject = new JSONObject(result);
-                int code = jsonObject.getInt("code");
-
-
-                if (code == 200) {
-
-
+                final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() == 200) {
+                    RemoteIdRespEntity entity = (RemoteIdRespEntity) response.getEntity();
+                    Map<Long, Long> map = entity.getIdMap();
+                    for (Map.Entry<Long, Long> entry : map.entrySet()) {
+                        Long id = entry.getKey();
+                        Long remoteId = entry.getValue();
+                        bookUtils.setBookRemoteId(id, remoteId);
+                    }
                 }
+                if (response.getCode() != 200) {
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncModifyBookByPost() {
+        try {
+
+            String spec = "http://cirnoteam.varkarix.com/sync/modify/book";
+            URL url = new URL(spec);
+            HttpURLConnection urlConnection = (HttpURLConnection) url
+                    .openConnection();
+
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setReadTimeout(5000);
+            urlConnection.setConnectTimeout(5000);
+
+            List<SyncBook> modifyBooks = dirtyUtils.getAllModifiedBooks(userUtils.getCurrentUsername());
+            BookReqEntity bookReqEntity = new BookReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setBooks(modifyBooks);
+            ObjectMapper mapper = new ObjectMapper();
+            String data = mapper.writeValueAsString(bookReqEntity);
+
+            urlConnection.setRequestProperty("Connection", "keep-alive");
+            urlConnection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            os.write(data.getBytes());
+            os.flush();
+            int c = urlConnection.getResponseCode();
+            if (c == 200) {
+                InputStream is = urlConnection.getInputStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int len = 0;
+                byte buffer[] = new byte[1024];
+                while ((len = is.read(buffer)) != -1) {
+                    baos.write(buffer, 0, len);
+                }
+                is.close();
+                baos.close();
+                final String result = new String(baos.toByteArray());
+                final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() != 200) {
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void syncDeleteBookByPost() {
+        try {
+
+            String spec = "http://cirnoteam.varkarix.com/sync/delete/book";
+            URL url = new URL(spec);
+            HttpURLConnection urlConnection = (HttpURLConnection) url
+                    .openConnection();
+
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setReadTimeout(5000);
+            urlConnection.setConnectTimeout(5000);
+
+            List<SyncBook> modifyBooks = dirtyUtils.getAllDeletedBooks(userUtils.getCurrentUsername());
+            BookReqEntity bookReqEntity = new BookReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setBooks(modifyBooks);
+            ObjectMapper mapper = new ObjectMapper();
+            String data = mapper.writeValueAsString(bookReqEntity);
+
+            urlConnection.setRequestProperty("Connection", "keep-alive");
+            urlConnection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            os.write(data.getBytes());
+            os.flush();
+            int c = urlConnection.getResponseCode();
+            if (c == 200) {
+                InputStream is = urlConnection.getInputStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int len = 0;
+                byte buffer[] = new byte[1024];
+                while ((len = is.read(buffer)) != -1) {
+                    baos.write(buffer, 0, len);
+                }
+                is.close();
+                baos.close();
+                final String result = new String(baos.toByteArray());
+                final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() != 200) {
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncNewAddedAccountByPost() {
+        try {
+            String spec = "http://cirnoteam.varkarix.com/sync/add/account";
+            URL url = new URL(spec);
+            HttpURLConnection urlConnection = (HttpURLConnection) url
+                    .openConnection();
+
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setReadTimeout(5000);
+            urlConnection.setConnectTimeout(5000);
+
+            List<SyncAccount> newAddedAccounts = dirtyUtils.getAllNewAddedAccounts(userUtils.getCurrentUsername());
+            AccountReqEntity accountReqEntity = new AccountReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setAccounts(newAddedAccounts);
+            ObjectMapper mapper = new ObjectMapper();
+            String data = mapper.writeValueAsString(accountReqEntity);
+
+            urlConnection.setRequestProperty("Connection", "keep-alive");
+            urlConnection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            os.write(data.getBytes());
+            os.flush();
+            int c = urlConnection.getResponseCode();
+            if (c == 200) {
+                InputStream is = urlConnection.getInputStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int len = 0;
+                byte buffer[] = new byte[1024];
+                while ((len = is.read(buffer)) != -1) {
+                    baos.write(buffer, 0, len);
+                }
+                is.close();
+                baos.close();
+                final String result = new String(baos.toByteArray());
+                final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() == 200) {
+                    RemoteIdRespEntity entity = (RemoteIdRespEntity) response.getEntity();
+                    Map<Long, Long> map = entity.getIdMap();
+                    for (Map.Entry<Long, Long> entry : map.entrySet()) {
+                        Long id = entry.getKey();
+                        Long remoteId = entry.getValue();
+                        accountUtils.setAccountRemoteId(id, remoteId);
+                    }
+                }
+                if (response.getCode() != 200) {
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncModifyAccountByPost() {
+        try {
+            String spec = "http://cirnoteam.varkarix.com/sync/modify/account";
+            URL url = new URL(spec);
+            HttpURLConnection urlConnection = (HttpURLConnection) url
+                    .openConnection();
+
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setReadTimeout(5000);
+            urlConnection.setConnectTimeout(5000);
+
+            List<SyncAccount> modifyAccounts = dirtyUtils.getAllModifiedAccounts(userUtils.getCurrentUsername());
+            AccountReqEntity accountReqEntity = new AccountReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setAccounts(modifyAccounts);
+            ObjectMapper mapper = new ObjectMapper();
+            String data = mapper.writeValueAsString(accountReqEntity);
+
+            urlConnection.setRequestProperty("Connection", "keep-alive");
+            urlConnection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            os.write(data.getBytes());
+            os.flush();
+            int c = urlConnection.getResponseCode();
+            if (c == 200) {
+                InputStream is = urlConnection.getInputStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int len = 0;
+                byte buffer[] = new byte[1024];
+                while ((len = is.read(buffer)) != -1) {
+                    baos.write(buffer, 0, len);
+                }
+                is.close();
+                baos.close();
+                final String result = new String(baos.toByteArray());
+                final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() != 200) {
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncDeleteAccountByPost() {
+        try {
+            String spec = "http://cirnoteam.varkarix.com/sync/modify/account";
+            URL url = new URL(spec);
+            HttpURLConnection urlConnection = (HttpURLConnection) url
+                    .openConnection();
+
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setReadTimeout(5000);
+            urlConnection.setConnectTimeout(5000);
+
+            List<SyncAccount> modifyAccounts = dirtyUtils.getAllDeletedAccounts(userUtils.getCurrentUsername());
+            AccountReqEntity accountReqEntity = new AccountReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setAccounts(modifyAccounts);
+            ObjectMapper mapper = new ObjectMapper();
+            String data = mapper.writeValueAsString(accountReqEntity);
+
+            urlConnection.setRequestProperty("Connection", "keep-alive");
+            urlConnection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            os.write(data.getBytes());
+            os.flush();
+            int c = urlConnection.getResponseCode();
+            if (c == 200) {
+                InputStream is = urlConnection.getInputStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int len = 0;
+                byte buffer[] = new byte[1024];
+                while ((len = is.read(buffer)) != -1) {
+                    baos.write(buffer, 0, len);
+                }
+                is.close();
+                baos.close();
+                final String result = new String(baos.toByteArray());
+                final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() != 200) {
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncNewAddedRecordByPost() {
+        try {
+            String spec = "http://cirnoteam.varkarix.com/sync/add/record";
+            URL url = new URL(spec);
+            HttpURLConnection urlConnection = (HttpURLConnection) url
+                    .openConnection();
+
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setReadTimeout(5000);
+            urlConnection.setConnectTimeout(5000);
+
+            List<SyncRecord> newAddedRecords = dirtyUtils.getAllNewAddedRecords(userUtils.getCurrentUsername());
+            RecordReqEntity accountReqEntity = new RecordReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setRecords(newAddedRecords);
+            ObjectMapper mapper = new ObjectMapper();
+            String data = mapper.writeValueAsString(accountReqEntity);
+
+            urlConnection.setRequestProperty("Connection", "keep-alive");
+            urlConnection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            os.write(data.getBytes());
+            os.flush();
+            int c = urlConnection.getResponseCode();
+            if (c == 200) {
+                InputStream is = urlConnection.getInputStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int len = 0;
+                byte buffer[] = new byte[1024];
+                while ((len = is.read(buffer)) != -1) {
+                    baos.write(buffer, 0, len);
+                }
+                is.close();
+                baos.close();
+                final String result = new String(baos.toByteArray());
+                final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() == 200) {
+                    RemoteIdRespEntity entity = (RemoteIdRespEntity) response.getEntity();
+                    Map<Long, Long> map = entity.getIdMap();
+                    for (Map.Entry<Long, Long> entry : map.entrySet()) {
+                        Long id = entry.getKey();
+                        Long remoteId = entry.getValue();
+                        recordUtils.setRecordRemoteId(id, remoteId);
+                    }
+                }
+                if (response.getCode() != 200) {
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncModifyRecordByPost() {
+        try {
+            String spec = "http://cirnoteam.varkarix.com/sync/modify/record";
+            URL url = new URL(spec);
+            HttpURLConnection urlConnection = (HttpURLConnection) url
+                    .openConnection();
+
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setReadTimeout(5000);
+            urlConnection.setConnectTimeout(5000);
+
+            List<SyncRecord> modifyRecords = dirtyUtils.getAllModifiedRecords(userUtils.getCurrentUsername());
+            RecordReqEntity accountReqEntity = new RecordReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setRecords(modifyRecords);
+            ObjectMapper mapper = new ObjectMapper();
+            String data = mapper.writeValueAsString(accountReqEntity);
+
+            urlConnection.setRequestProperty("Connection", "keep-alive");
+            urlConnection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            os.write(data.getBytes());
+            os.flush();
+            int c = urlConnection.getResponseCode();
+            if (c == 200) {
+                InputStream is = urlConnection.getInputStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int len = 0;
+                byte buffer[] = new byte[1024];
+                while ((len = is.read(buffer)) != -1) {
+                    baos.write(buffer, 0, len);
+                }
+                is.close();
+                baos.close();
+                final String result = new String(baos.toByteArray());
+                final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() != 200) {
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void syncDeleteRecordByPost() {
+        try {
+            String spec = "http://cirnoteam.varkarix.com/sync/modify/record";
+            URL url = new URL(spec);
+            HttpURLConnection urlConnection = (HttpURLConnection) url
+                    .openConnection();
+
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setReadTimeout(5000);
+            urlConnection.setConnectTimeout(5000);
+
+            List<SyncRecord> modifyRecords = dirtyUtils.getAllDeletedRecords(userUtils.getCurrentUsername());
+            RecordReqEntity accountReqEntity = new RecordReqEntity().setToken(userUtils.getCurrentToken()).setUuid(userUtils.getCurrentDeviceUuid()).setType("add").setRecords(modifyRecords);
+            ObjectMapper mapper = new ObjectMapper();
+            String data = mapper.writeValueAsString(accountReqEntity);
+
+            urlConnection.setRequestProperty("Connection", "keep-alive");
+            urlConnection.setRequestProperty("Content-Type",
+                    "application/json");
+
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            os.write(data.getBytes());
+            os.flush();
+            int c = urlConnection.getResponseCode();
+            if (c == 200) {
+                InputStream is = urlConnection.getInputStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int len = 0;
+                byte buffer[] = new byte[1024];
+                while ((len = is.read(buffer)) != -1) {
+                    baos.write(buffer, 0, len);
+                }
+                is.close();
+                baos.close();
+                final String result = new String(baos.toByteArray());
+                final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() != 200) {
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();

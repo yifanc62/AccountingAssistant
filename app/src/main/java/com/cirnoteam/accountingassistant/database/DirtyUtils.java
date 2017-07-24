@@ -7,6 +7,9 @@ import com.cirnoteam.accountingassistant.entity.Book;
 import com.cirnoteam.accountingassistant.entity.Dirty;
 import com.cirnoteam.accountingassistant.entity.Record;
 import com.cirnoteam.accountingassistant.gen.DirtyDao;
+import com.cirnoteam.accountingassistant.json.SyncAccount;
+import com.cirnoteam.accountingassistant.json.SyncBook;
+import com.cirnoteam.accountingassistant.json.SyncRecord;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -217,99 +220,108 @@ public class DirtyUtils {
         return builder.where(DirtyDao.Properties.Username.eq(username)).list();
     }
 
-    public List<Book> getAllModifiedBooks(String username) {
+    public List<SyncBook> getAllModifiedBooks(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
         List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_BOOK)).where(DirtyDao.Properties.Deleted.eq(false)).where(DirtyDao.Properties.Remoteid.isNotNull()).list();
-        List<Book> books = new ArrayList<>();
+        List<SyncBook> books = new ArrayList<>();
         BookUtils util = new BookUtils(context);
         for (Dirty dirty : dirties) {
-            books.add(util.getBook(dirty.getRid()));
+            Book book = util.getBook(dirty.getRid());
+            books.add(new SyncBook().setId(book.getId()).setName(book.getName()).setRemoteId(book.getRemoteid()).setUsername(book.getUsername()).setTime(dirty.getTime()));
         }
         return books;
     }
 
-    public List<Account> getAllModifiedAccounts(String username) {
+    public List<SyncAccount> getAllModifiedAccounts(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
         List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_ACCOUNT)).where(DirtyDao.Properties.Deleted.eq(false)).where(DirtyDao.Properties.Remoteid.isNotNull()).list();
-        List<Account> accounts = new ArrayList<>();
+        List<SyncAccount> accounts = new ArrayList<>();
         AccountUtils util = new AccountUtils(context);
         for (Dirty dirty : dirties) {
-            accounts.add(util.getAccount(dirty.getRid()));
+            Account account = util.getAccount(dirty.getRid());
+            accounts.add(new SyncAccount().setId(account.getId()).setName(account.getName()).setRemoteId(account.getRemoteid()).setType(account.getType()).setBalance(account.getBalance()).setTime(dirty.getTime()).setRemoteBookId(account.getBook().getRemoteid()));
         }
         return accounts;
     }
 
-    public List<Record> getAllModifiedRecords(String username) {
+    public List<SyncRecord> getAllModifiedRecords(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
         List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_RECORD)).where(DirtyDao.Properties.Deleted.eq(false)).where(DirtyDao.Properties.Remoteid.isNotNull()).list();
-        List<Record> records = new ArrayList<>();
+        List<SyncRecord> records = new ArrayList<>();
         RecordUtils util = new RecordUtils(context);
         for (Dirty dirty : dirties) {
-            records.add(util.getRecord(dirty.getRid()));
+            Record record = util.getRecord(dirty.getRid());
+            records.add(new SyncRecord().setId(record.getId()).setRemoteId(record.getRemoteid()).setType(record.getType()).setAmount(record.getAmount()).setExpense(record.getExpense()).setRemark(record.getRemark()).setTime(dirty.getTime()).setRemoteAccountId(record.getAccount().getRemoteid()));
         }
         return records;
     }
 
-    public List<Book> getAllNewAddedBooks(String username) {
+
+    public List<SyncBook> getAllNewAddedBooks(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
         List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_BOOK)).where(DirtyDao.Properties.Remoteid.isNull()).list();
-        List<Book> books = new ArrayList<>();
+        List<SyncBook> books = new ArrayList<>();
         BookUtils util = new BookUtils(context);
         for (Dirty dirty : dirties) {
-            books.add(util.getBook(dirty.getRid()));
+            Book book = util.getBook(dirty.getRid());
+            books.add(new SyncBook().setId(book.getId()).setName(book.getName()).setRemoteId(book.getRemoteid()).setUsername(book.getUsername()).setTime(dirty.getTime()));
         }
         return books;
     }
 
-    public List<Account> getAllNewAddedAccounts(String username) {
+    public List<SyncAccount> getAllNewAddedAccounts(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
         List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_ACCOUNT)).where(DirtyDao.Properties.Remoteid.isNull()).list();
-        List<Account> accounts = new ArrayList<>();
+        List<SyncAccount> accounts = new ArrayList<>();
         AccountUtils util = new AccountUtils(context);
         for (Dirty dirty : dirties) {
-            accounts.add(util.getAccount(dirty.getRid()));
+            Account account = util.getAccount(dirty.getRid());
+            accounts.add(new SyncAccount().setId(account.getId()).setName(account.getName()).setRemoteId(account.getRemoteid()).setType(account.getType()).setBalance(account.getBalance()).setTime(dirty.getTime()).setRemoteBookId(account.getBook().getRemoteid()));
         }
         return accounts;
     }
 
-    public List<Record> getAllNewAddedRecords(String username) {
+    public List<SyncRecord> getAllNewAddedRecords(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
         List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_RECORD)).where(DirtyDao.Properties.Remoteid.isNull()).list();
-        List<Record> records = new ArrayList<>();
+        List<SyncRecord> records = new ArrayList<>();
         RecordUtils util = new RecordUtils(context);
         for (Dirty dirty : dirties) {
-            records.add(util.getRecord(dirty.getRid()));
+            Record record = util.getRecord(dirty.getRid());
+            records.add(new SyncRecord().setId(record.getId()).setRemoteId(record.getRemoteid()).setType(record.getType()).setAmount(record.getAmount()).setExpense(record.getExpense()).setRemark(record.getRemark()).setTime(dirty.getTime()).setRemoteAccountId(record.getAccount().getRemoteid()));
         }
         return records;
     }
 
-    public List<Long> getAllDeletedBooksRemoteIds(String username) {
+
+    public List<SyncBook> getAllDeletedBooks(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
         List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_BOOK)).where(DirtyDao.Properties.Deleted.eq(true)).list();
-        List<Long> ids = new ArrayList<>();
+        List<SyncBook> books = new ArrayList<>();
         for (Dirty dirty : dirties) {
-            ids.add(dirty.getRemoteid());
+            books.add(new SyncBook().setRemoteId(dirty.getRemoteid()).setTime(dirty.getTime()));
         }
-        return ids;
+        return books;
     }
 
-    public List<Long> getAllDeletedAccountsRemoteIds(String username) {
+    public List<SyncAccount> getAllDeletedAccounts(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
         List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_ACCOUNT)).where(DirtyDao.Properties.Deleted.eq(true)).list();
-        List<Long> ids = new ArrayList<>();
+        List<SyncAccount> accounts = new ArrayList<>();
         for (Dirty dirty : dirties) {
-            ids.add(dirty.getRemoteid());
+            accounts.add(new SyncAccount().setRemoteId(dirty.getRemoteid()).setTime(dirty.getTime()));
         }
-        return ids;
+        return accounts;
     }
 
-    public List<Long> getAllDeletedRecordsRemoteIds(String username) {
+    public List<SyncRecord> getAllDeletedRecords(String username) {
         QueryBuilder<Dirty> builder = daoManager.getDaoSession().queryBuilder(Dirty.class);
         List<Dirty> dirties = builder.where(DirtyDao.Properties.Username.eq(username)).where(DirtyDao.Properties.Type.eq(TYPE_RECORD)).where(DirtyDao.Properties.Deleted.eq(true)).list();
-        List<Long> ids = new ArrayList<>();
+        List<SyncRecord> records = new ArrayList<>();
         for (Dirty dirty : dirties) {
-            ids.add(dirty.getRemoteid());
+            records.add(new SyncRecord().setRemoteId(dirty.getRemoteid()).setTime(dirty.getTime()));
         }
-        return ids;
+        return records;
     }
+
 }
