@@ -184,12 +184,15 @@ public class MainActivity extends AppCompatActivity
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         leftmenu = (ImageButton) findViewById(R.id.user);
+        leftmenu.setImageBitmap(UploadUtils.getImage(userUtils.getCurrentUsername()));
         leftmenu.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
             @Override
             public void onClick(View view) {
                 TextView username = (TextView)findViewById(R.id.username);
+                ImageView imageView = (ImageView)findViewById(R.id.userphoto) ;
                 username.setText(userUtils.getCurrentUsername());
+                imageView.setImageBitmap(UploadUtils.getImage(userUtils.getCurrentUsername()));
                 drawer.openDrawer(Gravity.START);
             }
         });
@@ -470,14 +473,7 @@ public class MainActivity extends AppCompatActivity
             photo = (ImageView)findViewById(R.id.userphoto) ;
             photo.setImageBitmap(bmp);
             File userPhoto = changeToFile(bmp,"userphoto.jpg");
-
-            UserUtils userUtils = new UserUtils(this);
-            String url = "http://cirnoteam.varkarix.com/avatar";
-            final Map<String, String> params = new HashMap<String, String>();
-            params.put("send_userName",userUtils.getCurrentUsername() );
-            final Map<String, File> files = new HashMap<String, File>();
-            files.put("uploadfile",userPhoto);
-            final String request = UploadUtils.post(url, params, files);
+            UploadUtils.post(userUtils.getCurrentUsername(),userPhoto);
         }
     }
 
@@ -488,7 +484,7 @@ public class MainActivity extends AppCompatActivity
      * @param fileName
      */
     public static File changeToFile(Bitmap bm,String fileName){
-        File userphoto = new File(fileName);
+        File userphoto = new File(Environment.getExternalStorageDirectory()+fileName);
         if (userphoto.exists()) {
             userphoto.delete();
         }

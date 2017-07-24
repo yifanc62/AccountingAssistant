@@ -3,13 +3,19 @@ package com.cirnoteam.accountingassistant.database;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Map;
 
 /**
@@ -17,115 +23,115 @@ import java.util.Map;
  */
 
 public class UploadUtils {
+
     /**
-     * 通过拼接的方式构造请求内容，实现参数传输以及文件传输
-     *
-     * @param url Service net address
-     * @param params text content
-     * @param files pictures
-     * @return String result of Service response
+     * @param username
+     * @param file
      * @throws IOException
      */
-    public static String post(String url, Map<String, String> params, Map<String, File> files)
+    public static void post(String username, File file)
             throws IOException {
+
+        String spec = "http://cirnoteam.varkarix.com/avatar";
+        URL url = new URL(spec);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod("POST");
+        urlConnection.setReadTimeout(5000);
+        urlConnection.setConnectTimeout(5000);
+        urlConnection.setRequestProperty("Connection", "keep-alive");
+        urlConnection.setRequestProperty("Content-Type", "multipart/form-data");
+        urlConnection.setDoOutput(true);
+        urlConnection.setDoInput(true);
         String BOUNDARY = java.util.UUID.randomUUID().toString();
         String PREFIX = "--", LINEND = "\r\n";
-        String MULTIPART_FORM_DATA = "multipart/form-data";
         String CHARSET = "UTF-8";
-
-
-        URL uri = new URL(url);
-        HttpURLConnection conn = (HttpURLConnection) uri.openConnection();
-        conn.setReadTimeout(10 * 1000); // 缓存的最长时间
-        conn.setDoInput(true);// 允许输入
-        conn.setDoOutput(true);// 允许输出
-        conn.setUseCaches(false); // 不允许使用缓存
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("connection", "keep-alive");
-        conn.setRequestProperty("Charsert", "UTF-8");
-        conn.setRequestProperty("Content-Type", MULTIPART_FORM_DATA + ";boundary=" + BOUNDARY);
-
-
         // 首先组拼文本类型的参数
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            sb.append(PREFIX);
-            sb.append(BOUNDARY);
-            sb.append(LINEND);
-            sb.append("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"" + LINEND);
-            sb.append("Content-Type: text/plain; charset=" + CHARSET + LINEND);
-            sb.append("Content-Transfer-Encoding: 8bit" + LINEND);
-            sb.append(LINEND);
-            sb.append(entry.getValue());
-            sb.append(LINEND);
-        }
+        String text = PREFIX +
+                BOUNDARY +
+                LINEND +
+                "Content-Disposition: form-data; name=\"username\"" + LINEND +
+                "Content-Type: text/plain; charset=" + CHARSET + LINEND +
+                "Content-Transfer-Encoding: 8bit" + LINEND +
+                LINEND +
+                username +
+                LINEND;
 
-        DataOutputStream outStream = new DataOutputStream(conn.getOutputStream());
-        outStream.write(sb.toString().getBytes());
-
+        OutputStream os = urlConnection.getOutputStream();
+        os.write(text.getBytes());
         // 发送文件数据
-        if (files != null)
-            for (Map.Entry<String, File> file : files.entrySet()) {
-                StringBuilder sb1 = new StringBuilder();
-                sb1.append(PREFIX);
-                sb1.append(BOUNDARY);
-                sb1.append(LINEND);
-                sb1.append("Content-Disposition: form-data; name=\"uploadfile\"; filename=\""
-                        + file.getValue().getName() + "\"" + LINEND);
-                sb1.append("Content-Type: application/octet-stream; charset=" + CHARSET + LINEND);
-                sb1.append(LINEND);
-                outStream.write(sb1.toString().getBytes());
-
-
-                InputStream is = new FileInputStream(file.getValue());
-                byte[] buffer = new byte[1024];
-                int len = 0;
-                while ((len = is.read(buffer)) != -1) {
-                    outStream.write(buffer, 0, len);
-                }
-
-                is.close();
-                outStream.write(LINEND.getBytes());
+        if (file != null) {
+            String fileHeader = PREFIX +
+                    BOUNDARY +
+                    LINEND +
+                    "Content-Disposition: form-data; name=\"file\"; filename=\"" + username + "\"" + LINEND +
+                    "Content-Type: application/octet-stream; charset=" + CHARSET + LINEND +
+                    LINEND;
+            os.write(fileHeader.getBytes());
+            InputStream is = new FileInputStream(file);
+            byte[] buffer = new byte[1024];
+            int len = 0;
+            while ((len = is.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
             }
-
-
+            is.close();
+            os.write(LINEND.getBytes());
+        }
         // 请求结束标志
         byte[] end_data = (PREFIX + BOUNDARY + PREFIX + LINEND).getBytes();
-        outStream.write(end_data);
-        outStream.flush();
+        os.write(end_data);
+        os.flush();
         // 得到响应码
-        int res = conn.getResponseCode();
-        InputStream in = conn.getInputStream();
+        int res = urlConnection.getResponseCode();
+        InputStream in = urlConnection.getInputStream();
         StringBuilder sb2 = new StringBuilder();
         if (res == 200) {
-            int ch;
-            while ((ch = in.read()) != -1) {
-                sb2.append((char) ch);
+            InputStream is = urlConnection.getInputStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            int len = 0;
+            byte buffer[] = new byte[1024];
+            while ((len = is.read(buffer)) != -1) {
+                baos.write(buffer, 0, len);
             }
+            is.close();
+            baos.close();
+            final String result = new String(baos.toByteArray());
+            try {
+                JSONObject object = new JSONObject(result);
+                if(object.getInt("code")!=200){
+                    throw new IOException(object.getString("message"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (res == 400) {
+
+        } else {
+
         }
-        outStream.close();
-        conn.disconnect();
-        return sb2.toString();
+        os.close();
+        urlConnection.disconnect();
     }
 
 
-    public static Bitmap getImage(String path,String username){
-
+    public static Bitmap getImage(String username) {
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(path).openConnection();
+            String url = "http://cirnoteam.varkarix.com/avatar";
+            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setConnectTimeout(5000);
             conn.setRequestMethod("GET");
             conn.setRequestMethod("Content-Type:image/png;");
             System.out.println("tdw1");
-            if(conn.getResponseCode() == 200){
+            OutputStream os = conn.getOutputStream();
+            String content = "username="+username;
+            os.write(content.getBytes());
+            if (conn.getResponseCode() == 200) {
                 InputStream inputStream = conn.getInputStream();
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                return bitmap;
+                return BitmapFactory.decodeStream(inputStream);
             }
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
-
 }
