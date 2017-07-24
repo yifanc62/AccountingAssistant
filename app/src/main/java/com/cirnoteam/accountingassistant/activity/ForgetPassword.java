@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
 
 import com.cirnoteam.accountingassistant.R;
 
@@ -22,6 +26,10 @@ public class ForgetPassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forget_password);
+
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.fgpw_anim);
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        linearLayout.startAnimation(scaleAnimation);
     }
 
     public void sendEmail(View view) {

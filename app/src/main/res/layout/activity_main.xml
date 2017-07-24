@@ -4,9 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical"
     tools:context="com.cirnoteam.accountingassistant.activity.MainActivity">
 
 
@@ -118,7 +119,8 @@
         android:layout_above="@+id/record"
         android:layout_below="@+id/L1"
         android:background="@drawable/side"
-        android:divider="@drawable/divider"/>
+        android:divider="@drawable/divider"
+        />
 
     <Button
         android:id="@+id/record"

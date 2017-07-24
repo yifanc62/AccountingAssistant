@@ -7,7 +7,11 @@ import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
 
 import com.cirnoteam.accountingassistant.R;
 
@@ -21,6 +25,10 @@ public class ChangeEmail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.change_email);
         initActionBar();
+
+        TableLayout tableLayout = (TableLayout) findViewById(R.id.cgem_anim);
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        tableLayout.startAnimation(scaleAnimation);
     }
 
     public void initActionBar() {

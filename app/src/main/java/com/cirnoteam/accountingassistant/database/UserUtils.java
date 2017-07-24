@@ -44,7 +44,7 @@ public class UserUtils {
         return flag;
     }
 
-    private String getDefaultDeviceName() {
+    public String getDefaultDeviceName() {
         return Build.MODEL;
     }
 
@@ -118,12 +118,12 @@ public class UserUtils {
         return updateUser(user);
     }
 
-    public boolean register(String username, String password, String token) {
+    public boolean register(String username, String password, String token,String uuid,String device) {
         if (isUserNameLocalDuplicated(username)) {
             Log.e("register", "username duplicated");
             return false;
         }
-        User user = new User(username, password, token, getDefaultDeviceName(), generateUuid(), null, true, new Date());
+        User user = new User(username, password, token, device, uuid, null, true, new Date());
         return insertUser(user);
     }
 

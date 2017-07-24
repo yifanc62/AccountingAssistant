@@ -278,7 +278,6 @@ public class Inquire extends AppCompatActivity {
         listView.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), "搜索完成", Toast.LENGTH_SHORT).show();
         Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
-        ListView listView = (ListView) findViewById(R.id.listview_result);
         listView.startAnimation(scaleAnimation);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
