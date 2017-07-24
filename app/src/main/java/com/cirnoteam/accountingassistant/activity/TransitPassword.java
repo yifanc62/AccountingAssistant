@@ -3,10 +3,14 @@ package com.cirnoteam.accountingassistant.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
@@ -33,6 +37,10 @@ public class TransitPassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.transit_password);
+
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        TableLayout tableLayout = (TableLayout) findViewById(R.id.trpw_anim);
+        tableLayout.startAnimation(scaleAnimation);
     }
 
     public void toChangePassword(View view){

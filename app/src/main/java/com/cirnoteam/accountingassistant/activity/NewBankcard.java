@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -77,6 +78,10 @@ public class NewBankcard extends AppCompatActivity {
                 arg0.setVisibility(View.VISIBLE);
             }
         });
+
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.newbk_anim);
+        linearLayout.startAnimation(scaleAnimation);
     }
 
     public void createAccount(View view) {

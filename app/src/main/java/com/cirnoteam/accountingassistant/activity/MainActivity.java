@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ import com.cirnoteam.accountingassistant.database.AccountUtils;
 import com.cirnoteam.accountingassistant.database.BookUtils;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
+import com.cirnoteam.accountingassistant.entity.Account;
 import com.cirnoteam.accountingassistant.entity.Book;
 import com.github.mikephil.charting.utils.FileUtils;
 import com.github.mikephil.charting.utils.Utils;
@@ -53,6 +55,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -74,7 +77,7 @@ public class MainActivity extends AppCompatActivity
     private BookUtils bookUtils = new BookUtils(this);
     private UserUtils userUtils = new UserUtils(this);
     private AccountUtils accountUtils = new AccountUtils(this);
-    private Animation scaleAnimation;
+    private Animation scaleAnimation,flyAnimation;
     private ImageView photo;
 
     protected static final int CHOOSE_PICTURE = 0;
@@ -111,6 +114,7 @@ public class MainActivity extends AppCompatActivity
 
     private void showInputDialog() {
         final EditText editText = new EditText(MainActivity.this);
+        editText.setMaxLines(6);
         final AlertDialog.Builder inputDialog = new AlertDialog.Builder(MainActivity.this);
 
         inputDialog.setTitle("请输入账本名称").setView(editText);
@@ -178,9 +182,10 @@ public class MainActivity extends AppCompatActivity
         navigation.setSelectedItemId(R.id.navigation_home);
 
         Calendar cal = Calendar.getInstance();
-        String currentDate = cal.get(Calendar.YEAR) + "/" + cal.get(Calendar.MONTH);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         mDate = (TextView) findViewById(R.id.Date);
-        mDate.setText(currentDate);
+        String strdate = df.format(cal.getTime());
+        mDate.setText(strdate);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -266,9 +271,14 @@ public class MainActivity extends AppCompatActivity
 
         //动画
         scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        flyAnimation = AnimationUtils.loadAnimation(this, R.anim.flyin);
         myListView.startAnimation(scaleAnimation);
-        LinearLayout Line = (LinearLayout) findViewById(R.id.L1);
-        Line.startAnimation(scaleAnimation);
+        TableLayout tab = (TableLayout) findViewById(R.id.main_jinkuang);
+        tab.startAnimation(scaleAnimation);
+        TextView textView1 = (TextView) findViewById(R.id.main_lab1);
+        TextView textView2 = (TextView) findViewById(R.id.main_lab2);
+        textView1.startAnimation(flyAnimation);
+        textView2.startAnimation(flyAnimation);
     }
 
     private void reSetList(){
@@ -317,6 +327,36 @@ public class MainActivity extends AppCompatActivity
         myListView.setDividerHeight(5);
         recordAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, record);
         myListView.setAdapter(recordAdapter);
+
+        TextView income = (TextView) findViewById(R.id.main_income);
+        TextView outcome = (TextView) findViewById(R.id.main_outcome);
+        TextView remain = (TextView) findViewById(R.id.main_remain);
+        Calendar cal = Calendar.getInstance();
+        Date endDate = cal.getTime();
+        cal.set(Calendar.WEEK_OF_MONTH, 0);
+        cal.set(Calendar.DAY_OF_WEEK, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        Date startDate = cal.getTime();
+        float amount_in = 0;
+        float amount_out = 0;
+        List<com.cirnoteam.accountingassistant.entity.Record> list_records = recordUtils.searchRecord(Status.bookid,startDate,endDate, null, null, null, null,null,null);
+        for(com.cirnoteam.accountingassistant.entity.Record list_record:list_records) {
+            if(list_record.getExpense())
+                amount_out += list_record.getAmount();
+            else
+                amount_in += list_record.getAmount();
+        }
+        income.setText(String.valueOf(amount_in));
+        outcome.setText(String.valueOf(amount_out));
+        AccountUtils accountUtils = new AccountUtils(this);
+        List<Account> accounts = accountUtils.getAccountsOfBook(Status.bookid);
+        float book_remain = 0;
+        for(Account account:accounts){
+            book_remain = account.getBalance();
+        }
+        remain.setText(String.valueOf(book_remain));
     }
 
     private void reSetSpinner(){

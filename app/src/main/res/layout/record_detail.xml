@@ -286,7 +286,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:backgroundTint="#FF0000"
+                android:background="@drawable/botton2"
                 android:onClick="delete"
                 android:text="删除" />
 

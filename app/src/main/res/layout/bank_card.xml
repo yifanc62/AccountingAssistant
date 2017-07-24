@@ -26,16 +26,42 @@
         android:onClick="toNewBankcard"
         android:text="新增账户+" />
 
-    <ListView
-        android:id="@+id/BankCardListView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@+id/navigation"
         android:layout_below="@+id/newbankcard"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/side"
-        android:divider="@drawable/divider" />
+        android:layout_marginTop="8dp">
+
+        <ListView
+            android:id="@+id/BankCardListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/side"
+            android:divider="@drawable/divider" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/account_lab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/label"
+                android:text="   账户列表"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/label" />
+        </android.support.constraint.ConstraintLayout>
+
+    </FrameLayout>
+
+
 
 
     <android.support.design.widget.BottomNavigationView
