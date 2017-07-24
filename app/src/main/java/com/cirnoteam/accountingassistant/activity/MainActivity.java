@@ -38,6 +38,7 @@ import com.cirnoteam.accountingassistant.R;
 import com.cirnoteam.accountingassistant.database.AccountUtils;
 import com.cirnoteam.accountingassistant.database.BookUtils;
 import com.cirnoteam.accountingassistant.database.RecordUtils;
+import com.cirnoteam.accountingassistant.database.UploadUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
 import com.cirnoteam.accountingassistant.entity.Book;
 
@@ -48,7 +49,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -409,7 +412,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) { // 如果返回码是可以用的
             switch (requestCode) {
@@ -421,7 +424,11 @@ public class MainActivity extends AppCompatActivity
                     break;
                 case CROP_SMALL_PICTURE:
                     if (data != null) {
-                        setImageToView(data); // 让刚才选择裁剪得到的图片显示在界面上
+                        try{
+                            setImageToView(data); // 让刚才选择裁剪得到的图片显示在界面上
+                        }catch (IOException e){
+                            e.printStackTrace();
+                        }
                     }
                     break;
             }
@@ -456,13 +463,21 @@ public class MainActivity extends AppCompatActivity
      * 保存裁剪之后的图片数据
      *
      */
-    protected void setImageToView(Intent data) {
+    protected void setImageToView(Intent data) throws IOException{
         Bundle extras = data.getExtras();
         if (extras != null) {
             Bitmap bmp = extras.getParcelable("data");
             photo = (ImageView)findViewById(R.id.userphoto) ;
             photo.setImageBitmap(bmp);
-            uploadPic(bmp);
+            File userPhoto = changeToFile(bmp,"userphoto.jpg");
+
+            UserUtils userUtils = new UserUtils(this);
+            String url = "http://cirnoteam.varkarix.com/avatar";
+            final Map<String, String> params = new HashMap<String, String>();
+            params.put("send_userName",userUtils.getCurrentUsername() );
+            final Map<String, File> files = new HashMap<String, File>();
+            files.put("uploadfile",userPhoto);
+            final String request = UploadUtils.post(url, params, files);
         }
     }
 
@@ -471,15 +486,9 @@ public class MainActivity extends AppCompatActivity
      * 保存文件
      * @param bm
      * @param fileName
-     * @throws IOException
      */
-    public static File saveFile(Bitmap bm,String savepath, String fileName){
-        String path = Environment.getExternalStorageDirectory()+savepath;
-        File dirFile = new File(path);
-        if(!dirFile.exists()){
-            dirFile.mkdir();
-        }
-        File userphoto = new File(dirFile , fileName);
+    public static File changeToFile(Bitmap bm,String fileName){
+        File userphoto = new File(fileName);
         if (userphoto.exists()) {
             userphoto.delete();
         }
@@ -492,11 +501,6 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
         return userphoto;
-    }
-
-    private void uploadPic(Bitmap bitmap) {
-        // 上传至服务器
-        saveFile(bitmap,"","userphoto.jpeg");
     }
 
     public void toNewRecord(View view) {
