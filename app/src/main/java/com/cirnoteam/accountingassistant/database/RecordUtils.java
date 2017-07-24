@@ -68,7 +68,7 @@ public class RecordUtils {
         return list;
     }
 
-    public Record getRecordById(Long id){
+    public Record getRecordById(Long id) {
         QueryBuilder<Record> queryBuilder = daoManager.getDaoSession().queryBuilder(Record.class);
         return queryBuilder.where(RecordDao.Properties.Id.eq(id)).unique();
     }
@@ -76,20 +76,20 @@ public class RecordUtils {
     /**
      * 查询某天的流水
      */
-    public List<Record> readRecordOfDday(Date date){
+    public List<Record> readRecordOfDday(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH)-1);
+        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) - 1);
         Date date1 = cal.getTime();
         QueryBuilder<Record> queryBuilder = daoManager.getDaoSession().queryBuilder(Record.class);
-        List<Record> list = queryBuilder.where(RecordDao.Properties.Time.between(date1,date)).list();
+        List<Record> list = queryBuilder.where(RecordDao.Properties.Time.between(date1, date)).list();
         return list;
     }
 
     /*
     用id查询唯一流水
      */
-    public Record ReadRecordById(Long id){
+    public Record ReadRecordById(Long id) {
         QueryBuilder<Record> queryBuilder = daoManager.getDaoSession().queryBuilder(Record.class);
         List<Record> list = queryBuilder.where(RecordDao.Properties.Id.eq(id)).list();
         return list.get(0);
@@ -98,11 +98,11 @@ public class RecordUtils {
     /*
     查询最近四条id
      */
-    public List<Record> getLateast4Records(Long bookid){
+    public List<Record> getLateast4Records(Long bookid) {
         List<Record> records = getAllRecordsByBook(bookid);
 
         List<Record> myRecord = new ArrayList<>();
-        switch (records.size()){
+        switch (records.size()) {
             case 0:
                 break;
             case 1:

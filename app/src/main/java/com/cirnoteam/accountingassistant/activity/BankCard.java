@@ -56,10 +56,10 @@ public class BankCard extends AppCompatActivity {
                 new ArrayList<Map<String, Object>>();
         long[] map = new long[accounts.size()];
         int i = 0;
-        for(Account account:accounts){
+        for (Account account : accounts) {
             Map<String, Object> listItem = new HashMap<String, Object>();
             listItem.put("accountNumber", account.getName());
-            listItem.put("accountName", getTypeName(account)+" 余额:"+account.getBalance());
+            listItem.put("accountName", getTypeName(account) + " 余额:" + account.getBalance());
             listItems.add(listItem);
             map[i] = accounts.get(i).getId();
             i++;
@@ -79,7 +79,7 @@ public class BankCard extends AppCompatActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i == 0)
+                if (i == 0)
                     errorDelete.show();
                 else {
                     delete.show();
@@ -93,7 +93,7 @@ public class BankCard extends AppCompatActivity {
                 switch (which) {
                     case AlertDialog.BUTTON_POSITIVE:
                         deleteAccountRecord(item);
-                        Intent intent = new Intent(getApplicationContext(),BankCard.class);
+                        Intent intent = new Intent(getApplicationContext(), BankCard.class);
                         startActivity(intent);
                         finish();
                         break;
@@ -136,13 +136,13 @@ public class BankCard extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     finish();
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
                 case R.id.navigation_record:
                     Intent intentToRecord = new Intent(BankCard.this, Record.class);
                     startActivity(intentToRecord);
                     finish();
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
                 case R.id.navigation_user:
 
@@ -155,37 +155,38 @@ public class BankCard extends AppCompatActivity {
     };
 
 
-    public void deleteAccountRecord(long id){
+    public void deleteAccountRecord(long id) {
         AccountUtils accountUtils = new AccountUtils(this);
         accountUtils.deleteAccount(id);
 
         //Todo:dirty table
     }
 
-    public String getTypeName(Account account){
-        switch (account.getType()){
-        case 0:
-        return "现金";
-        case 1:
-        return "银行卡";
-        case 2:
-        return "支付宝";
-        case 3:
-        return "QQ钱包";
-        case 4:
-        return "微信";
-        case 5:
-        return "余额宝";
-        case 6:
-        return "交通卡";
-        case 7:
-        return "储值卡";
-        case 8:
-        return "校园卡";
-        default:
-        return "其他账户";
+    public String getTypeName(Account account) {
+        switch (account.getType()) {
+            case 0:
+                return "现金";
+            case 1:
+                return "银行卡";
+            case 2:
+                return "支付宝";
+            case 3:
+                return "QQ钱包";
+            case 4:
+                return "微信";
+            case 5:
+                return "余额宝";
+            case 6:
+                return "交通卡";
+            case 7:
+                return "储值卡";
+            case 8:
+                return "校园卡";
+            default:
+                return "其他账户";
         }
     }
+
     public void toNewBankcard(View view) {
         Intent intent = new Intent(this, NewBankcard.class);
         startActivity(intent);

@@ -25,7 +25,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"/>
+        android:layout_weight="2" />
 
     <LinearLayout
         android:id="@+id/line1"
@@ -53,7 +53,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <Button
         android:layout_width="wrap_content"
@@ -61,13 +61,12 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/botton1"
         android:text="激活"
-        android:onClick="activate"/>
+        android:onClick="activate" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"/>
-
+        android:layout_weight="2" />
 
 
 </LinearLayout>

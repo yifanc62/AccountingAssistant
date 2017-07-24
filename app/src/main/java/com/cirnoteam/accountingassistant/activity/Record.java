@@ -52,7 +52,7 @@ public class Record extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     finish();
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
                 case R.id.navigation_record:
                     return true;
@@ -60,7 +60,7 @@ public class Record extends AppCompatActivity {
                     Intent intentToUser = new Intent(Record.this, BankCard.class);
                     startActivity(intentToUser);
                     finish();
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
             }
             return false;
@@ -71,10 +71,11 @@ public class Record extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -93,42 +94,52 @@ public class Record extends AppCompatActivity {
         String recordStatement = " ";
         List<com.cirnoteam.accountingassistant.entity.Record> list;
         RecordUtils u = new RecordUtils(this);
-        for(int i=1 ; i<=numOfDay ; i++){
+        for (int i = 1; i <= numOfDay; i++) {
             record.add(new ArrayList<String>());
             recordid.add(new ArrayList<Long>());
-            day[i-1] = fm.format(currentDate);
-            list = u.getRecordOfDayByBook(Status.bookid,currentDate);//TODO 需要getRecordOfDayByBook
-            for(int j=0;j<list.size();j++){
+            day[i - 1] = fm.format(currentDate);
+            list = u.getRecordOfDayByBook(Status.bookid, currentDate);//TODO 需要getRecordOfDayByBook
+            for (int j = 0; j < list.size(); j++) {
                 recordStatement = " ";
                 recordStatement += list.get(j).getExpense() ? "支出" : "收入";
                 recordStatement += " " + String.valueOf(list.get(j).getAmount());
                 recordStatement += " " + list.get(j).getType();
-                switch (list.get(j).getType()){
-                    case 0:recordStatement += " 一日三餐";
+                switch (list.get(j).getType()) {
+                    case 0:
+                        recordStatement += " 一日三餐";
                         break;
-                    case 1:recordStatement += " 购物消费";
+                    case 1:
+                        recordStatement += " 购物消费";
                         break;
-                    case 2:recordStatement += " 水电煤气";
+                    case 2:
+                        recordStatement += " 水电煤气";
                         break;
-                    case 3:recordStatement += " 交通花费";
+                    case 3:
+                        recordStatement += " 交通花费";
                         break;
-                    case 4:recordStatement += " 医疗消费";
+                    case 4:
+                        recordStatement += " 医疗消费";
                         break;
-                    case 5:recordStatement += " 其他支出";
+                    case 5:
+                        recordStatement += " 其他支出";
                         break;
-                    case 6:recordStatement += " 经营获利";
+                    case 6:
+                        recordStatement += " 经营获利";
                         break;
-                    case 7:recordStatement += " 工资收入";
+                    case 7:
+                        recordStatement += " 工资收入";
                         break;
-                    case 8:recordStatement += " 路上捡钱";
+                    case 8:
+                        recordStatement += " 路上捡钱";
                         break;
-                    case 9:recordStatement += " 其他收入";
+                    case 9:
+                        recordStatement += " 其他收入";
                         break;
                 }
-                record.get(i-1).add(recordStatement);
-                recordid.get(i-1).add(list.get(j).getId());
+                record.get(i - 1).add(recordStatement);
+                recordid.get(i - 1).add(list.get(j).getId());
             }
-            cal.set(Calendar.DAY_OF_MONTH,cal.get(Calendar.DAY_OF_MONTH)+1);//让日期加1
+            cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) + 1);//让日期加1
             currentDate = cal.getTime();
         }
         final String[] dayF = day;
@@ -136,8 +147,8 @@ public class Record extends AppCompatActivity {
         final List<List<Long>> recordidF = recordid;
 
         initActionBar();
-        Spinner dateSpinner = (Spinner)findViewById(R.id.spinner_date);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, getSpinnerItems(Calendar.getInstance()));
+        Spinner dateSpinner = (Spinner) findViewById(R.id.spinner_date);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getSpinnerItems(Calendar.getInstance()));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dateSpinner.setAdapter(adapter);
         dateSpinner.setSelection(Status.month);
@@ -148,28 +159,32 @@ public class Record extends AppCompatActivity {
         navigation.setSelectedItemId(R.id.navigation_record);
 
         ExpandableListAdapter adapter_2 = new ExpandableListAdapter() {
-            int [] logos = new int[]{
+            int[] logos = new int[]{
                     R.drawable.ic_dashboard_black_24dp,
                     R.drawable.ic_dashboard_black_24dp,
                     R.drawable.ic_dashboard_black_24dp
             };
             private String[] armType = dayF;
             private List<List<String>> arms = recordF;
-            public void setArmType(String[] str){
+
+            public void setArmType(String[] str) {
                 armType = str;
             }
-            public void setArms(List<List<String>> list){
+
+            public void setArms(List<List<String>> list) {
                 arms = list;
             }
+
             //private String[][] arms = {{"o","p","q"},{"r","s","t"},{"1","3","5","10"}};
-            private TextView getTextView(){
+            private TextView getTextView() {
                 AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 TextView textView = new TextView(Record.this);
                 textView.setLayoutParams(lp);
-                textView.setPadding(50,50,0,50);
+                textView.setPadding(50, 50, 0, 50);
                 textView.setTextSize(20);
                 return textView;
             }
+
             @Override
             public void registerDataSetObserver(DataSetObserver dataSetObserver) {
 
@@ -231,7 +246,7 @@ public class Record extends AppCompatActivity {
             @Override
             public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
                 TextView textView = getTextView();
-                textView.setText(getChild(groupPosition,childPosition).toString());
+                textView.setText(getChild(groupPosition, childPosition).toString());
                 return textView;
             }
 
@@ -279,7 +294,7 @@ public class Record extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                Intent intent = new Intent(getApplicationContext(),RecordDetail.class);
+                Intent intent = new Intent(getApplicationContext(), RecordDetail.class);
                 intent.putExtra("recordid", recordidF.get(groupPosition).get(childPosition));
                 intent.putExtra("backpage", 0);//标记返回界面
                 startActivity(intent);

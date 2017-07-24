@@ -74,7 +74,7 @@ public class RecordDetail extends AppCompatActivity {
         AccountUtils u = new AccountUtils(this);
         List<Account> list_accounts = u.getAccountsOfBook(Status.bookid);
         List<Long> list_id = new ArrayList<>();
-        for(int i=0;i<list_accounts.size();i++) {
+        for (int i = 0; i < list_accounts.size(); i++) {
             list_account.add(u.getDefaultAccountName(list_accounts.get(i).getType()) + " " + list_accounts.get(i).getName());
             list_id.add(list_accounts.get(i).getId());
         }
@@ -105,14 +105,14 @@ public class RecordDetail extends AppCompatActivity {
         try {
             RecordUtils ut = new RecordUtils(this);
             com.cirnoteam.accountingassistant.entity.Record rec = ut.ReadRecordById(recordid);
-            spinner_inout.setSelection(rec.getExpense() ? 0:1);
+            spinner_inout.setSelection(rec.getExpense() ? 0 : 1);
             editText_amount.setText(String.valueOf(rec.getAmount()));
             editText_remark.setText(rec.getRemark());
             //spinner_type.setSelection(rec.getType());
             type = rec.getType();
             editText_time.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(rec.getTime()));
-            for(int i=0;i<list_accounts.size();i++){
-                if(rec.getAccountid() == list_accounts.get(i).getId())
+            for (int i = 0; i < list_accounts.size(); i++) {
+                if (rec.getAccountid() == list_accounts.get(i).getId())
                     spinner_account.setSelection(i);
             }
             recid = String.valueOf(rec.getId());
@@ -125,11 +125,11 @@ public class RecordDetail extends AppCompatActivity {
         spinner_inout.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-                if(arg2 == 0)
+                if (arg2 == 0)
                     op.setText(" -");
-                else if(arg2 == 1)
+                else if (arg2 == 1)
                     op.setText(" +");
-                expense = arg2==0;
+                expense = arg2 == 0;
                 reSet_type(arg2);//重置类型spinner
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -160,8 +160,8 @@ public class RecordDetail extends AppCompatActivity {
     }
 
     //动态改变类型spinner
-    private void reSet_type(int inout){
-        if(inout == 0) {//支出
+    private void reSet_type(int inout) {
+        if (inout == 0) {//支出
             list_type.clear();
             list_type.add("一日三餐");
             list_type.add("购物消费");
@@ -171,10 +171,10 @@ public class RecordDetail extends AppCompatActivity {
             list_type.add("其他支出");
             adapter_type = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_type);
             spinner_type.setAdapter(adapter_type);
-            if(origionFlag){
+            if (origionFlag) {
                 spinner_type.setSelection(type);
-                origionFlag=false;
-            }else {
+                origionFlag = false;
+            } else {
                 spinner_type.setSelection(0);
             }
             spinner_type.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
@@ -188,7 +188,7 @@ public class RecordDetail extends AppCompatActivity {
                     arg0.setVisibility(View.VISIBLE);
                 }
             });
-        }else if(inout == 1){//收入
+        } else if (inout == 1) {//收入
             list_type.clear();
             list_type.add("经营获利");
             list_type.add("工资收入");
@@ -196,10 +196,10 @@ public class RecordDetail extends AppCompatActivity {
             list_type.add("其他收入");
             adapter_type = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_type);
             spinner_type.setAdapter(adapter_type);
-            if(origionFlag){
-                spinner_type.setSelection(type-6);
-                origionFlag=false;
-            }else {
+            if (origionFlag) {
+                spinner_type.setSelection(type - 6);
+                origionFlag = false;
+            } else {
                 spinner_type.setSelection(0);
             }
             spinner_type.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
@@ -207,6 +207,7 @@ public class RecordDetail extends AppCompatActivity {
                     type = arg2 + 6;
                     arg0.setVisibility(View.VISIBLE);
                 }
+
                 public void onNothingSelected(AdapterView<?> arg0) {
                     Toast.makeText(getApplicationContext(), "none", Toast.LENGTH_SHORT).show();
                     arg0.setVisibility(View.VISIBLE);
@@ -222,10 +223,10 @@ public class RecordDetail extends AppCompatActivity {
         try {
             time = df.parse(((EditText) findViewById(time_edit)).getText().toString());
             flag = true;
-        }catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "时间格式不对", Toast.LENGTH_SHORT).show();
         }
-        if(flag) {
+        if (flag) {
             EditText editText_amount = (EditText) findViewById(amount_edit);
             if (!TextUtils.isEmpty(editText_amount.getText()))
                 amount = Float.parseFloat(editText_amount.getText().toString());
@@ -239,15 +240,16 @@ public class RecordDetail extends AppCompatActivity {
         }
     }
 
-    public void delete(View view){
+    public void delete(View view) {
         RecordUtils u = new RecordUtils(this);
-        if(u.deleteRecord(recordid)) {
+        if (u.deleteRecord(recordid)) {
             Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
             finish();
-        }else{
+        } else {
             Toast.makeText(getApplicationContext(), "删除失败", Toast.LENGTH_SHORT).show();
         }
     }
+
     public void initActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_recorddetail_toolbar);
         setSupportActionBar(toolbar);

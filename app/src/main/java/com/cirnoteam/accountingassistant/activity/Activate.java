@@ -52,20 +52,19 @@ public class Activate extends AppCompatActivity {
         line.startAnimation(scaleAnimation);
     }
 
-    public void activate(View view)
-    {
-        Toast.makeText(getApplicationContext(),"数据处理中，请不要进行其他操作",Toast.LENGTH_SHORT).show();
-        EditText editText = (EditText)findViewById(R.id.edit_code);
+    public void activate(View view) {
+        Toast.makeText(getApplicationContext(), "数据处理中，请不要进行其他操作", Toast.LENGTH_SHORT).show();
+        EditText editText = (EditText) findViewById(R.id.edit_code);
         final String ActivateCode = editText.getText().toString();
         new Thread() {
             public void run() {
-                ActivateByPost(token,ActivateCode,userName);
+                ActivateByPost(token, ActivateCode, userName);
             }
         }.start();
 
     }
 
-    public void ActivateByPost(String token, String ActivateCode,String userName) {
+    public void ActivateByPost(String token, String ActivateCode, String userName) {
 
         try {
             UserUtils userUtils = new UserUtils(this);
@@ -87,8 +86,8 @@ public class Activate extends AppCompatActivity {
             String data = "username=" + URLEncoder.encode(userName, "UTF-8")
                     + "&token=" + URLEncoder.encode(token, "UTF-8")
                     + "&code=" + URLEncoder.encode(ActivateCode, "UTF-8")
-                    + "&uuid=" + URLEncoder.encode(uuid,"UTF-8")
-                    +" &device=" + URLEncoder.encode(deviceName,"UTF-8");
+                    + "&uuid=" + URLEncoder.encode(uuid, "UTF-8")
+                    + " &device=" + URLEncoder.encode(deviceName, "UTF-8");
             // 设置请求的头
             urlConnection.setRequestProperty("Connection", "keep-alive");
 
@@ -122,28 +121,26 @@ public class Activate extends AppCompatActivity {
                 int code = jsonObject.getInt("code");
                 final String message = jsonObject.getString("message");
 
-                if(code == 200){
-                    userUtils.register(userName,password,token,uuid,deviceName);
+                if (code == 200) {
+                    userUtils.register(userName, password, token, uuid, deviceName);
                     BookUtils bookUtils = new BookUtils(this);
-                    bookUtils.addBook(userName,"默认账本");
-                    Intent intent = new Intent(this,LogIn.class);
+                    bookUtils.addBook(userName, "默认账本");
+                    Intent intent = new Intent(this, LogIn.class);
 
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             // 在这里把返回的数据写在控件上 会出现什么情况尼
-                            Toast.makeText(getApplicationContext(),"激活成功",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "激活成功", Toast.LENGTH_SHORT).show();
                         }
                     });
                     startActivity(intent);
-                }
-
-                else {
+                } else {
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             // 在这里把返回的数据写在控件上 会出现什么情况尼
-                            Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -155,7 +152,7 @@ public class Activate extends AppCompatActivity {
                     @Override
                     public void run() {
                         // 在这里把返回的数据写在控件上 会出现什么情况尼
-                        Toast.makeText(getApplicationContext(),"注册失败",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

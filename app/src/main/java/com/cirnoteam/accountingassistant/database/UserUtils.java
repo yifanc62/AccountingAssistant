@@ -118,7 +118,7 @@ public class UserUtils {
         return updateUser(user);
     }
 
-    public boolean register(String username, String password, String token,String uuid,String device) {
+    public boolean register(String username, String password, String token, String uuid, String device) {
         if (isUserNameLocalDuplicated(username)) {
             Log.e("register", "username duplicated");
             return false;

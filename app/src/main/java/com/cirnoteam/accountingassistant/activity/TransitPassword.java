@@ -42,11 +42,11 @@ public class TransitPassword extends AppCompatActivity {
         tableLayout.startAnimation(scaleAnimation);
     }
 
-    public void toChangePassword(View view){
+    public void toChangePassword(View view) {
         String emailMatch = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern pattern = Pattern.compile(emailMatch);
-        EditText editText1 = (EditText)findViewById(R.id.user_name);
-        EditText editText2 = (EditText)findViewById(R.id.email);
+        EditText editText1 = (EditText) findViewById(R.id.user_name);
+        EditText editText2 = (EditText) findViewById(R.id.email);
         final String userName = editText1.getText().toString();
         final String email = editText2.getText().toString();
         Matcher matcher = pattern.matcher(email);
@@ -84,7 +84,7 @@ public class TransitPassword extends AppCompatActivity {
         }
     }
 
-    public void commitByPost(String email,String userName) {
+    public void commitByPost(String email, String userName) {
 
         try {
             // 请求的地址
@@ -137,28 +137,27 @@ public class TransitPassword extends AppCompatActivity {
                 final String message = jsonObject.getString("message");
 
 
-                if(code == 200){
+                if (code == 200) {
                     String token = jsonObject.getJSONObject("entity").getString("resetToken");
-                    Intent intent = new Intent(this,ChangePassword.class);
-                    intent.putExtra("resetToken",token);
-                    intent.putExtra("userName",userName);
+                    Intent intent = new Intent(this, ChangePassword.class);
+                    intent.putExtra("resetToken", token);
+                    intent.putExtra("userName", userName);
                     startActivity(intent);
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             // 在这里把返回的数据写在控件上 会出现什么情况尼
-                            Toast.makeText(getApplicationContext(),"已向您的邮箱发送验证邮件",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "已向您的邮箱发送验证邮件", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    finish();;
-                }
-
-                else {
+                    finish();
+                    ;
+                } else {
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             // 在这里把返回的数据写在控件上 会出现什么情况尼
-                            Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -169,7 +168,7 @@ public class TransitPassword extends AppCompatActivity {
                     @Override
                     public void run() {
                         // 在这里把返回的数据写在控件上 会出现什么情况尼
-                        Toast.makeText(getApplicationContext(),"连接服务器失败",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "连接服务器失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

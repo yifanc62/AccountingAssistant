@@ -43,7 +43,7 @@ public class ChangeEmail extends AppCompatActivity {
         });
     }
 
-    public void changeemail(View view){
+    public void changeemail(View view) {
         String email = "";
         String emailmatch = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern pattern = Pattern.compile(emailmatch);
@@ -55,7 +55,7 @@ public class ChangeEmail extends AppCompatActivity {
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
-                switch (which){
+                switch (which) {
                     case AlertDialog.BUTTON_POSITIVE:
                         break;
                 }
@@ -77,8 +77,8 @@ public class ChangeEmail extends AppCompatActivity {
         else if (!matcher.matches())
             emailerror.show();
 
-        //TODO:修改用户邮箱
-        else{
+            //TODO:修改用户邮箱
+        else {
 
         }
     }

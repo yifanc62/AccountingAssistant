@@ -39,7 +39,7 @@ import java.util.List;
 public class Chart extends AppCompatActivity {
     private Spinner spinner_date;
     private Spinner spinner_expense;
-    private Date startDate,endDate;
+    private Date startDate, endDate;
     private boolean expense;
     private RecordUtils recordUtils = new RecordUtils(this);
     private List<Record> list_records = new ArrayList<>();
@@ -49,7 +49,7 @@ public class Chart extends AppCompatActivity {
     private ArrayAdapter<String> adapter_expense;
 
     String[] typeName = new String[]{
-        "一日三餐","购物消费","水电煤气","交通花费","医疗消费","其他支出","经营获利","工资收入","路上捡钱","其他收入"
+            "一日三餐", "购物消费", "水电煤气", "交通花费", "医疗消费", "其他支出", "经营获利", "工资收入", "路上捡钱", "其他收入"
     };
 
 
@@ -68,8 +68,8 @@ public class Chart extends AppCompatActivity {
         list_expense.add("收入");
         adapter_date = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_date);
         adapter_expense = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_expense);
-        spinner_date = (Spinner)findViewById(R.id.spinner_date);
-        spinner_expense = (Spinner)findViewById(R.id.spinner_expense);
+        spinner_date = (Spinner) findViewById(R.id.spinner_date);
+        spinner_expense = (Spinner) findViewById(R.id.spinner_expense);
         spinner_date.setAdapter(adapter_date);
         spinner_expense.setAdapter(adapter_expense);
         spinner_date.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
@@ -121,7 +121,7 @@ public class Chart extends AppCompatActivity {
                             startDate = cal.getTime();
                             break;
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "日期spinner出错", Toast.LENGTH_SHORT).show();
                 }
                 //Toast.makeText(getApplicationContext(), adapter_date.getItem(arg2), Toast.LENGTH_SHORT).show();
@@ -136,7 +136,7 @@ public class Chart extends AppCompatActivity {
         });
         spinner_expense.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                expense = arg2==0;
+                expense = arg2 == 0;
                 changeChart();//刷新图表
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -149,17 +149,17 @@ public class Chart extends AppCompatActivity {
         changeChart();//刷新图表
         Button btn = (Button) findViewById(R.id.change_chart);
         btn.setVisibility(View.INVISIBLE);
-        PieChart pieChart = (PieChart)findViewById(R.id.pie_chart);
+        PieChart pieChart = (PieChart) findViewById(R.id.pie_chart);
         Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
         pieChart.startAnimation(scaleAnimation);
     }
 
-    public void changeChart(){
+    public void changeChart() {
         float[] type = new float[10];
-        type = typeDivide(startDate,endDate);
+        type = typeDivide(startDate, endDate);
 
 
-        PieChart pieChart = (PieChart)findViewById(R.id.pie_chart);
+        PieChart pieChart = (PieChart) findViewById(R.id.pie_chart);
         pieChart.setUsePercentValues(true);//设置value是否用显示百分数,默认为false
         pieChart.setDescription("流水图表");//设置描述
         pieChart.setDescriptionTextSize(20);//设置描述字体大小
@@ -170,7 +170,7 @@ public class Chart extends AppCompatActivity {
         pieChart.setDragDecelerationFrictionCoef(1f);//设置阻尼系数,范围在[0,1]之间,越小饼状图转动越困难
 
         pieChart.setDrawCenterText(true);//是否绘制中间的文字
-        pieChart.setCenterTextColor(Color.argb(0xff,0x87,0xce,0xeb));//中间的文字颜色
+        pieChart.setCenterTextColor(Color.argb(0xff, 0x87, 0xce, 0xeb));//中间的文字颜色
         pieChart.setCenterTextSize(16);//中间的文字字体大小
 
         pieChart.setDrawHoleEnabled(true);//是否绘制饼状图中间的圆
@@ -204,19 +204,19 @@ public class Chart extends AppCompatActivity {
         //设置Y轴上的绘制动画
         ArrayList<PieEntry> pieEntries = new ArrayList<>();
         //for(Record list_record : list_records){
-        for(int i = 9;i >= 0;i--){
-            if(type[i] == 0)
+        for (int i = 9; i >= 0; i--) {
+            if (type[i] == 0)
                 continue;
-            PieEntry pieEntry = new PieEntry(type[i],typeName[i]);
+            PieEntry pieEntry = new PieEntry(type[i], typeName[i]);
             pieEntries.add(pieEntry);
         }
         String centerText1 = "总流水(支出)";
         String centerText2 = "总流水(收入)";
-        if(expense)
+        if (expense)
             pieChart.setCenterText(centerText1);//设置中间的文字
         else
             pieChart.setCenterText(centerText2);//设置中间的文字
-        PieDataSet pieDataSet = new PieDataSet(pieEntries,"");
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
         pieDataSet.setColors(getPieChartColors());
         pieDataSet.setSliceSpace(3f);//设置选中的Tab离两边的距离
         pieDataSet.setSelectionShift(5f);//设置选中的tab的多出来的
@@ -235,19 +235,19 @@ public class Chart extends AppCompatActivity {
     }
 
     private int[] getPieChartColors() {
-        int[] color = new int[]{Color.argb(0xff,0x9f,0x79,0xee),Color.argb(0xff,0xdc,0x14,0x3c),Color.argb(0xff,0xee,0xad,0x0e),Color.argb(0xff,0x96,0x96,0x96),Color.argb(0xff,0x8d,0xee,0xee),Color.argb(0xff,0x66,0xcd,0x00),Color.argb(0xff,0x1e,0x90,0xff),Color.argb(0xff,0xcd,0x33,0x33),Color.argb(0xff,0xcd,0xc1,0xc5),Color.argb(0xff,0xff,0x8c,0x69)};
-                return color;
+        int[] color = new int[]{Color.argb(0xff, 0x9f, 0x79, 0xee), Color.argb(0xff, 0xdc, 0x14, 0x3c), Color.argb(0xff, 0xee, 0xad, 0x0e), Color.argb(0xff, 0x96, 0x96, 0x96), Color.argb(0xff, 0x8d, 0xee, 0xee), Color.argb(0xff, 0x66, 0xcd, 0x00), Color.argb(0xff, 0x1e, 0x90, 0xff), Color.argb(0xff, 0xcd, 0x33, 0x33), Color.argb(0xff, 0xcd, 0xc1, 0xc5), Color.argb(0xff, 0xff, 0x8c, 0x69)};
+        return color;
     }
 
-    public float[] typeDivide(Date startDate,Date endDate){
+    public float[] typeDivide(Date startDate, Date endDate) {
         float[] type = new float[10];
-        for(int i = 9;i >= 0;i--){
-            list_records = recordUtils.searchRecord(Status.bookid,startDate,endDate,
-                null,
-                i,
-                expense,
-                null,null,null);
-            for(Record list_record:list_records)
+        for (int i = 9; i >= 0; i--) {
+            list_records = recordUtils.searchRecord(Status.bookid, startDate, endDate,
+                    null,
+                    i,
+                    expense,
+                    null, null, null);
+            for (Record list_record : list_records)
                 type[i] += list_record.getAmount();
         }
         return type;

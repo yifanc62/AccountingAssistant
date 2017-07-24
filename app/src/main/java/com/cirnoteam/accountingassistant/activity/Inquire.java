@@ -83,7 +83,7 @@ public class Inquire extends AppCompatActivity {
         list_account.add("所有账户");
         AccountUtils u = new AccountUtils(this);
         final List<Account> list_accounts = u.getAccountsOfBook(Status.bookid);
-        for(int i=0;i<list_accounts.size();i++) {
+        for (int i = 0; i < list_accounts.size(); i++) {
             list_account.add(u.getDefaultAccountName(list_accounts.get(i).getType()) + " " + list_accounts.get(i).getName());
             //获得账户类型名称和账户名字，填入spinner
         }
@@ -106,7 +106,7 @@ public class Inquire extends AppCompatActivity {
 
         spinner_type.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                type = arg2==0 ? -1 : arg2-1;
+                type = arg2 == 0 ? -1 : arg2 - 1;
                 //Toast.makeText(getApplicationContext(), adapter_type.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -119,7 +119,7 @@ public class Inquire extends AppCompatActivity {
 
         spinner_account.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                accountId = arg2==0 ? -1L : list_accounts.get(arg2-1).getId();
+                accountId = arg2 == 0 ? -1L : list_accounts.get(arg2 - 1).getId();
                 ///Toast.makeText(getApplicationContext(), adapter_account.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -179,7 +179,7 @@ public class Inquire extends AppCompatActivity {
                             startDate = cal.getTime();
                             break;
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "日期spinner出错", Toast.LENGTH_SHORT).show();
                 }
                 //Toast.makeText(getApplicationContext(), adapter_date.getItem(arg2), Toast.LENGTH_SHORT).show();
@@ -194,9 +194,9 @@ public class Inquire extends AppCompatActivity {
 
         spinner_expense.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                expenseFlag=arg2;
-                if(expenseFlag==1)expense=true;
-                if(expenseFlag==2)expense=false;
+                expenseFlag = arg2;
+                if (expenseFlag == 1) expense = true;
+                if (expenseFlag == 2) expense = false;
                 //Toast.makeText(getApplicationContext(), adapter_date.getItem(arg2), Toast.LENGTH_SHORT).show();
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -232,40 +232,50 @@ public class Inquire extends AppCompatActivity {
         List<String> list_result = new ArrayList<String>();
         RecordUtils recordUtils = new RecordUtils(this);
         //records = recordUtils.searchRecord(1L, null, null, null, null, null, null, null, null);
-        records = recordUtils.searchRecord(Status.bookid,startDate,endDate,
-                (accountId==-1 ? null : accountId),
-                (type==-1 ? null : type),
-                (expenseFlag==0 ? null : expense),
-                null,null,inquire);
+        records = recordUtils.searchRecord(Status.bookid, startDate, endDate,
+                (accountId == -1 ? null : accountId),
+                (type == -1 ? null : type),
+                (expenseFlag == 0 ? null : expense),
+                null, null, inquire);
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         //long i = 1;
-        for(int i=0; i<records.size(); i++) {
+        for (int i = 0; i < records.size(); i++) {
             String newRecord = " ";
             newRecord += fm.format(records.get(i).getTime());
             newRecord += " ";
-            newRecord += records.get(i).getExpense()?"收入 ":"支出 ";
+            newRecord += records.get(i).getExpense() ? "收入 " : "支出 ";
             newRecord += records.get(i).getAmount();
             newRecord += " ";
-            switch (records.get(i).getType()){
-                case 0:newRecord += " 一日三餐";
+            switch (records.get(i).getType()) {
+                case 0:
+                    newRecord += " 一日三餐";
                     break;
-                case 1:newRecord += " 购物消费";
+                case 1:
+                    newRecord += " 购物消费";
                     break;
-                case 2:newRecord += " 水电煤气";
+                case 2:
+                    newRecord += " 水电煤气";
                     break;
-                case 3:newRecord += " 交通花费";
+                case 3:
+                    newRecord += " 交通花费";
                     break;
-                case 4:newRecord += " 医疗消费";
+                case 4:
+                    newRecord += " 医疗消费";
                     break;
-                case 5:newRecord += " 其他支出";
+                case 5:
+                    newRecord += " 其他支出";
                     break;
-                case 6:newRecord += " 经营获利";
+                case 6:
+                    newRecord += " 经营获利";
                     break;
-                case 7:newRecord += " 工资收入";
+                case 7:
+                    newRecord += " 工资收入";
                     break;
-                case 8:newRecord += " 路上捡钱";
+                case 8:
+                    newRecord += " 路上捡钱";
                     break;
-                case 9:newRecord += " 其他收入";
+                case 9:
+                    newRecord += " 其他收入";
                     break;
             }
             list_result.add(newRecord);

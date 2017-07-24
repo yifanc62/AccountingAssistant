@@ -38,25 +38,25 @@ public class ChangePassword extends AppCompatActivity {
         Intent intent = getIntent();
         resetToken = intent.getStringExtra("resetToken");
         userName = intent.getStringExtra("userName");
-        Toast.makeText(getApplicationContext(),"已向您的邮箱发送验证邮件",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "已向您的邮箱发送验证邮件", Toast.LENGTH_SHORT).show();
 
         TableLayout tableLayout = (TableLayout) findViewById(R.id.table1);
         Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
         tableLayout.startAnimation(scaleAnimation);
     }
 
-    public void changePassword (View view){
+    public void changePassword(View view) {
 
         EditText editText2 = (EditText) findViewById(R.id.new_password);
         final String new_password = editText2.getText().toString();
-        EditText editText3 = (EditText)findViewById(R.id.code);
+        EditText editText3 = (EditText) findViewById(R.id.code);
         final String VCode = editText3.getText().toString();
 
 
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
-                switch (which){
+                switch (which) {
                     case AlertDialog.BUTTON_POSITIVE:
                         break;
                 }
@@ -78,19 +78,20 @@ public class ChangePassword extends AppCompatActivity {
         old_password_wrong.setButton(DialogInterface.BUTTON_POSITIVE, "确定", listener);
         final UserUtils userUtils = new UserUtils(this);
 
-        if (VCode.equals("")||new_password.equals(""))
+        if (VCode.equals("") || new_password.equals(""))
             empty.show();
         else if (userUtils.getCurrentPassword().equals(new_password))
             repeated_password.show();
         else {
-            new Thread(){
-                public void run(){
-                    changePasswordByPost(resetToken,userName,VCode,new_password);
+            new Thread() {
+                public void run() {
+                    changePasswordByPost(resetToken, userName, VCode, new_password);
                 }
             }.start();
         }
     }
-    public void changePasswordByPost(String resetToken,String userName,String VCode,String newPassword){
+
+    public void changePasswordByPost(String resetToken, String userName, String VCode, String newPassword) {
         try {
 
 
@@ -103,8 +104,8 @@ public class ChangePassword extends AppCompatActivity {
             urlConnection.setConnectTimeout(5000);
             String data = "username=" + URLEncoder.encode(userName, "UTF-8")
                     + "&resetToken=" + URLEncoder.encode(resetToken, "UTF-8")
-                    + "&password" + URLEncoder.encode(newPassword,"UTF-8")
-                    + "&code" + URLEncoder.encode(VCode,"UTF-8");
+                    + "&password" + URLEncoder.encode(newPassword, "UTF-8")
+                    + "&code" + URLEncoder.encode(VCode, "UTF-8");
             urlConnection.setRequestProperty("Connection", "keep-alive");
 
             urlConnection.setDoOutput(true);
@@ -130,8 +131,7 @@ public class ChangePassword extends AppCompatActivity {
                 code = jsonObject.getInt("code");
                 message = jsonObject.getString("message");
 
-                if(code == 200)
-                {
+                if (code == 200) {
                     UserUtils userUtils = new UserUtils(this);
                     userUtils.updateCurrentPassword(newPassword);
                     finish();
@@ -139,15 +139,14 @@ public class ChangePassword extends AppCompatActivity {
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(),"修改成功",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
                         }
                     });
-                }
-                else {
+                } else {
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -155,7 +154,7 @@ public class ChangePassword extends AppCompatActivity {
                 this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(),"修改失败："+message,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "修改失败：" + message, Toast.LENGTH_SHORT).show();
                     }
                 });
             }

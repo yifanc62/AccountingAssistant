@@ -97,7 +97,7 @@ public class UploadUtils {
             final String result = new String(baos.toByteArray());
             try {
                 JSONObject object = new JSONObject(result);
-                if(object.getInt("code")!=200){
+                if (object.getInt("code") != 200) {
                     throw new IOException(object.getString("message"));
                 }
             } catch (JSONException e) {
@@ -122,7 +122,7 @@ public class UploadUtils {
             conn.setRequestMethod("Content-Type:image/png;");
             System.out.println("tdw1");
             OutputStream os = conn.getOutputStream();
-            String content = "username="+username;
+            String content = "username=" + username;
             os.write(content.getBytes());
             if (conn.getResponseCode() == 200) {
                 InputStream inputStream = conn.getInputStream();

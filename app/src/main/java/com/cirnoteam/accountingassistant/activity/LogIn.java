@@ -52,10 +52,10 @@ public class LogIn extends AppCompatActivity {
 
 
         UserUtils userUtils = new UserUtils(this);
-        if(userUtils.getCurrentUser() == null)
-            Toast.makeText(getApplicationContext(),"当前无用户登录",Toast.LENGTH_SHORT).show();
+        if (userUtils.getCurrentUser() == null)
+            Toast.makeText(getApplicationContext(), "当前无用户登录", Toast.LENGTH_SHORT).show();
         else {
-            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
             Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
@@ -96,34 +96,34 @@ public class LogIn extends AppCompatActivity {
         };
         empty.setTitle("输入错误");
         empty.setMessage("输入框不能为空");
-        empty.setButton(DialogInterface.BUTTON_POSITIVE, "确定",listener);
+        empty.setButton(DialogInterface.BUTTON_POSITIVE, "确定", listener);
         mismatch.setTitle("密码错误");
         mismatch.setMessage("密码与用户名不匹配");
-        mismatch.setButton(DialogInterface.BUTTON_POSITIVE, "确定",listener);
+        mismatch.setButton(DialogInterface.BUTTON_POSITIVE, "确定", listener);
         notFoundUser.setTitle("用户名错误");
         notFoundUser.setMessage("未找到该用户");
-        notFoundUser.setButton(DialogInterface.BUTTON_POSITIVE, "确定",listener);
+        notFoundUser.setButton(DialogInterface.BUTTON_POSITIVE, "确定", listener);
 
         if (password.equals("") || userName.equals(""))
             empty.show();
         else {
             new Thread() {
                 public void run() {
-                    LoginByPost(userName,EncoderByMd5(password));
+                    LoginByPost(userName, EncoderByMd5(password));
                 }
             }.start();
 
         }
     }
+
     public void LoginByPost(String userName, String userPass) {
 
         try {
             UserUtils userUtils = new UserUtils(this);
-            if(userUtils.getUser(userName) == null){
+            if (userUtils.getUser(userName) == null) {
                 device = userUtils.getDefaultDeviceName();
                 uuid = userUtils.generateUuid();
-            }
-            else {
+            } else {
                 device = userUtils.getUser(userName).getDevicename();
                 uuid = userUtils.getUser(userName).getUuid();
             }
@@ -180,46 +180,42 @@ public class LogIn extends AppCompatActivity {
 
                 final String message = jsonObject.getString("message");
 
-                if(code == 200){
+                if (code == 200) {
                     try {
                         String token = jsonObject.getJSONObject("entity").getString("token");
-                        if (userUtils.getUser(userName) == null){
-                            userUtils.register(userName,userPass,token,uuid,device);
+                        if (userUtils.getUser(userName) == null) {
+                            userUtils.register(userName, userPass, token, uuid, device);
                         }
-                        if(userUtils.getUser(userName).getPassword().equals(userPass)){
+                        if (userUtils.getUser(userName).getPassword().equals(userPass)) {
                             userUtils.login(userName);
                             BookUtils bookUtils = new BookUtils(this);
                             AccountUtils accountUtils = new AccountUtils(this);
-                            if(bookUtils.getAllBooks(userUtils.getCurrentUsername()).size() == 0) {
+                            if (bookUtils.getAllBooks(userUtils.getCurrentUsername()).size() == 0) {
                                 long id = bookUtils.addBook(userName, "默认账本");
                                 accountUtils.addAccount(id, 0, 1000F, "默认账户");
                             }
                             Intent intent = new Intent(this, MainActivity.class);
                             startActivity(intent);
                             this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // 在这里把返回的数据写在控件上 会出现什么情况尼
-                                Toast.makeText(getApplicationContext(),"登陆成功",Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                                @Override
+                                public void run() {
+                                    // 在这里把返回的数据写在控件上 会出现什么情况尼
+                                    Toast.makeText(getApplicationContext(), "登陆成功", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             finish();
-                        }
-
-                        else
+                        } else
                             mismatch.show();
 
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
                         notFoundUser.show();
                     }
-                }
-                else {
+                } else {
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             // 在这里把返回的数据写在控件上 会出现什么情况尼
-                            Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -229,7 +225,7 @@ public class LogIn extends AppCompatActivity {
                     @Override
                     public void run() {
                         // 在这里把返回的数据写在控件上 会出现什么情况尼
-                        Toast.makeText(getApplicationContext(),"注册失败",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -238,11 +234,11 @@ public class LogIn extends AppCompatActivity {
         }
     }
 
-    public String EncoderByMd5(String str){
+    public String EncoderByMd5(String str) {
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             return convertByteToHexString(md5.digest(str.getBytes()));
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return "";
         }

@@ -63,7 +63,7 @@ public class NewRecord extends AppCompatActivity {
         AccountUtils u = new AccountUtils(this);
         List<Account> list_accounts = u.getAccountsOfBook(Status.bookid);
         List<Long> list_id = new ArrayList<>();
-        for(int i=0;i<list_accounts.size();i++){
+        for (int i = 0; i < list_accounts.size(); i++) {
             list_account.add(u.getDefaultAccountName(list_accounts.get(i).getType()) + " " + list_accounts.get(i).getName());
             list_id.add(list_accounts.get(i).getId());
         }
@@ -90,7 +90,7 @@ public class NewRecord extends AppCompatActivity {
         /*******************监听事件***********************/
         spinner_inout.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                expense = arg2==0;
+                expense = arg2 == 0;
                 reSet_type(arg2);
                 arg0.setVisibility(View.VISIBLE);
             }
@@ -121,8 +121,8 @@ public class NewRecord extends AppCompatActivity {
     }
 
     //动态改变类型spinner
-    private void reSet_type(int inout){
-        if(inout == 0) {
+    private void reSet_type(int inout) {
+        if (inout == 0) {
             list_type.clear();
             list_type.add("一日三餐");
             list_type.add("购物消费");
@@ -144,7 +144,7 @@ public class NewRecord extends AppCompatActivity {
                     arg0.setVisibility(View.VISIBLE);
                 }
             });
-        }else if(inout == 1){
+        } else if (inout == 1) {
             list_type.clear();
             list_type.add("经营获利");
             list_type.add("工资收入");
@@ -158,6 +158,7 @@ public class NewRecord extends AppCompatActivity {
                     type = arg2 + 6;
                     arg0.setVisibility(View.VISIBLE);
                 }
+
                 public void onNothingSelected(AdapterView<?> arg0) {
                     Toast.makeText(getApplicationContext(), "none", Toast.LENGTH_SHORT).show();
                     arg0.setVisibility(View.VISIBLE);
@@ -167,26 +168,26 @@ public class NewRecord extends AppCompatActivity {
     }
 
     public void toCreate(View view) {
-            EditText editText_amount = (EditText) findViewById(amount_edit);
-            if (!TextUtils.isEmpty(editText_amount.getText()))
-                amount = Float.parseFloat(editText_amount.getText().toString());
-            else
-                amount = 0;
-            SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            boolean flag = false;
-            try{
-                time = fm.parse(((EditText) findViewById(time_edit)).getText().toString());
-                flag = true;
-            }catch (Exception e){
-                Toast.makeText(getApplicationContext(), "时间格式不对", Toast.LENGTH_SHORT).show();
-            }
-            if(flag) {
-                remark = ((EditText) findViewById(remark_edit)).getText().toString();
-                RecordUtils u = new RecordUtils(this);
-                if (u.addRecord(accountid, expense, amount, remark, type, time))
-                    Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
-                finish();
-            }
+        EditText editText_amount = (EditText) findViewById(amount_edit);
+        if (!TextUtils.isEmpty(editText_amount.getText()))
+            amount = Float.parseFloat(editText_amount.getText().toString());
+        else
+            amount = 0;
+        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        boolean flag = false;
+        try {
+            time = fm.parse(((EditText) findViewById(time_edit)).getText().toString());
+            flag = true;
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "时间格式不对", Toast.LENGTH_SHORT).show();
+        }
+        if (flag) {
+            remark = ((EditText) findViewById(remark_edit)).getText().toString();
+            RecordUtils u = new RecordUtils(this);
+            if (u.addRecord(accountid, expense, amount, remark, type, time))
+                Toast.makeText(getApplicationContext(), "存储成功", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 
     public void initActionBar() {

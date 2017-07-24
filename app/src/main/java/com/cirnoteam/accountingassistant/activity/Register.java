@@ -56,7 +56,7 @@ public class Register extends AppCompatActivity {
     }
 
     public void register(View view) {
-        Toast.makeText(getApplicationContext(),"数据处理中，请不要进行其他操作",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "数据处理中，请不要进行其他操作", Toast.LENGTH_SHORT).show();
 
         String emailMatch = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern pattern = Pattern.compile(emailMatch);
@@ -108,13 +108,13 @@ public class Register extends AppCompatActivity {
         else {
             new Thread() {
                 public void run() {
-                    registerByPost(userName,EncoderByMd5(password_1),email);
+                    registerByPost(userName, EncoderByMd5(password_1), email);
                 }
             }.start();
         }
     }
 
-    public void registerByPost(String userName, String userPass,String email) {
+    public void registerByPost(String userName, String userPass, String email) {
 
         try {
 
@@ -159,25 +159,24 @@ public class Register extends AppCompatActivity {
 
                 final String message = jsonObject.getString("message");
 
-                if(code == 200){
+                if (code == 200) {
                     String token = jsonObject.getJSONObject("entity").getString("activateToken");
-                    Intent intent = new Intent(this,Activate.class);
-                    intent.putExtra("token",token);
-                    intent.putExtra("userName",userName);
-                    intent.putExtra("password",userPass);
+                    Intent intent = new Intent(this, Activate.class);
+                    intent.putExtra("token", token);
+                    intent.putExtra("userName", userName);
+                    intent.putExtra("password", userPass);
                     startActivity(intent);
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(),"注册成功，已向您邮箱发送验证邮件",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "注册成功，已向您邮箱发送验证邮件", Toast.LENGTH_SHORT).show();
                         }
                     });
-                }
-                else{
+                } else {
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -187,7 +186,7 @@ public class Register extends AppCompatActivity {
                 this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(),"注册失败",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -196,11 +195,11 @@ public class Register extends AppCompatActivity {
         }
     }
 
-    public String EncoderByMd5(String str){
+    public String EncoderByMd5(String str) {
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             return convertByteToHexString(md5.digest(str.getBytes()));
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return "";
         }

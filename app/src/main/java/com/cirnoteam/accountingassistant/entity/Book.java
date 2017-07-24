@@ -203,5 +203,5 @@ public class Book {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getBookDao() : null;
     }
-    
+
 }

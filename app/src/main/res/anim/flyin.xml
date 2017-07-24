@@ -3,4 +3,4 @@
     android:fromXDelta="100%"
     android:toXDelta="0"
     android:duration="300"
-    android:fillBefore="true"/>
+    android:fillBefore="true" />

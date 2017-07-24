@@ -28,6 +28,9 @@ android {
     }
     compileOptions {
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 dependencies {

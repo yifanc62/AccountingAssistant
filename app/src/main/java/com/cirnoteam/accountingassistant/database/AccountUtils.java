@@ -204,10 +204,11 @@ public class AccountUtils {
         }
         return flag;
     }
+
     /*
     查询账本的所有账户
      */
-    public List<Account> getAccountsOfBook(Long bookid){
+    public List<Account> getAccountsOfBook(Long bookid) {
         QueryBuilder<Account> queryBuilder = daoManager.getDaoSession().queryBuilder(Account.class);
         return queryBuilder.where(AccountDao.Properties.Bookid.eq(bookid)).list();
     }

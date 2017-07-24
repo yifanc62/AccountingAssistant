@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.INTERNET">
 
     </uses-permission>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/cirno4"
@@ -34,8 +35,8 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="记账助手">
-                <action android:name="android.intent.action.MAINACTIVITY" />
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <action android:name="android.intent.action.MAINACTIVITY" />
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
         </activity>
         <activity
             android:name=".activity.Chart"
@@ -46,40 +47,40 @@
         <activity
             android:name=".activity.Register"
             android:label="注册">
-                <action android:name="android.intent.action.REGISTER"
-                    android:exported="true"
-                    />
+            <action
+                android:name="android.intent.action.REGISTER"
+                android:exported="true" />
         </activity>
         <activity
             android:name=".activity.ForgetPassword"
             android:label="忘记密码">
-                <action android:name="android.intent.action.FORGETPASSWORD" />
+            <action android:name="android.intent.action.FORGETPASSWORD" />
         </activity>
         <activity
             android:name=".activity.Record"
             android:label="流水列表">
-                <action android:name="android.intent.action.RECORD" />
+            <action android:name="android.intent.action.RECORD" />
         </activity>
 
         <activity
             android:name=".activity.RecordDetail"
             android:label="流水详情">
-                <action android:name="android.intent.action.RECORDDETAIL" />
+            <action android:name="android.intent.action.RECORDDETAIL" />
         </activity>
         <activity
             android:name=".activity.NewRecord"
             android:label="记一笔新流水">
-                <action android:name="android.intent.action.NEWRECORD" />
+            <action android:name="android.intent.action.NEWRECORD" />
         </activity>
         <activity
             android:name=".activity.Inquire"
             android:label="查询">
-                <action android:name="android.intent.action.INQUIRE" />
+            <action android:name="android.intent.action.INQUIRE" />
         </activity>
         <activity
             android:name=".activity.BankCard"
             android:label="账户列表">
-                <action android:name="android.intent.action.BANKCARD" />
+            <action android:name="android.intent.action.BANKCARD" />
             >
         </activity>
         <activity
