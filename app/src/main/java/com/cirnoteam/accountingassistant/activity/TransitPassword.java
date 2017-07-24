@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
 import com.cirnoteam.accountingassistant.database.UserUtils;
-import com.cirnoteam.accountingassistant.entity.Account;
 
 import org.json.JSONObject;
 
@@ -80,7 +79,6 @@ public class TransitPassword extends AppCompatActivity {
     public void commitByPost(String email,String userName) {
 
         try {
-            UserUtils userUtils = new UserUtils(this);
             // 请求的地址
             String spec = "http://cirnoteam.varkarix.com/authreset";
             // 根据地址创建URL对象
@@ -129,9 +127,10 @@ public class TransitPassword extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(result);
                 int code = jsonObject.getInt("code");
                 final String message = jsonObject.getString("message");
-                String token = jsonObject.getJSONObject("entity").getString("resetToken");
+
 
                 if(code == 200){
+                    String token = jsonObject.getJSONObject("entity").getString("resetToken");
                     Intent intent = new Intent(this,ChangePassword.class);
                     intent.putExtra("resetToken",token);
                     intent.putExtra("userName",userName);

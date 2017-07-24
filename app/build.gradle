@@ -43,4 +43,10 @@ dependencies {
     compile 'net.zetetic:android-database-sqlcipher:3.5.7@aar'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
     testCompile 'junit:junit:4.12'
+    compile files('src/main/libs/commons-beanutils-1.7.0.jar')
+    compile files('src/main/libs/commons-collections-3.1.jar')
+    compile files('src/main/libs/commons-lang-2.5.jar')
+    compile files('src/main/libs/commons-logging.jar')
+    compile files('src/main/libs/ezmorph-1.0.3.jar')
+    compile files('src/main/libs/json-lib-2.4-jdk15.jar')
 }
