@@ -2,6 +2,7 @@ package com.cirnoteam.accountingassistant.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -187,8 +188,6 @@ public class RecordDetail extends AppCompatActivity {
                     arg0.setVisibility(View.VISIBLE);
                 }
             });
-            TableLayout T3 = (TableLayout) findViewById(R.id.T3);
-            T3.setBackground(getResources().getDrawable(R.drawable.side_out));
         }else if(inout == 1){//收入
             list_type.clear();
             list_type.add("经营获利");
@@ -213,8 +212,6 @@ public class RecordDetail extends AppCompatActivity {
                     arg0.setVisibility(View.VISIBLE);
                 }
             });
-            TableLayout T3 = (TableLayout) findViewById(R.id.T3);
-            T3.setBackground(getResources().getDrawable(R.drawable.side_in));
         }
     }
 
