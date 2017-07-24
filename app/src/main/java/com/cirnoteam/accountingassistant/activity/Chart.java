@@ -36,11 +36,15 @@ import java.util.List;
 
 public class Chart extends AppCompatActivity {
     private Spinner spinner_date;
+    private Spinner spinner_expense;
     private Date startDate,endDate;
+    private boolean expense;
     private RecordUtils recordUtils = new RecordUtils(this);
     private List<Record> list_records = new ArrayList<>();
     private List<String> list_date = new ArrayList<>();
+    private List<String> list_expense = new ArrayList<>();
     private ArrayAdapter<String> adapter_date;
+    private ArrayAdapter<String> adapter_expense;
 
     String[] typeName = new String[]{
         "一日三餐","购物消费","水电煤气","交通花费","医疗消费","其他支出","经营获利","工资收入","路上捡钱","其他收入"
@@ -58,9 +62,14 @@ public class Chart extends AppCompatActivity {
         list_date.add("本周");
         list_date.add("本月");
         list_date.add("本年");
+        list_expense.add("支出");
+        list_expense.add("收入");
         adapter_date = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_date);
+        adapter_expense = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list_expense);
         spinner_date = (Spinner)findViewById(R.id.spinner_date);
+        spinner_expense = (Spinner)findViewById(R.id.spinner_expense);
         spinner_date.setAdapter(adapter_date);
+        spinner_expense.setAdapter(adapter_expense);
         spinner_date.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 Calendar cal = Calendar.getInstance();
@@ -122,15 +131,22 @@ public class Chart extends AppCompatActivity {
                 arg0.setVisibility(View.VISIBLE);
             }
         });
+        spinner_expense.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                expense = arg2==0;
+                arg0.setVisibility(View.VISIBLE);
+            }
 
+            public void onNothingSelected(AdapterView<?> arg0) {
+                arg0.setVisibility(View.VISIBLE);
+            }
+        });
         PieChart pieChart = (PieChart)findViewById(R.id.pie_chart);
         Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
         pieChart.startAnimation(scaleAnimation);
     }
 
     public void changeChart(View view){
-
-
         float[] type = new float[10];
         type = typeDivide(startDate,endDate);
 
@@ -186,8 +202,12 @@ public class Chart extends AppCompatActivity {
             PieEntry pieEntry = new PieEntry(type[i],typeName[i]);
             pieEntries.add(pieEntry);
         }
-        String centerText = "总流水";
-        pieChart.setCenterText(centerText);//设置中间的文字
+        String centerText1 = "总流水(支出)";
+        String centerText2 = "总流水(收入)";
+        if(expense)
+            pieChart.setCenterText(centerText1);//设置中间的文字
+        else
+            pieChart.setCenterText(centerText2);//设置中间的文字
         PieDataSet pieDataSet = new PieDataSet(pieEntries,"");
         pieDataSet.setColors(getPieChartColors());
         pieDataSet.setSliceSpace(3f);//设置选中的Tab离两边的距离
@@ -204,8 +224,6 @@ public class Chart extends AppCompatActivity {
         pieChart.highlightValues(null);
         pieChart.invalidate();
 
-        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
-        pieChart.startAnimation(scaleAnimation);
     }
 
     private int[] getPieChartColors() {
@@ -219,7 +237,7 @@ public class Chart extends AppCompatActivity {
             list_records = recordUtils.searchRecord(Status.bookid,startDate,endDate,
                 null,
                 i,
-                null,
+                expense,
                 null,null,null);
             for(Record list_record:list_records)
                 type[i] += list_record.getAmount();

@@ -144,9 +144,6 @@ public class NewRecord extends AppCompatActivity {
                     arg0.setVisibility(View.VISIBLE);
                 }
             });
-            //顺便改背景
-            TableLayout T3 = (TableLayout) findViewById(R.id.T3);
-            T3.setBackground(getResources().getDrawable(R.drawable.side_out));
         }else if(inout == 1){
             list_type.clear();
             list_type.add("经营获利");
@@ -166,9 +163,6 @@ public class NewRecord extends AppCompatActivity {
                     arg0.setVisibility(View.VISIBLE);
                 }
             });
-            //顺便改背景
-            TableLayout T3 = (TableLayout) findViewById(R.id.T3);
-            T3.setBackground(getResources().getDrawable(R.drawable.side_in));
         }
     }
 

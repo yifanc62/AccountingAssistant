@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg"
     android:orientation="vertical"
     tools:context="com.cirnoteam.accountingassistant.activity.Activate">
 
@@ -27,23 +28,25 @@
         android:layout_weight="2"/>
 
     <LinearLayout
+        android:id="@+id/line1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/side">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="验证码:"
-            android:textSize="20dp"/>
+            android:textSize="20dp" />
 
         <EditText
+            android:id="@+id/edit_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="请输入激活码"
-            android:gravity="center"
             android:ems="10"
-            android:id="@+id/edit_code"/>
+            android:gravity="center"
+            android:hint="请输入激活码" />
 
     </LinearLayout>
 
@@ -56,6 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:background="@drawable/botton1"
         android:text="激活"
         android:onClick="activate"/>
 

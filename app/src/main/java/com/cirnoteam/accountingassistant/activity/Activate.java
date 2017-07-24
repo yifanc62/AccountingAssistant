@@ -7,7 +7,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
@@ -44,7 +47,9 @@ public class Activate extends AppCompatActivity {
         userName = intent.getStringExtra("userName");
         password = intent.getStringExtra("password");
 
-
+        LinearLayout line = (LinearLayout) findViewById(R.id.line1);
+        Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
+        line.startAnimation(scaleAnimation);
     }
 
     public void activate(View view)

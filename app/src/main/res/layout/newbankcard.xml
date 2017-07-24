@@ -2,109 +2,124 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/activity_newbankcard_toolbar"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:minHeight="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"/>
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"/>
+        android:layout_weight="2" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/L6"
-        android:layout_gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/bankcardname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="账户名称"
-            android:textSize="20sp" />
-
-        <EditText
-            android:id="@+id/account_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="请填写卡号或账号或编号"
-            android:selectAllOnFocus="true" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/L7"
-        android:layout_gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/accountBalance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="账户余额"
-            android:textSize="20sp" />
-
-        <EditText
-            android:id="@+id/account_banlance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="请填写账户或现金的余额"
-            android:selectAllOnFocus="true"
-            android:inputType="numberDecimal"/>
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"/>
-
-
-    <LinearLayout
-        android:id="@+id/L8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/L6"
-        android:layout_gravity="center_horizontal">
+        android:layout_width="344dp"
+        android:layout_height="182dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.62"
+        android:background="@drawable/side"
+        android:orientation="vertical">
 
         <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.25" />
 
-        <TextView
-            android:id="@+id/textView15"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="账户类型"
-            android:textSize="20sp" />
+        <LinearLayout
+            android:id="@+id/L6"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.5">
 
-        <Spinner
-            android:id="@+id/spinner_type"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center" />
+            <TextView
+                android:id="@+id/bankcardname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="账户名称"
+                android:textSize="20sp" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            <EditText
+                android:id="@+id/account_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="请填写卡号或账号或编号"
+                android:selectAllOnFocus="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/L7"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:id="@+id/accountBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="账户余额"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/account_banlance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="请填写账户或现金的余额"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/L8"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@+id/L6"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.5">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.87"
+                android:text="账户类型"
+                android:textSize="20sp" />
+
+            <Spinner
+                android:id="@+id/spinner_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.95"
+                android:gravity="center" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+        </LinearLayout>
 
     </LinearLayout>
+
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5"/>
+        android:layout_weight="1.5" />
 
     <Button
         android:id="@+id/newBankCard_button"
@@ -119,6 +134,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"/>
+        android:layout_weight="2" />
 
 </LinearLayout>
