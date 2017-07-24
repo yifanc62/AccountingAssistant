@@ -2,6 +2,7 @@ package com.cirnoteam.accountingassistant.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.internal.BottomNavigationItemView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -123,6 +125,7 @@ public class Chart extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "日期spinner出错", Toast.LENGTH_SHORT).show();
                 }
                 //Toast.makeText(getApplicationContext(), adapter_date.getItem(arg2), Toast.LENGTH_SHORT).show();
+                changeChart();//刷新图表
                 arg0.setVisibility(View.VISIBLE);
             }
 
@@ -134,6 +137,7 @@ public class Chart extends AppCompatActivity {
         spinner_expense.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 expense = arg2==0;
+                changeChart();//刷新图表
                 arg0.setVisibility(View.VISIBLE);
             }
 
@@ -141,12 +145,16 @@ public class Chart extends AppCompatActivity {
                 arg0.setVisibility(View.VISIBLE);
             }
         });
+
+        changeChart();//刷新图表
+        Button btn = (Button) findViewById(R.id.change_chart);
+        btn.setVisibility(View.INVISIBLE);
         PieChart pieChart = (PieChart)findViewById(R.id.pie_chart);
         Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
         pieChart.startAnimation(scaleAnimation);
     }
 
-    public void changeChart(View view){
+    public void changeChart(){
         float[] type = new float[10];
         type = typeDivide(startDate,endDate);
 

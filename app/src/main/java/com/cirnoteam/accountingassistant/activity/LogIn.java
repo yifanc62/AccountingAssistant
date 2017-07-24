@@ -185,14 +185,12 @@ public class LogIn extends AppCompatActivity {
                         String token = jsonObject.getJSONObject("entity").getString("token");
                         if (userUtils.getUser(userName) == null){
                             userUtils.register(userName,userPass,token,uuid,device);
-
-
                         }
                         if(userUtils.getUser(userName).getPassword().equals(userPass)){
                             userUtils.login(userName);
                             BookUtils bookUtils = new BookUtils(this);
                             AccountUtils accountUtils = new AccountUtils(this);
-                            if(bookUtils.getAllBooks(userUtils.getCurrentUsername()) == null) {
+                            if(bookUtils.getAllBooks(userUtils.getCurrentUsername()).size() == 0) {
                                 long id = bookUtils.addBook(userName, "默认账本");
                                 accountUtils.addAccount(id, 0, 1000F, "默认账户");
                             }
@@ -249,7 +247,6 @@ public class LogIn extends AppCompatActivity {
             return "";
         }
     }
-
 
     public static String convertByteToHexString(byte[] bytes) {
         String result = "";

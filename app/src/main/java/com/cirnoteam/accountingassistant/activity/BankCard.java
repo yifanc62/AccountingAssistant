@@ -15,6 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
@@ -122,6 +123,9 @@ public class BankCard extends AppCompatActivity {
 
         Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
         list.startAnimation(scaleAnimation);
+        Animation flyAnimation = AnimationUtils.loadAnimation(this, R.anim.flyin);
+        TextView textView = (TextView) findViewById(R.id.account_lab);
+        textView.startAnimation(flyAnimation);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

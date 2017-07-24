@@ -18,6 +18,12 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.LogIn"
+            android:label="open"
+            android:exported="true">
+            <action android:name="android.intent.action.LOGIN" />
+        </activity>
+        <activity
+            android:name=".activity.Open"
             android:label="⑨号账本">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,7 +57,7 @@
         </activity>
         <activity
             android:name=".activity.Record"
-            android:label="">
+            android:label="流水列表">
                 <action android:name="android.intent.action.RECORD" />
         </activity>
 
@@ -67,8 +73,7 @@
         </activity>
         <activity
             android:name=".activity.Inquire"
-            android:label="查询"
-            android:windowSoftInputMode="adjustResize">
+            android:label="查询">
                 <action android:name="android.intent.action.INQUIRE" />
         </activity>
         <activity
@@ -82,13 +87,6 @@
             android:label="新增账户">
             <action android:name="android.intent.action.NEWBANKCARD" />
             >
-        </activity>
-        <activity
-            android:name=".activity.ChangeEmail"
-            android:label="修改邮箱"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize">
-            <action android:name="android.intent.action.CHANGEEMAIL" />
         </activity>
         <activity
             android:name=".activity.ChangePassword"
