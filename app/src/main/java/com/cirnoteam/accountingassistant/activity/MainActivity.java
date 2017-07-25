@@ -516,7 +516,7 @@ public class MainActivity extends AppCompatActivity
             Bitmap bmp = extras.getParcelable("data");
             photo = (ImageView)findViewById(R.id.userphoto) ;
             photo.setImageBitmap(bmp);
-            File userPhoto = changeToFile(bmp,"userphoto.jpg");
+            File userPhoto = changeToFile(bmp,"userphoto.png");
             UploadUtils.post(getApplicationContext(),userUtils.getCurrentUsername(),userPhoto);
         }
     }
@@ -528,14 +528,15 @@ public class MainActivity extends AppCompatActivity
      * @param fileName
      * @throws IOException
      */
-    public static File changeToFile(Bitmap bm,String fileName){
-        File userphoto = new File(Environment.getExternalStorageDirectory()+fileName);
+    public File changeToFile(Bitmap bm,String fileName){
+        File userphoto = new File(getApplicationContext().getFilesDir().getAbsolutePath()+fileName);
         if (userphoto.exists()) {
             userphoto.delete();
         }
         try {
+            userphoto.createNewFile();
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(userphoto));
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, bos);
             bos.flush();
             bos.close();
         } catch (IOException e) {
