@@ -5,13 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.Toast;
 
-import com.cirnoteam.accountingassistant.activity.MainActivity;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,8 +16,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.Map;
 
 /**
  * Created by Black Lotus on 2017/7/24.
@@ -50,18 +45,18 @@ public class UploadUtils {
         String PREFIX = "--", LINEND = "\r\n";
         String CHARSET = "UTF-8";
         // 首先组拼文本类型的参数
-        String text = PREFIX +
-                BOUNDARY +
-                LINEND +
-                "Content-Disposition: form-data; name=\"username\"" + LINEND +
-                "Content-Type: text/plain; charset=" + CHARSET + LINEND +
-                "Content-Transfer-Encoding: 8bit" + LINEND +
-                LINEND +
-                username +
-                LINEND;
+//        String text = PREFIX +
+//                BOUNDARY +
+//                LINEND +
+//                "Content-Disposition: form-data; name=\"username\"" + LINEND +
+//                "Content-Type: text/plain; charset=" + CHARSET + LINEND +
+//                "Content-Transfer-Encoding: 8bit" + LINEND +
+//                LINEND +
+//                username +
+//                LINEND;
 
         OutputStream os = urlConnection.getOutputStream();
-        os.write(text.getBytes());
+//        os.write(text.getBytes());
         // 发送文件数据
         if (file != null) {
             String fileHeader = PREFIX +
@@ -139,8 +134,6 @@ public class UploadUtils {
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setConnectTimeout(5000);
             conn.setRequestMethod("GET");
-            conn.setRequestMethod("Content-Type:image/png;");
-            System.out.println("tdw1");
             OutputStream os = conn.getOutputStream();
             String content = "username=" + username;
             os.write(content.getBytes());
