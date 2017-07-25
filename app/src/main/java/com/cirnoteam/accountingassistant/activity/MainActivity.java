@@ -536,7 +536,7 @@ public class MainActivity extends AppCompatActivity
             Bitmap bmp = extras.getParcelable("data");
             photo = (ImageView)findViewById(R.id.userphoto) ;
             photo.setImageBitmap(bmp);
-            final File userPhoto = changeToFile(bmp, "userphoto.jpg");
+            final File userPhoto = changeToFile(bmp, "userphoto.png");
             new Thread() {
                 public void run() {
                     try {
@@ -557,14 +557,14 @@ public class MainActivity extends AppCompatActivity
      * @param fileName
      * @throws IOException
      */
-    public static File changeToFile(Bitmap bm,String fileName){
-        File userphoto = new File(Environment.getExternalStorageDirectory()+fileName);
+    public File changeToFile(Bitmap bm, String fileName) {
+        File userphoto = new File(getApplicationContext().getFilesDir().getAbsolutePath() + fileName);
         if (userphoto.exists()) {
             userphoto.delete();
         }
         try {
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(userphoto));
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bm.compress(Bitmap.CompressFormat.PNG, 90, bos);
             bos.flush();
             bos.close();
         } catch (IOException e) {
