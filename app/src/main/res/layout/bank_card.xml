@@ -20,8 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/activity_account_toolbar"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:background="@drawable/botton1"
         android:onClick="toNewBankcard"
         android:text="新增账户+" />
@@ -30,15 +28,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/navigation"
-        android:layout_below="@+id/newbankcard"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp">
+        android:layout_below="@+id/newbankcard">
 
         <ListView
             android:id="@+id/BankCardListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:background="@drawable/side"
             android:divider="@drawable/divider" />
 
@@ -50,8 +45,6 @@
                 android:id="@+id/account_lab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="0dp"
-                android:layout_marginTop="15dp"
                 android:background="@drawable/label"
                 android:text="   账户列表"
                 app:layout_constraintRight_toRightOf="parent"

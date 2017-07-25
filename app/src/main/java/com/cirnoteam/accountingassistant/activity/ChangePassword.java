@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.view.View;
 import android.view.animation.Animation;
@@ -35,6 +36,7 @@ public class ChangePassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.change_password);
+        initActionBar();
         Intent intent = getIntent();
         resetToken = intent.getStringExtra("resetToken");
         userName = intent.getStringExtra("userName");
@@ -43,6 +45,18 @@ public class ChangePassword extends AppCompatActivity {
         TableLayout tableLayout = (TableLayout) findViewById(R.id.table1);
         Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
         tableLayout.startAnimation(scaleAnimation);
+    }
+
+    public void initActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_changepassword_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     public void changePassword (View view){
