@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
 
 public class ChangePassword extends AppCompatActivity {
     private int code;
@@ -46,7 +47,9 @@ public class ChangePassword extends AppCompatActivity {
     }
 
     public void changePassword(View view) {
-
+        android.support.v7.app.AlertDialog load = new android.support.v7.app.AlertDialog.Builder(this).create();
+        load.setMessage("数据处理中，请勿进行其他操作");
+        load.show();
         EditText editText2 = (EditText) findViewById(R.id.new_password);
         final String new_password = editText2.getText().toString();
         EditText editText3 = (EditText) findViewById(R.id.code);
@@ -103,9 +106,9 @@ public class ChangePassword extends AppCompatActivity {
             urlConnection.setReadTimeout(5000);
             urlConnection.setConnectTimeout(5000);
             String data = "username=" + URLEncoder.encode(userName, "UTF-8")
-                    + "&resetToken=" + URLEncoder.encode(resetToken, "UTF-8")
-                    + "&password" + URLEncoder.encode(newPassword, "UTF-8")
-                    + "&code" + URLEncoder.encode(VCode, "UTF-8");
+                    + "&token=" + URLEncoder.encode(resetToken, "UTF-8")
+                    + "&password=" + URLEncoder.encode(EncoderByMd5(newPassword), "UTF-8")
+                    + "&code=" + URLEncoder.encode(VCode, "UTF-8");
             urlConnection.setRequestProperty("Connection", "keep-alive");
 
             urlConnection.setDoOutput(true);
@@ -154,7 +157,7 @@ public class ChangePassword extends AppCompatActivity {
                 this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "修改失败：" + message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "修改失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -162,5 +165,29 @@ public class ChangePassword extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    public String EncoderByMd5(String str) {
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            return convertByteToHexString(md5.digest(str.getBytes()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+
+    public static String convertByteToHexString(byte[] bytes) {
+        String result = "";
+        for (byte aByte : bytes) {
+            int temp = aByte & 0xff;
+            String tempHex = Integer.toHexString(temp);
+            if (tempHex.length() < 2)
+                result += "0" + tempHex;
+            else
+                result += tempHex;
+        }
+        return result;
     }
 }

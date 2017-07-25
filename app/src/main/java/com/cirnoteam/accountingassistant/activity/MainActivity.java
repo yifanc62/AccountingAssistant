@@ -305,7 +305,7 @@ public class MainActivity extends AppCompatActivity
         record.clear();
         RecordUtils recordUtils = new RecordUtils(this);
         records = recordUtils.getLateast4Records(Status.bookid);
-        SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat fm = new SimpleDateFormat("MM-dd");
         int i = 0;
         for (com.cirnoteam.accountingassistant.entity.Record _record : records) {
             String newRecord = " ";

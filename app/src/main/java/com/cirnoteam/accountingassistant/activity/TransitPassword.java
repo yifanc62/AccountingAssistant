@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -36,13 +37,28 @@ public class TransitPassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.transit_password);
-
+        initActionBar();
         Animation scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.scale);
         TableLayout tableLayout = (TableLayout) findViewById(R.id.trpw_anim);
         tableLayout.startAnimation(scaleAnimation);
     }
 
+    public void initActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_transitpassword_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
     public void toChangePassword(View view) {
+        AlertDialog load = new AlertDialog.Builder(this).create();
+        load.setMessage("数据处理中，请勿进行其他操作");
+        load.show();
         String emailMatch = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern pattern = Pattern.compile(emailMatch);
         EditText editText1 = (EditText) findViewById(R.id.user_name);
@@ -89,7 +105,6 @@ public class TransitPassword extends AppCompatActivity {
         try {
             // 请求的地址
             String spec = "http://cirnoteam.varkarix.com/authreset";
-            // 根据地址创建URL对象
             URL url = new URL(spec);
             // 根据URL对象打开链接
             HttpURLConnection urlConnection = (HttpURLConnection) url
@@ -105,32 +120,23 @@ public class TransitPassword extends AppCompatActivity {
             // 设置请求的头
             urlConnection.setRequestProperty("Connection", "keep-alive");
 
-            urlConnection.setDoOutput(true); // 发送POST请求必须设置允许输出
-            urlConnection.setDoInput(true); // 发送POST请求必须设置允许输入
-            //setDoInput的默认值就是true
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
             //获取输出流
             OutputStream os = urlConnection.getOutputStream();
             os.write(data.getBytes());
             os.flush();
             int c = urlConnection.getResponseCode();
             if (c == 200) {
-                // 获取响应的输入流对象
                 InputStream is = urlConnection.getInputStream();
-                // 创建字节输出流对象
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                // 定义读取的长度
                 int len = 0;
-                // 定义缓冲区
                 byte buffer[] = new byte[1024];
-                // 按照缓冲区的大小，循环读取
                 while ((len = is.read(buffer)) != -1) {
-                    // 根据读取的长度写入到os对象中
                     baos.write(buffer, 0, len);
                 }
-                // 释放资源
                 is.close();
                 baos.close();
-                // 返回字符串
                 final String result = new String(baos.toByteArray());
                 JSONObject jsonObject = new JSONObject(result);
                 int code = jsonObject.getInt("code");
@@ -146,7 +152,6 @@ public class TransitPassword extends AppCompatActivity {
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // 在这里把返回的数据写在控件上 会出现什么情况尼
                             Toast.makeText(getApplicationContext(), "已向您的邮箱发送验证邮件", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -156,7 +161,6 @@ public class TransitPassword extends AppCompatActivity {
                     this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // 在这里把返回的数据写在控件上 会出现什么情况尼
                             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -167,7 +171,6 @@ public class TransitPassword extends AppCompatActivity {
                 this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // 在这里把返回的数据写在控件上 会出现什么情况尼
                         Toast.makeText(getApplicationContext(), "连接服务器失败", Toast.LENGTH_SHORT).show();
                     }
                 });

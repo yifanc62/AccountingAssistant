@@ -5,7 +5,6 @@ package com.cirnoteam.accountingassistant.activity;
  */
 
 public class Status {
-    //public static String username;
     public static Long bookid;
     public static int month = 0;
 }

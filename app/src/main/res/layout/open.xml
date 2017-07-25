@@ -56,7 +56,7 @@
         android:id="@+id/word_anim"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="我操你妈"
+        android:text="⑨号账本"
         android:textAlignment="center"
 
         android:textColor="@android:color/background_light"

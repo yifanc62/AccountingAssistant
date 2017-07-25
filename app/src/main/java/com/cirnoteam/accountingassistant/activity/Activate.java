@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -54,7 +55,9 @@ public class Activate extends AppCompatActivity {
     }
 
     public void activate(View view) {
-        Toast.makeText(getApplicationContext(), "数据处理中，请不要进行其他操作", Toast.LENGTH_SHORT).show();
+        AlertDialog load = new AlertDialog.Builder(this).create();
+        load.setMessage("数据处理中，请勿进行其他操作");
+        load.show();
         EditText editText = (EditText) findViewById(R.id.edit_code);
         final String ActivateCode = editText.getText().toString();
         new Thread() {

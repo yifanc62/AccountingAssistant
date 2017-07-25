@@ -123,7 +123,7 @@ public class UserUtils {
             Log.e("register", "username duplicated");
             return false;
         }
-        User user = new User(username, password, token, device, uuid, null, true, new Date());
+        User user = new User(username, password, token, device, uuid, null, false, new Date());
         return insertUser(user);
     }
 

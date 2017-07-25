@@ -77,6 +77,10 @@ public class LogIn extends AppCompatActivity {
 
     public void toMainActivity(View view) {
 
+        AlertDialog load = new AlertDialog.Builder(this).create();
+        load.setMessage("数据处理中，请勿进行其他操作");
+        load.show();
+
         EditText editText1 = (EditText) findViewById(R.id.password);
         final String password = editText1.getText().toString();
         EditText editText2 = (EditText) findViewById(R.id.userName);

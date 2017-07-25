@@ -98,12 +98,11 @@ public class Record extends AppCompatActivity {
             record.add(new ArrayList<String>());
             recordid.add(new ArrayList<Long>());
             day[i - 1] = fm.format(currentDate);
-            list = u.getRecordOfDayByBook(Status.bookid, currentDate);//TODO 需要getRecordOfDayByBook
+            list = u.getRecordOfDayByBook(Status.bookid, currentDate);
             for (int j = 0; j < list.size(); j++) {
                 recordStatement = " ";
                 recordStatement += list.get(j).getExpense() ? "支出" : "收入";
                 recordStatement += " " + String.valueOf(list.get(j).getAmount());
-                recordStatement += " " + list.get(j).getType();
                 switch (list.get(j).getType()) {
                     case 0:
                         recordStatement += " 一日三餐";
@@ -175,7 +174,6 @@ public class Record extends AppCompatActivity {
                 arms = list;
             }
 
-            //private String[][] arms = {{"o","p","q"},{"r","s","t"},{"1","3","5","10"}};
             private TextView getTextView() {
                 AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 TextView textView = new TextView(Record.this);
@@ -235,8 +233,6 @@ public class Record extends AppCompatActivity {
                 LinearLayout ll = new LinearLayout(Record.this);
                 ll.setOrientation(LinearLayout.VERTICAL);
                 ImageView logo = new ImageView(Record.this);
-                //logo.setImageResource(logos[groupPosition]);
-                //ll.addView(logo);
                 TextView textView = getTextView();
                 textView.setText(getGroup(groupPosition).toString());
                 ll.addView(textView);

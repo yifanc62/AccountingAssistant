@@ -56,7 +56,9 @@ public class Register extends AppCompatActivity {
     }
 
     public void register(View view) {
-        Toast.makeText(getApplicationContext(), "数据处理中，请不要进行其他操作", Toast.LENGTH_SHORT).show();
+        AlertDialog load = new AlertDialog.Builder(this).create();
+        load.setMessage("数据处理中，请勿进行其他操作");
+        load.show();
 
         String emailMatch = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern pattern = Pattern.compile(emailMatch);
