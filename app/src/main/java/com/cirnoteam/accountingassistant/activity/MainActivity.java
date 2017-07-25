@@ -200,8 +200,7 @@ public class MainActivity extends AppCompatActivity
                 TextView username = (TextView)findViewById(R.id.username);
                 ImageView imageView = (ImageView)findViewById(R.id.userphoto) ;
                 username.setText(userUtils.getCurrentUsername());
-                if(UploadUtils.getImage(userUtils.getCurrentUsername())!=null);
-                imageView.setImageBitmap(UploadUtils.getImage(userUtils.getCurrentUsername()));
+                imageView.setImageURI(Uri.fromFile(new File(getApplicationContext().getFilesDir().getAbsolutePath()+"/userphoto.png")));
                 drawer.openDrawer(Gravity.START);
             }
         });
@@ -517,7 +516,7 @@ public class MainActivity extends AppCompatActivity
             photo = (ImageView)findViewById(R.id.userphoto) ;
             photo.setImageBitmap(bmp);
             File userPhoto = changeToFile(bmp,"userphoto.png");
-            UploadUtils.post(getApplicationContext(),userUtils.getCurrentUsername(),userPhoto);
+//            UploadUtils.post(getApplicationContext(),userUtils.getCurrentUsername(),userPhoto);
         }
     }
 
