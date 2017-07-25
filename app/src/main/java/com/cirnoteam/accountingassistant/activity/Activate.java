@@ -126,6 +126,7 @@ public class Activate extends AppCompatActivity {
                 final String message = jsonObject.getString("message");
 
                 if (code == 200) {
+                    token = jsonObject.getJSONObject("entity").getString("token");
                     userUtils.register(userName, password, token, uuid, deviceName);
                     BookUtils bookUtils = new BookUtils(this);
                     AccountUtils accountUtils = new AccountUtils(this);

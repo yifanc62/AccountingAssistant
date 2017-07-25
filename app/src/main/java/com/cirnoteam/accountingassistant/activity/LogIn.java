@@ -192,6 +192,7 @@ public class LogIn extends AppCompatActivity {
                         }
                         if (userUtils.getUser(userName).getPassword().equals(userPass)) {
                             userUtils.login(userName);
+                            userUtils.refreshCurrentToken(token);
                             BookUtils bookUtils = new BookUtils(this);
                             AccountUtils accountUtils = new AccountUtils(this);
                             if (bookUtils.getAllBooks(userUtils.getCurrentUsername()).size() == 0) {

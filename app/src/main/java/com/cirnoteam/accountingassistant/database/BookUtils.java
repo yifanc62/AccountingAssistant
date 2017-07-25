@@ -140,4 +140,9 @@ public class BookUtils {
         return builder.where(BookDao.Properties.Remoteid.eq(remoteId)).unique().getId();
     }
 
+    public long getRemoteId(Long id) {
+        QueryBuilder<Book> builder = daoManager.getDaoSession().queryBuilder(Book.class);
+        return builder.where(BookDao.Properties.Id.eq(id)).unique().getRemoteid();
+    }
+
 }

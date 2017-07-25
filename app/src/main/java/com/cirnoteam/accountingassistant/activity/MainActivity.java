@@ -54,8 +54,11 @@ import com.cirnoteam.accountingassistant.json.Response;
 import com.cirnoteam.accountingassistant.json.SyncAccount;
 import com.cirnoteam.accountingassistant.json.SyncBook;
 import com.cirnoteam.accountingassistant.json.SyncRecord;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
+import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -75,7 +78,7 @@ import java.util.Date;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private List<String> bookName = new ArrayList<>();
     private List<String> record = new ArrayList<>();
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity
     private AccountUtils accountUtils = new AccountUtils(this);
     private DirtyUtils dirtyUtils = new DirtyUtils(this);
     private RecordUtils recordUtils = new RecordUtils(this);
-    private Animation scaleAnimation,flyAnimation;
+    private Animation scaleAnimation, flyAnimation;
     private ImageView photo;
 
     protected static final int CHOOSE_PICTURE = 0;
@@ -142,13 +145,13 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(DialogInterface dialog, int which) {
                         //bookAdapter.insert(editText.getText().toString(),0);
                         Long id;
-                        if((id = bookUtils.addBook(userUtils.getCurrentUsername(),editText.getText().toString()))!=-1) {
-                            accountUtils.addAccount(id,0,1000F,"默认账户");
+                        if ((id = bookUtils.addBook(userUtils.getCurrentUsername(), editText.getText().toString())) != -1) {
+                            accountUtils.addAccount(id, 0, 1000F, "默认账户");
                             Toast.makeText(getApplicationContext(), "添加成功", Toast.LENGTH_SHORT).show();
                             Status.bookid = id;
                             reSetSpinner();
-                            for(int i=0;i<list_book_id.size();i++) {
-                                if(list_book_id.get(i) == id)
+                            for (int i = 0; i < list_book_id.size(); i++) {
+                                if (list_book_id.get(i) == id)
                                     mySpinner.setSelection(i);
                             }
                         }
@@ -165,6 +168,7 @@ public class MainActivity extends AppCompatActivity
                 });
         inputDialog.show();
     }
+
     private void showDeleteDialog() {
         final EditText editText = new EditText(MainActivity.this);
         final AlertDialog.Builder inputDialog = new AlertDialog.Builder(MainActivity.this);
@@ -174,7 +178,7 @@ public class MainActivity extends AppCompatActivity
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(bookUtils.deleteBook(Status.bookid))
+                        if (bookUtils.deleteBook(Status.bookid))
                             Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
                         reSetSpinner();
                         mySpinner.setSelection(0);
@@ -190,6 +194,7 @@ public class MainActivity extends AppCompatActivity
                 });
         inputDialog.show();
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -210,25 +215,25 @@ public class MainActivity extends AppCompatActivity
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         leftmenu = (ImageButton) findViewById(R.id.user);
-        leftmenu.setImageBitmap(UploadUtils.getImage(userUtils.getCurrentUsername()));
+        leftmenu.setImageURI(Uri.fromFile(new File(getApplicationContext().getFilesDir().getAbsolutePath() + "/userphoto.png")));
         leftmenu.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
             @Override
             public void onClick(View view) {
-                TextView username = (TextView)findViewById(R.id.username);
-                ImageView imageView = (ImageView)findViewById(R.id.userphoto) ;
+                TextView username = (TextView) findViewById(R.id.username);
+                ImageView imageView = (ImageView) findViewById(R.id.userphoto);
                 username.setText(userUtils.getCurrentUsername());
-                if(UploadUtils.getImage(userUtils.getCurrentUsername())!=null);
+                if (UploadUtils.getImage(userUtils.getCurrentUsername()) != null) ;
                 imageView.setImageBitmap(UploadUtils.getImage(userUtils.getCurrentUsername()));
                 drawer.openDrawer(Gravity.START);
             }
         });
 
         //spinner
-        mySpinner = (Spinner)findViewById(R.id.spinner_book);
+        mySpinner = (Spinner) findViewById(R.id.spinner_book);
         BookUtils u = new BookUtils(this);
         list_books = u.getAllBooks(userUtils.getCurrentUsername());
-        for(Book list_book:list_books){
+        for (Book list_book : list_books) {
             bookName.add(list_book.getName());
             list_book_id.add(list_book.getId());
         }
@@ -244,14 +249,14 @@ public class MainActivity extends AppCompatActivity
         mySpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                if (arg2 == (bookAdapter.getCount()-1)) {
+                if (arg2 == (bookAdapter.getCount() - 1)) {
                     showInputDialog();
-                    for(int i=0;i<list_book_id.size();i++) {
-                        if(list_book_id.get(i) == Status.bookid)
+                    for (int i = 0; i < list_book_id.size(); i++) {
+                        if (list_book_id.get(i) == Status.bookid)
                             mySpinner.setSelection(i);
                     }//还原spinner选项
                     arg0.setVisibility(View.VISIBLE);
-                } else{
+                } else {
                     Status.bookid = list_book_id.get(arg2);
                     reSetList();//调用设值方法以刷新
                 }
@@ -282,9 +287,9 @@ public class MainActivity extends AppCompatActivity
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
         reSetSpinner();
-        if(Status.bookid != null) {
-            for(int i=0;i<list_book_id.size();i++) {
-                if(list_book_id.get(i) == Status.bookid)
+        if (Status.bookid != null) {
+            for (int i = 0; i < list_book_id.size(); i++) {
+                if (list_book_id.get(i) == Status.bookid)
                     mySpinner.setSelection(i);
             }
         }
@@ -303,46 +308,56 @@ public class MainActivity extends AppCompatActivity
         textView2.startAnimation(flyAnimation);
     }
 
-    private void reSetList(){
+    private void reSetList() {
         list_record_id.clear();
         record.clear();
         RecordUtils recordUtils = new RecordUtils(this);
         records = recordUtils.getLateast4Records(Status.bookid);
         SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd");
         int i = 0;
-        for(com.cirnoteam.accountingassistant.entity.Record _record : records) {
+        for (com.cirnoteam.accountingassistant.entity.Record _record : records) {
             String newRecord = " ";
             newRecord += fm.format(_record.getTime());
             newRecord += " ";
-            newRecord += _record.getExpense()?"支出 ":"收入 ";
+            newRecord += _record.getExpense() ? "支出 " : "收入 ";
             newRecord += _record.getAmount();
             newRecord += " ";
-            switch (_record.getType()){
-                case 0:newRecord += " 一日三餐";
+            switch (_record.getType()) {
+                case 0:
+                    newRecord += " 一日三餐";
                     break;
-                case 1:newRecord += " 购物消费";
+                case 1:
+                    newRecord += " 购物消费";
                     break;
-                case 2:newRecord += " 水电煤气";
+                case 2:
+                    newRecord += " 水电煤气";
                     break;
-                case 3:newRecord += " 交通花费";
+                case 3:
+                    newRecord += " 交通花费";
                     break;
-                case 4:newRecord += " 医疗消费";
+                case 4:
+                    newRecord += " 医疗消费";
                     break;
-                case 5:newRecord += " 其他支出";
+                case 5:
+                    newRecord += " 其他支出";
                     break;
-                case 6:newRecord += " 经营获利";
+                case 6:
+                    newRecord += " 经营获利";
                     break;
-                case 7:newRecord += " 工资收入";
+                case 7:
+                    newRecord += " 工资收入";
                     break;
-                case 8:newRecord += " 路上捡钱";
+                case 8:
+                    newRecord += " 路上捡钱";
                     break;
-                case 9:newRecord += " 其他收入";
+                case 9:
+                    newRecord += " 其他收入";
                     break;
             }
             list_record_id.add(_record.getId());
             record.add(newRecord);
             i++;
-            if(i == 4)
+            if (i == 4)
                 break;
         }
         myListView = (ListView) findViewById(R.id.listview);
@@ -363,9 +378,9 @@ public class MainActivity extends AppCompatActivity
         Date startDate = cal.getTime();
         float amount_in = 0;
         float amount_out = 0;
-        List<com.cirnoteam.accountingassistant.entity.Record> list_records = recordUtils.searchRecord(Status.bookid,startDate,endDate, null, null, null, null,null,null);
-        for(com.cirnoteam.accountingassistant.entity.Record list_record:list_records) {
-            if(list_record.getExpense())
+        List<com.cirnoteam.accountingassistant.entity.Record> list_records = recordUtils.searchRecord(Status.bookid, startDate, endDate, null, null, null, null, null, null);
+        for (com.cirnoteam.accountingassistant.entity.Record list_record : list_records) {
+            if (list_record.getExpense())
                 amount_out += list_record.getAmount();
             else
                 amount_in += list_record.getAmount();
@@ -375,20 +390,20 @@ public class MainActivity extends AppCompatActivity
         AccountUtils accountUtils = new AccountUtils(this);
         List<Account> accounts = accountUtils.getAccountsOfBook(Status.bookid);
         float book_remain = 0;
-        for(Account account:accounts){
+        for (Account account : accounts) {
             book_remain = account.getBalance();
         }
         remain.setText(String.valueOf(book_remain));
     }
 
-    private void reSetSpinner(){
+    private void reSetSpinner() {
         list_book_id.clear();
         bookName.clear();
 
 //        第二步：为下拉列表定义一个适配器，这里就用到里前面定义的list
         BookUtils u = new BookUtils(this);
         list_books = u.getAllBooks(userUtils.getCurrentUsername());
-        for(Book list_book:list_books){
+        for (Book list_book : list_books) {
             bookName.add(list_book.getName());
             list_book_id.add(list_book.getId());
         }
@@ -426,12 +441,12 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.change_photo) {
             showChoosePicDialog();
         } else if (id == R.id.change_password) {
-            Intent intent = new Intent(this,TransitPassword.class);
+            Intent intent = new Intent(this, TransitPassword.class);
             startActivity(intent);
-        }else if (id == R.id.log_off) {
+        } else if (id == R.id.log_off) {
             UserUtils userUtils = new UserUtils(this);
             userUtils.logout(userUtils.getCurrentUsername());
-            Intent intent = new Intent(this,LogIn.class);
+            Intent intent = new Intent(this, LogIn.class);
             startActivity(intent);
             Toast.makeText(getApplication(), "注销成功", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.sync) {
@@ -450,7 +465,7 @@ public class MainActivity extends AppCompatActivity
     protected void showChoosePicDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("设置头像");
-        String[] items = { "选择本地照片", "拍照" };
+        String[] items = {"选择本地照片", "拍照"};
         builder.setNegativeButton("取消", null);
         builder.setItems(items, new DialogInterface.OnClickListener() {
 
@@ -491,9 +506,9 @@ public class MainActivity extends AppCompatActivity
                     break;
                 case CROP_SMALL_PICTURE:
                     if (data != null) {
-                        try{
+                        try {
                             setImageToView(data); // 让刚才选择裁剪得到的图片显示在界面上
-                        }catch (IOException e){
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
@@ -528,24 +543,23 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 保存裁剪之后的图片数据
-     *
      */
-    protected void setImageToView(Intent data) throws IOException{
+    protected void setImageToView(Intent data) throws IOException {
         Bundle extras = data.getExtras();
         if (extras != null) {
             Bitmap bmp = extras.getParcelable("data");
-            photo = (ImageView)findViewById(R.id.userphoto) ;
+            photo = (ImageView) findViewById(R.id.userphoto);
             photo.setImageBitmap(bmp);
             final File userPhoto = changeToFile(bmp, "userphoto.png");
-            new Thread() {
-                public void run() {
-                    try {
-                        UploadUtils.post(getApplicationContext(), userUtils.getCurrentUsername(), userPhoto);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
+//            new Thread() {
+//                public void run() {
+//                    try {
+//                        UploadUtils.post(getApplicationContext(), userUtils.getCurrentUsername(), userPhoto);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }.start();
 
         }
     }
@@ -553,6 +567,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * 将Bitmap转换成文件
      * 保存文件
+     *
      * @param bm
      * @param fileName
      * @throws IOException
@@ -582,12 +597,13 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, Inquire.class);
         startActivity(intent);
     }
-    public void toChart(View view){
-        Intent intent = new Intent(this,Chart.class);
+
+    public void toChart(View view) {
+        Intent intent = new Intent(this, Chart.class);
         startActivity(intent);
     }
 
-    public void toDeleteBook(View view){
+    public void toDeleteBook(View view) {
         showDeleteDialog();
     }
 
@@ -598,28 +614,30 @@ public class MainActivity extends AppCompatActivity
         new Thread() {
             public void run() {
                 syncNewAddedBookByPost();
-                syncModifyBookByPost();
-                syncDeleteBookByPost();
+                //syncModifyBookByPost();
+                //syncDeleteBookByPost();
                 syncNewAddedAccountByPost();
-                syncModifyAccountByPost();
-                syncDeleteAccountByPost();
+                //syncModifyAccountByPost();
+                //syncDeleteAccountByPost();
                 syncNewAddedRecordByPost();
-                syncModifyRecordByPost();
-                syncDeleteRecordByPost();
+                //syncModifyRecordByPost();
+                //syncDeleteRecordByPost();
                 getNewAddedBookByPost();
-                getModifyBookByPost();
-                getDeleteBookByPost();
+                //getModifyBookByPost();
+                //getDeleteBookByPost();
                 getNewAddedAccountByPost();
-                getModifyAccountByPost();
-                getDeleteAccountByPost();
+                //getModifyAccountByPost();
+                //getDeleteAccountByPost();
                 getNewAddedRecordByPost();
-                getModifyRecordByPost();
-                getDeleteRecordByPost();
+                //getModifyRecordByPost();
+                //getDeleteRecordByPost();
+                dirtyUtils.deleteAllDirty(userUtils.getCurrentUsername());
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         }.start();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+
     }
 
     public void syncNewAddedBookByPost() {
@@ -663,7 +681,7 @@ public class MainActivity extends AppCompatActivity
                 final String result = new String(baos.toByteArray());
                 final Response response = mapper.readValue(result, Response.class);
                 if (response.getCode() == 200) {
-                    RemoteIdRespEntity entity = (RemoteIdRespEntity) response.getEntity();
+                    RemoteIdRespEntity entity = mapper.readValue(mapper.readTree(result).get("entity").toString(), RemoteIdRespEntity.class);
                     Map<Long, Long> map = entity.getIdMap();
                     for (Map.Entry<Long, Long> entry : map.entrySet()) {
                         Long id = entry.getKey();
@@ -681,6 +699,7 @@ public class MainActivity extends AppCompatActivity
 
             }
         } catch (Exception e) {
+            Log.e("book", e.getMessage());
             e.printStackTrace();
         }
     }
@@ -835,7 +854,7 @@ public class MainActivity extends AppCompatActivity
                 final String result = new String(baos.toByteArray());
                 final Response response = mapper.readValue(result, Response.class);
                 if (response.getCode() == 200) {
-                    RemoteIdRespEntity entity = (RemoteIdRespEntity) response.getEntity();
+                    RemoteIdRespEntity entity = mapper.readValue(mapper.readTree(result).get("entity").toString(), RemoteIdRespEntity.class);
                     Map<Long, Long> map = entity.getIdMap();
                     for (Map.Entry<Long, Long> entry : map.entrySet()) {
                         Long id = entry.getKey();
@@ -1005,7 +1024,7 @@ public class MainActivity extends AppCompatActivity
                 final String result = new String(baos.toByteArray());
                 final Response response = mapper.readValue(result, Response.class);
                 if (response.getCode() == 200) {
-                    RemoteIdRespEntity entity = (RemoteIdRespEntity) response.getEntity();
+                    RemoteIdRespEntity entity = mapper.readValue(mapper.readTree(result).get("entity").toString(), RemoteIdRespEntity.class);
                     Map<Long, Long> map = entity.getIdMap();
                     for (Map.Entry<Long, Long> entry : map.entrySet()) {
                         Long id = entry.getKey();
@@ -1174,7 +1193,7 @@ public class MainActivity extends AppCompatActivity
                 final String result = new String(baos.toByteArray());
                 final Response response = mapper.readValue(result, Response.class);
                 if (response.getCode() == 200) {
-                    BookReqEntity entity = (BookReqEntity) response.getEntity();
+                    BookReqEntity entity = mapper.readValue(mapper.readTree(result).get("entity").toString(), BookReqEntity.class);
                     List<SyncBook> list_syncbooks = entity.getBooks();
                     for (SyncBook list_syncbook : list_syncbooks) {
                         bookUtils.addSyncBook(list_syncbook);
@@ -1340,11 +1359,11 @@ public class MainActivity extends AppCompatActivity
                 final String result = new String(baos.toByteArray());
                 final Response response = mapper.readValue(result, Response.class);
                 if (response.getCode() == 200) {
-                    AccountReqEntity entity = (AccountReqEntity) response.getEntity();
+                    AccountReqEntity entity = mapper.readValue(mapper.readTree(result).get("entity").toString(), AccountReqEntity.class);
                     List<SyncAccount> list_syncaccounts = entity.getAccounts();
-//                    for (SyncAccount list_syncaccount : list_syncaccounts) {
-//                        accountUtils.addSyncAccount(list_syncaccount);
-//                    }
+                    for (SyncAccount list_syncaccount : list_syncaccounts) {
+                        accountUtils.addSyncAccount(list_syncaccount);
+                    }
                 }
                 if (response.getCode() != 200) {
                     this.runOnUiThread(new Runnable() {
@@ -1506,11 +1525,11 @@ public class MainActivity extends AppCompatActivity
                 final String result = new String(baos.toByteArray());
                 final Response response = mapper.readValue(result, Response.class);
                 if (response.getCode() == 200) {
-                    RecordReqEntity entity = (RecordReqEntity) response.getEntity();
+                    RecordReqEntity entity = mapper.readValue(mapper.readTree(result).get("entity").toString(), RecordReqEntity.class);
                     List<SyncRecord> list_syncrecords = entity.getRecords();
-//                    for (SyncRecord list_syncrecord : list_syncrecords) {
-//                        recordUtils.addSyncRecord(list_syncrecord);
-//                    }
+                    for (SyncRecord list_syncrecord : list_syncrecords) {
+                        recordUtils.addSyncRecord(list_syncrecord);
+                    }
                 }
                 if (response.getCode() != 200) {
                     this.runOnUiThread(new Runnable() {

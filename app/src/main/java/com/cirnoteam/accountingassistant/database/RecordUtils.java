@@ -240,10 +240,14 @@ public class RecordUtils {
 
     public List<Record> getRecordOfDayByBook(Long bookId, Date date) {
         AccountUtils util = new AccountUtils(context);
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.setTime(date);
-        gc.add(Calendar.DAY_OF_MONTH, -1);
-        Date lastDate = gc.getTime();
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        Date lastDate = cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        date = cal.getTime();
         List<Record> records = new ArrayList<>();
         for (Account account : util.getAllAccounts(bookId)) {
             for (Record record : daoManager.getDaoSession().queryBuilder(Record.class).where(RecordDao.Properties.Accountid.eq(account.getId())).where(RecordDao.Properties.Time.between(lastDate, date)).list()) {
@@ -405,8 +409,10 @@ public class RecordUtils {
         return flag;
     }
 
-//    public boolean addSyncRecord(SyncRecord syncRecord){
-//        Record account = new Record(syncRecord.getId(),)
-//    }
+    public boolean addSyncRecord(SyncRecord syncRecord) {
+        AccountUtils accountUtil = new AccountUtils(context);
+        Record record = new Record(syncRecord.getId(), accountUtil.getLocalId(syncRecord.getRemoteAccountId()), syncRecord.getExpense(), syncRecord.getAmount(), syncRecord.getRemark(), syncRecord.getType(), syncRecord.getrTime(), syncRecord.getRemoteId());
+        return insertRecord(record);
+    }
 
 }

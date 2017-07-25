@@ -215,9 +215,20 @@ public class AccountUtils {
     }
 
 
-//    public boolean addSyncAccount(SyncAccount syncAccount){
-//        Account account = new Account(syncAccount.getId(),,syncAccount.getBalance(),);
-//        Account account = new Account()
-//    }
+    public boolean addSyncAccount(SyncAccount syncAccount) {
+        BookUtils bookUtil = new BookUtils(context);
+        Account account = new Account(syncAccount.getId(), bookUtil.getLocalId(syncAccount.getRemoteBookId()), syncAccount.getType(), syncAccount.getBalance(), syncAccount.getName(), syncAccount.getRemoteId());
+        return insertAccount(account);
+    }
+
+    public Long getLocalId(Long remoteId) {
+        QueryBuilder<Account> builder = daoManager.getDaoSession().queryBuilder(Account.class);
+        return builder.where(AccountDao.Properties.Remoteid.eq(remoteId)).unique().getId();
+    }
+
+    public Long getRemoteId(Long id) {
+        QueryBuilder<Account> builder = daoManager.getDaoSession().queryBuilder(Account.class);
+        return builder.where(AccountDao.Properties.Id.eq(id)).unique().getRemoteid();
+    }
 
 }

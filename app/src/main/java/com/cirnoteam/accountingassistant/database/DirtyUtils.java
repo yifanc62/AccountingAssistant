@@ -251,7 +251,7 @@ public class DirtyUtils {
         RecordUtils util = new RecordUtils(context);
         for (Dirty dirty : dirties) {
             Record record = util.getRecord(dirty.getRid());
-            records.add(new SyncRecord().setId(record.getId()).setRemoteId(record.getRemoteid()).setType(record.getType()).setAmount(record.getAmount()).setExpense(record.getExpense()).setRemark(record.getRemark()).setTime(dirty.getTime()).setRemoteAccountId(record.getAccount().getRemoteid()));
+            records.add(new SyncRecord().setId(record.getId()).setRemoteId(record.getRemoteid()).setType(record.getType()).setAmount(record.getAmount()).setExpense(record.getExpense()).setRemark(record.getRemark()).setrTime(record.getTime()).setTime(dirty.getTime()).setRemoteAccountId(record.getAccount().getRemoteid()));
         }
         return records;
     }
@@ -276,7 +276,7 @@ public class DirtyUtils {
         AccountUtils util = new AccountUtils(context);
         for (Dirty dirty : dirties) {
             Account account = util.getAccount(dirty.getRid());
-            accounts.add(new SyncAccount().setId(account.getId()).setName(account.getName()).setRemoteId(account.getRemoteid()).setType(account.getType()).setBalance(account.getBalance()).setTime(dirty.getTime()).setRemoteBookId(account.getBook().getRemoteid()));
+            accounts.add(new SyncAccount().setId(account.getId()).setName(account.getName()).setRemoteId(account.getRemoteid()).setType(account.getType()).setBalance(account.getBalance()).setTime(dirty.getTime()).setRemoteBookId(new BookUtils(context).getRemoteId(account.getBookid())));
         }
         return accounts;
     }
@@ -288,7 +288,7 @@ public class DirtyUtils {
         RecordUtils util = new RecordUtils(context);
         for (Dirty dirty : dirties) {
             Record record = util.getRecord(dirty.getRid());
-            records.add(new SyncRecord().setId(record.getId()).setRemoteId(record.getRemoteid()).setType(record.getType()).setAmount(record.getAmount()).setExpense(record.getExpense()).setRemark(record.getRemark()).setTime(dirty.getTime()).setRemoteAccountId(record.getAccount().getRemoteid()));
+            records.add(new SyncRecord().setId(record.getId()).setRemoteId(record.getRemoteid()).setType(record.getType()).setAmount(record.getAmount()).setExpense(record.getExpense()).setRemark(record.getRemark()).setrTime(record.getTime()).setTime(dirty.getTime()).setRemoteAccountId(new AccountUtils(context).getRemoteId(record.getAccountid())));
         }
         return records;
     }

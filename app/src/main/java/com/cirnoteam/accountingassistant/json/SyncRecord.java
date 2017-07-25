@@ -14,6 +14,16 @@ public class SyncRecord {
     private Integer type;
     private String remark;
     private Date time;
+    private Date rTime;
+
+    public Date getrTime() {
+        return rTime;
+    }
+
+    public SyncRecord setrTime(Date rTime) {
+        this.rTime = rTime;
+        return this;
+    }
 
     public Long getId() {
         return id;

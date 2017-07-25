@@ -28,7 +28,7 @@ public class UploadUtils {
      * @param file
      * @throws IOException
      */
-    public static void post(Context context,String username, File file)
+    public static void post(Context context, String username, File file)
             throws IOException {
 
         String spec = "http://cirnoteam.varkarix.com/avatar";
@@ -104,23 +104,23 @@ public class UploadUtils {
             }
         } else if (res == 400) {
             Toast.makeText(context, "服务器未能理解请求", Toast.LENGTH_SHORT).show();
-        } else if(res == 404){
+        } else if (res == 404) {
             Toast.makeText(context, "服务器无法找到被请求页面", Toast.LENGTH_SHORT).show();
-        }else if(res == 405){
+        } else if (res == 405) {
             Toast.makeText(context, "请求中指定的方法不被允许", Toast.LENGTH_SHORT).show();
-        }else if(res == 408){
+        } else if (res == 408) {
             Toast.makeText(context, " 请求超出了服务器的等待时间", Toast.LENGTH_SHORT).show();
-        }else if(res == 409){
+        } else if (res == 409) {
             Toast.makeText(context, " 由于冲突，请求无法被完成。", Toast.LENGTH_SHORT).show();
-        }else if(res == 410){
+        } else if (res == 410) {
             Toast.makeText(context, " 被请求的页面不可用。", Toast.LENGTH_SHORT).show();
-        }else if(res == 413){
+        } else if (res == 413) {
             Toast.makeText(context, "由于所请求的实体的太大，服务器不会接受请求", Toast.LENGTH_SHORT).show();
-        }else if(res == 502){
+        } else if (res == 502) {
             Toast.makeText(context, "请求未完成。服务器不支持所请求的功能", Toast.LENGTH_SHORT).show();
-        }else if(res == 505){
+        } else if (res == 505) {
             Toast.makeText(context, "服务器不支持请求中指明的HTTP协议版本", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             Toast.makeText(context, "服务器遇到未知错误", Toast.LENGTH_SHORT).show();
         }
         os.close();

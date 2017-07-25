@@ -12,6 +12,10 @@ public class Response {
     private String message;
     private Object entity;
 
+    public Response() {
+
+    }
+
     public Response(int code, String message) {
         this.code = code;
         this.message = message;
