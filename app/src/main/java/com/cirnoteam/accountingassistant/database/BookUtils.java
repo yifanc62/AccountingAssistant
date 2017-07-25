@@ -7,6 +7,7 @@ import com.cirnoteam.accountingassistant.entity.Book;
 import com.cirnoteam.accountingassistant.entity.User;
 import com.cirnoteam.accountingassistant.gen.BookDao;
 import com.cirnoteam.accountingassistant.gen.UserDao;
+import com.cirnoteam.accountingassistant.json.SyncBook;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -127,6 +128,16 @@ public class BookUtils {
             flag = false;
         }
         return flag;
+    }
+
+    public boolean addSyncBook(SyncBook syncBook) {
+        Book book = new Book(syncBook.getId(), syncBook.getUsername(), syncBook.getName(), syncBook.getRemoteId());
+        return insertBook(book);
+    }
+
+    public long getLocalId(Long remoteId) {
+        QueryBuilder<Book> builder = daoManager.getDaoSession().queryBuilder(Book.class);
+        return builder.where(BookDao.Properties.Remoteid.eq(remoteId)).unique().getId();
     }
 
 }

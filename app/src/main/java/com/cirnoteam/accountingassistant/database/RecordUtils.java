@@ -9,6 +9,8 @@ import com.cirnoteam.accountingassistant.entity.User;
 import com.cirnoteam.accountingassistant.gen.AccountDao;
 import com.cirnoteam.accountingassistant.gen.RecordDao;
 import com.cirnoteam.accountingassistant.gen.UserDao;
+import com.cirnoteam.accountingassistant.json.SyncAccount;
+import com.cirnoteam.accountingassistant.json.SyncRecord;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -402,5 +404,9 @@ public class RecordUtils {
         }
         return flag;
     }
+
+//    public boolean addSyncRecord(SyncRecord syncRecord){
+//        Record account = new Record(syncRecord.getId(),)
+//    }
 
 }

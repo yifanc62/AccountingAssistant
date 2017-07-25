@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.cirnoteam.accountingassistant.entity.Account;
 import com.cirnoteam.accountingassistant.gen.AccountDao;
+import com.cirnoteam.accountingassistant.json.SyncAccount;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -212,4 +213,11 @@ public class AccountUtils {
         QueryBuilder<Account> queryBuilder = daoManager.getDaoSession().queryBuilder(Account.class);
         return queryBuilder.where(AccountDao.Properties.Bookid.eq(bookid)).list();
     }
+
+
+//    public boolean addSyncAccount(SyncAccount syncAccount){
+//        Account account = new Account(syncAccount.getId(),,syncAccount.getBalance(),);
+//        Account account = new Account()
+//    }
+
 }

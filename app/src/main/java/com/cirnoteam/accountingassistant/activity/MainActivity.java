@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity
     private BookUtils bookUtils = new BookUtils(this);
     private UserUtils userUtils = new UserUtils(this);
     private AccountUtils accountUtils = new AccountUtils(this);
+    private DirtyUtils dirtyUtils = new DirtyUtils(this);
+    private RecordUtils recordUtils = new RecordUtils(this);
     private Animation scaleAnimation,flyAnimation;
     private ImageView photo;
 
@@ -538,7 +540,7 @@ public class MainActivity extends AppCompatActivity
             new Thread() {
                 public void run() {
                     try {
-                        UploadUtils.post(userUtils.getCurrentUsername(), userPhoto);
+                        UploadUtils.post(getApplicationContext(), userUtils.getCurrentUsername(), userPhoto);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -590,7 +592,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void sync() {
-        Toast.makeText(getApplicationContext(), "同步数据中，可能会耗时较久，请等待", Toast.LENGTH_SHORT).show();
+        AlertDialog load = new AlertDialog.Builder(this).create();
+        load.setMessage("数据处理中，请勿进行其他操作");
+        load.show();
         new Thread() {
             public void run() {
                 syncNewAddedBookByPost();
@@ -613,6 +617,9 @@ public class MainActivity extends AppCompatActivity
                 getDeleteRecordByPost();
             }
         }.start();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void syncNewAddedBookByPost() {
@@ -1130,7 +1137,7 @@ public class MainActivity extends AppCompatActivity
 
     public void getNewAddedBookByPost() {
         try {
-            String spec = "http://cirnoteam.varkarix.com/sync/add/book";
+            String spec = "http://cirnoteam.varkarix.com/get/add/book";
             URL url = new URL(spec);
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
@@ -1166,6 +1173,13 @@ public class MainActivity extends AppCompatActivity
                 baos.close();
                 final String result = new String(baos.toByteArray());
                 final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() == 200) {
+                    BookReqEntity entity = (BookReqEntity) response.getEntity();
+                    List<SyncBook> list_syncbooks = entity.getBooks();
+                    for (SyncBook list_syncbook : list_syncbooks) {
+                        bookUtils.addSyncBook(list_syncbook);
+                    }
+                }
                 if (response.getCode() != 200) {
                     this.runOnUiThread(new Runnable() {
                         @Override
@@ -1183,7 +1197,7 @@ public class MainActivity extends AppCompatActivity
 
     public void getModifyBookByPost() {
         try {
-            String spec = "http://cirnoteam.varkarix.com/sync/modify/book";
+            String spec = "http://cirnoteam.varkarix.com/get/modify/book";
             URL url = new URL(spec);
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
@@ -1236,7 +1250,7 @@ public class MainActivity extends AppCompatActivity
 
     public void getDeleteBookByPost() {
         try {
-            String spec = "http://cirnoteam.varkarix.com/sync/delete/book";
+            String spec = "http://cirnoteam.varkarix.com/get/delete/book";
             URL url = new URL(spec);
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
@@ -1289,7 +1303,7 @@ public class MainActivity extends AppCompatActivity
 
     public void getNewAddedAccountByPost() {
         try {
-            String spec = "http://cirnoteam.varkarix.com/sync/add/account";
+            String spec = "http://cirnoteam.varkarix.com/get/add/account";
             URL url = new URL(spec);
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
@@ -1325,6 +1339,13 @@ public class MainActivity extends AppCompatActivity
                 baos.close();
                 final String result = new String(baos.toByteArray());
                 final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() == 200) {
+                    AccountReqEntity entity = (AccountReqEntity) response.getEntity();
+                    List<SyncAccount> list_syncaccounts = entity.getAccounts();
+                    for (SyncAccount list_syncaccount : list_syncaccounts) {
+                        accountUtils.addSyncAccount(list_syncaccount);
+                    }
+                }
                 if (response.getCode() != 200) {
                     this.runOnUiThread(new Runnable() {
                         @Override
@@ -1342,7 +1363,7 @@ public class MainActivity extends AppCompatActivity
 
     public void getModifyAccountByPost() {
         try {
-            String spec = "http://cirnoteam.varkarix.com/sync/modify/account";
+            String spec = "http://cirnoteam.varkarix.com/get/modify/account";
             URL url = new URL(spec);
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
@@ -1395,7 +1416,7 @@ public class MainActivity extends AppCompatActivity
 
     public void getDeleteAccountByPost() {
         try {
-            String spec = "http://cirnoteam.varkarix.com/sync/delete/account";
+            String spec = "http://cirnoteam.varkarix.com/get/delete/account";
             URL url = new URL(spec);
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
@@ -1448,7 +1469,7 @@ public class MainActivity extends AppCompatActivity
 
     public void getNewAddedRecordByPost() {
         try {
-            String spec = "http://cirnoteam.varkarix.com/sync/add/record";
+            String spec = "http://cirnoteam.varkarix.com/get/add/record";
             URL url = new URL(spec);
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
@@ -1484,6 +1505,13 @@ public class MainActivity extends AppCompatActivity
                 baos.close();
                 final String result = new String(baos.toByteArray());
                 final Response response = mapper.readValue(result, Response.class);
+                if (response.getCode() == 200) {
+                    RecordReqEntity entity = (RecordReqEntity) response.getEntity();
+                    List<SyncRecord> list_syncrecords = entity.getRecords();
+                    for (SyncRecord list_syncrecord : list_syncrecords) {
+                        recordUtils.addSyncRecord(list_syncrecord);
+                    }
+                }
                 if (response.getCode() != 200) {
                     this.runOnUiThread(new Runnable() {
                         @Override
@@ -1501,7 +1529,7 @@ public class MainActivity extends AppCompatActivity
 
     public void getModifyRecordByPost() {
         try {
-            String spec = "http://cirnoteam.varkarix.com/sync/modify/record";
+            String spec = "http://cirnoteam.varkarix.com/get/modify/record";
             URL url = new URL(spec);
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
@@ -1554,7 +1582,7 @@ public class MainActivity extends AppCompatActivity
 
     public void getDeleteRecordByPost() {
         try {
-            String spec = "http://cirnoteam.varkarix.com/sync/delete/record";
+            String spec = "http://cirnoteam.varkarix.com/get/delete/record";
             URL url = new URL(spec);
             HttpURLConnection urlConnection = (HttpURLConnection) url
                     .openConnection();
