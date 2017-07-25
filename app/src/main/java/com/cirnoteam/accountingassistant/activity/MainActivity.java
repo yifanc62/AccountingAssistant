@@ -1342,9 +1342,9 @@ public class MainActivity extends AppCompatActivity
                 if (response.getCode() == 200) {
                     AccountReqEntity entity = (AccountReqEntity) response.getEntity();
                     List<SyncAccount> list_syncaccounts = entity.getAccounts();
-                    for (SyncAccount list_syncaccount : list_syncaccounts) {
-                        accountUtils.addSyncAccount(list_syncaccount);
-                    }
+//                    for (SyncAccount list_syncaccount : list_syncaccounts) {
+//                        accountUtils.addSyncAccount(list_syncaccount);
+//                    }
                 }
                 if (response.getCode() != 200) {
                     this.runOnUiThread(new Runnable() {
@@ -1508,9 +1508,9 @@ public class MainActivity extends AppCompatActivity
                 if (response.getCode() == 200) {
                     RecordReqEntity entity = (RecordReqEntity) response.getEntity();
                     List<SyncRecord> list_syncrecords = entity.getRecords();
-                    for (SyncRecord list_syncrecord : list_syncrecords) {
-                        recordUtils.addSyncRecord(list_syncrecord);
-                    }
+//                    for (SyncRecord list_syncrecord : list_syncrecords) {
+//                        recordUtils.addSyncRecord(list_syncrecord);
+//                    }
                 }
                 if (response.getCode() != 200) {
                     this.runOnUiThread(new Runnable() {
