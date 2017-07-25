@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.cirnoteam.accountingassistant.R;
+import com.cirnoteam.accountingassistant.database.AccountUtils;
 import com.cirnoteam.accountingassistant.database.BookUtils;
 import com.cirnoteam.accountingassistant.database.UserUtils;
 
@@ -124,7 +125,9 @@ public class Activate extends AppCompatActivity {
                 if (code == 200) {
                     userUtils.register(userName, password, token, uuid, deviceName);
                     BookUtils bookUtils = new BookUtils(this);
-                    bookUtils.addBook(userName, "默认账本");
+                    AccountUtils accountUtils = new AccountUtils(this);
+                    long id = bookUtils.addBook(userName, "默认账本");
+                    accountUtils.addAccount(id, 0, 1000F, "默认账户");
                     Intent intent = new Intent(this, LogIn.class);
 
                     this.runOnUiThread(new Runnable() {
